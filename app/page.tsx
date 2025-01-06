@@ -14,23 +14,23 @@ const Home: React.FC = () => {
           <Tab.List className="flex space-x-1 rounded-lg bg-blue-500 p-1">
             <Tab
               className={({ selected }: { selected: boolean }) =>
-                `w-full py-2.5 text-sm font-medium leading-5 text-white rounded-lg ${
+                `w-full py-2.5 text-sm font-medium leading-5 rounded-lg ${
                   selected ? 'bg-white text-blue-500' : 'text-white'
                 }`
               }
               onClick={() => setActiveTab('monthly')}
             >
-              Monthly View
+              월별
             </Tab>
             <Tab
               className={({ selected }: { selected: boolean }) =>
-                `w-full py-2.5 text-sm font-medium leading-5 text-white rounded-lg ${
+                `w-full py-2.5 text-sm font-medium leading-5 rounded-lg ${
                   selected ? 'bg-white text-blue-500' : 'text-white'
                 }`
               }
               onClick={() => setActiveTab('daily')}
             >
-              Today Checklist
+              오늘 체크
             </Tab>
           </Tab.List>
           <Tab.Panels>
@@ -57,17 +57,20 @@ const MonthlyView: React.FC = () => {
 
   return (
     <div className="p-4">
-      <div className="text-center text-lg font-bold">Total Score: {totalScore}</div>
+      <div className="text-center text-xl font-extrabold text-blue-600">
+        {format(today, 'M')} 월
+      </div>
+      <div className="text-center text-lg font-bold mt-2">총점: {totalScore}</div>
       <div className="grid grid-cols-7 gap-2 mt-4">
         {daysInMonth.map((day, idx) => (
           <div
             key={idx}
-            className="border border-gray-300 p-2 rounded-lg bg-white text-center"
+            className="border border-gray-300 p-2 rounded-lg bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 text-center"
           >
-            <div className="text-sm font-bold">{format(day, 'd')}</div>
+            <div className="text-sm font-bold text-white">{format(day, 'd')}</div>
             <div className="text-xs mt-1">
-              <div>Anna: 5pts</div>
-              <div>Jack: 7pts</div>
+              <div className="text-white">박온겸: 5</div>
+              <div className="text-white">박소빈: 7</div>
             </div>
           </div>
         ))}
@@ -85,8 +88,8 @@ interface Child {
 const DailyChecklist: React.FC = () => {
   const [score, setScore] = useState<number>(0);
   const children: Child[] = [
-    { name: 'Anna', photo: '/anna.jpg', checklist: ['Brush teeth', 'Make bed'] },
-    { name: 'Jack', photo: '/jack.jpg', checklist: ['Homework', 'Clean room'] },
+    { name: '박온겸', photo: '/anna.jpg', checklist: ['Brush teeth', 'Make bed'] },
+    { name: '박소빈', photo: '/jack.jpg', checklist: ['Homework', 'Clean room'] },
   ];
 
   const handleCheck = (points: number): void => {
@@ -121,7 +124,7 @@ const DailyChecklist: React.FC = () => {
         </div>
       ))}
       <div className="fixed bottom-4 left-0 right-0 p-4 bg-blue-500 text-white text-center text-lg font-bold">
-        Total Score: {score}
+        오늘의 총점: {score}
       </div>
     </div>
   );
