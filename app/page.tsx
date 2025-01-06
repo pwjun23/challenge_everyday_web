@@ -4,6 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import { format, startOfMonth, endOfMonth, addDays } from 'date-fns';
 
+interface HolidayItem {
+  locdate: string; // 공휴일 날짜 (yyyyMMdd 형식의 문자열)
+}
+
 const MonthlyView: React.FC = () => {
   const today = new Date();
   const monthStart = startOfMonth(today);
@@ -18,19 +22,17 @@ const MonthlyView: React.FC = () => {
     const apiKey = 'YbUdghHTg29kUnFKrBWyh%2FQA7Au%2FUkVCGu2BvtR3qIoRUv5z2reuuRGWKhPyhGIS7IKDCvp22B4vbayKQoOVGw%3D%3D'; // 공공데이터 API 키
     const year = today.getFullYear();
     const month = format(today, 'MM');
-    // const url = `https://apis.data.go.kr/1382000/FindHolidayInfoService/getHoliDay?serviceKey=${apiKey}&solYear=${year}`;
     const url = `http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo?solYear=${year}&solMonth=${month}&ServiceKey=${apiKey}&_type=json`;
+
     try {
       const response = await fetch(url);
       const data = await response.json();
-      
+
       if (data.response && data.response.body && data.response.body.items) {
-        const holidayDates = data.response.body.items.item.map((item: any) => {
-        const dateString = String(item.locdate);
-        const formattedDateString = `${dateString.slice(0, 4)}-${dateString.slice(4, 6)}-${dateString.slice(6)}`;
-        const locdate = new Date(formattedDateString);
-          const holidayDate = new Date(locdate);
-          return holidayDate;
+        const holidayDates = data.response.body.items.item.map((item: HolidayItem) => {
+          const dateString = String(item.locdate);
+          const formattedDateString = `${dateString.slice(0, 4)}-${dateString.slice(4, 6)}-${dateString.slice(6)}`;
+          return new Date(formattedDateString);
         });
         setHolidays(holidayDates); // 공휴일 배열 저장
       }
@@ -41,11 +43,10 @@ const MonthlyView: React.FC = () => {
 
   useEffect(() => {
     fetchHolidays(); // 컴포넌트가 마운트되었을 때 공휴일 데이터를 가져옵니다.
-  }, []);
+  }, []); // 의존성 배열이 비어 있으므로 컴포넌트 마운트 시에만 실행됩니다.
 
   // 공휴일인지 체크하는 함수
   const isHoliday = (date: Date): boolean => {
-
     return holidays.some(
       (holiday) =>
         holiday.getDate() === date.getDate() &&
@@ -87,19 +88,16 @@ const MonthlyView: React.FC = () => {
         {Array.from({ length: startDayOfWeek }).map((_, idx) => (
           <div key={idx} className="text-center"></div>
         ))}
-        
+
         {daysInMonth.map((day, idx) => (
-          <div
-            key={idx}
-            className={`p-1 text-center border`}
-          >
-            <div className={`text-sm font-bold 
-             ${
-              isHoliday(day)
-                ? 'text-red-600' // 공휴일이면 빨간 배경
-                : 'text-stone-600'
-            }
-              `}>{format(day, 'd')}</div>
+          <div key={idx} className={`p-1 text-center border`}>
+            <div
+              className={`text-sm font-bold ${
+                isHoliday(day) ? 'text-red-600' : 'text-stone-600'
+              }`}
+            >
+              {format(day, 'd')}
+            </div>
             <div className="text-xs mt-0">
               <div>온겸 5</div>
               <div>소빈 7</div>
@@ -150,6 +148,12 @@ const Home: React.FC = () => {
   );
 };
 
+interface Child {
+  name: string;
+  photo: string;
+  checklist: string[];
+}
+
 const DailyChecklist: React.FC = () => {
   const [score, setScore] = useState<number>(0);
   const children: Child[] = [
@@ -194,11 +198,5 @@ const DailyChecklist: React.FC = () => {
     </div>
   );
 };
-
-interface Child {
-  name: string;
-  photo: string;
-  checklist: string[];
-}
 
 export default Home;
