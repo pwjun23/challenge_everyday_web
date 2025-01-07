@@ -6,15 +6,23 @@ type MonthlyViewProp ={
   today:Date
   startDayOfWeek:number
   daysInMonth:Date[]
-  isHoliday:Function
+  holidays:Date[]
 }
 const MonthlyView = (props :MonthlyViewProp) => {
- const {today, startDayOfWeek, daysInMonth, isHoliday} = props;
+ const {today, startDayOfWeek, daysInMonth, holidays} = props;
 
   const totalScore = 120; // Example total score
 
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
-
+  // 공휴일인지 체크하는 함수
+  const isHoliday = (date: Date): boolean => {
+    return holidays.some(
+      (holiday) =>
+        holiday.getDate() === date.getDate() &&
+        holiday.getMonth() === date.getMonth() &&
+        holiday.getFullYear() === date.getFullYear()
+    );
+  };
   return (
     <div className="p-4">
       <div className="text-center text-xl font-extrabold text-blue-600">

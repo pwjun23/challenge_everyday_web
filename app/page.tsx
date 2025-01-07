@@ -49,15 +49,6 @@ const Home: React.FC = () => {
     fetchHolidays(); // 컴포넌트가 마운트되었을 때 공휴일 데이터를 가져옵니다.
   }, []); // 의존성 배열이 비어 있으므로 컴포넌트 마운트 시에만 실행됩니다.
 
-  // 공휴일인지 체크하는 함수
-  const isHoliday = (date: Date): boolean => {
-    return holidays.some(
-      (holiday) =>
-        holiday.getDate() === date.getDate() &&
-        holiday.getMonth() === date.getMonth() &&
-        holiday.getFullYear() === date.getFullYear()
-    );
-  };
 
   const daysInMonth: Date[] = [];
 
@@ -98,7 +89,7 @@ const Home: React.FC = () => {
             today={today}
             startDayOfWeek={startDayOfWeek}
             daysInMonth={daysInMonth}
-            isHoliday={isHoliday}
+            holidays={holidays}
              />}
             {activeTab === 'daily' && <DailyChecklist />}
           </Tab.Panels>
