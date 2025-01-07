@@ -60,10 +60,12 @@ const CheckAdm: React.FC = () => {
   };
 
   // 포인트 수정
-  const handleUpdatePoints = (checklistId: string, points: number): void => {
+  const handleUpdatePoints = (checklistId: string, points: string): void => {
     setChecklists((prev) =>
       prev.map((item) =>
-        item.id === checklistId ? { ...item, points } : item
+        item.id === checklistId
+          ? { ...item, points: points === "" ? 0 : parseInt(points) }
+          : item
       )
     );
   };
@@ -124,7 +126,8 @@ const CheckAdm: React.FC = () => {
               type="number"
               className="w-12 border rounded-lg p-2"
               placeholder="점수"
-              value={newChecklistPoints}
+              // value={newChecklistPoints}
+              value={newChecklistPoints === 0 && newChecklistPoints.toString() === "0" ? "" : newChecklistPoints.toString()}
               onChange={(e) => setNewChecklistPoints(Number(e.target.value))}
             />
             <select
@@ -157,9 +160,9 @@ const CheckAdm: React.FC = () => {
                     id='input_point'
                     type="number"
                     className="w-12 border rounded-lg p-1"
-                    value={checklist.points}
+                    value={checklist.points === 0 && checklist.points.toString() === "0" ? "" : checklist.points.toString()}
                     onChange={(e) =>
-                      handleUpdatePoints(checklist.id, Number(e.target.value))
+                      handleUpdatePoints(checklist.id, e.target.value)
                     }
                   />
                   <label htmlFor='input_point'></label>
