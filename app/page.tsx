@@ -6,13 +6,14 @@ import MonthlyView from './contents/monthlyview';
 
 import { format, startOfMonth, endOfMonth, addDays } from 'date-fns';
 import DailyChecklist from './contents/dailyChecklist';
+import CheckAdm from './contents/checkadm';
 
 interface HolidayItem {
   locdate: string; // 공휴일 날짜 (yyyyMMdd 형식의 문자열)
 }
 
 const Home: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'monthly' | 'daily'>('monthly');
+  const [activeTab, setActiveTab] = useState<'monthly' | 'daily' | 'checkadm'>('monthly');
   const today = new Date();
   const monthStart = startOfMonth(today);
   const monthEnd = endOfMonth(today);
@@ -79,7 +80,17 @@ const Home: React.FC = () => {
               }
               onClick={() => setActiveTab('daily')}
             >
-              오늘 체크
+              오늘 미션 체크
+            </Tab>
+            <Tab
+              className={({ selected }: { selected: boolean }) =>
+                `w-full py-2.5 text-sm font-medium leading-5 rounded-lg ${
+                  selected ? 'bg-white text-blue-500' : 'text-white'
+                }`
+              }
+              onClick={() => setActiveTab('checkadm')}
+            >
+              미션리스트 관리
             </Tab>
           </Tab.List>
           <Tab.Panels>
@@ -91,6 +102,7 @@ const Home: React.FC = () => {
             holidays={holidays}
              />}
             {activeTab === 'daily' && <DailyChecklist />}
+            {activeTab === 'checkadm' && <CheckAdm/>}
           </Tab.Panels>
         </Tab.Group>
       </div>

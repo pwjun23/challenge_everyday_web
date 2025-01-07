@@ -10,8 +10,8 @@ interface Child {
 const DailyChecklist: React.FC = () => {
   const [score, setScore] = useState<number>(0);
   const children: Child[] = [
-    { name: '온겸', photo: '/anna.jpg', checklist: ['Brush teeth', 'Make bed'] },
-    { name: '소빈', photo: '/jack.jpg', checklist: ['Homework', 'Clean room'] },
+    { name: '온겸', photo: '', checklist: ['Brush teeth', 'Make bed'] },
+    { name: '소빈', photo: '', checklist: ['Homework', 'Clean room'] },
   ];
 
   const handleCheck = (points: number): void => {
@@ -24,7 +24,7 @@ const DailyChecklist: React.FC = () => {
         <div key={idx} className="mb-4 border border-gray-300 rounded-lg bg-white p-4">
           <div className="flex items-center">
             <img
-              src={child.photo}
+              src={child.photo===''?'/profile_default.svg':child.photo}
               alt={child.name}
               className="w-12 h-12 rounded-full mr-4"
             />

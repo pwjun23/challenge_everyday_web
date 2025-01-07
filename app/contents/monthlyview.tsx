@@ -28,7 +28,7 @@ console.log({holidays})
       <div className="text-center text-xl font-extrabold text-blue-600">
         {format(today, 'M')} 월
       </div>
-      <div className="text-center text-lg font-bold mt-2">총점: {totalScore}</div>
+      <div className="text-center text-lg font-bold mt-2 mb-2">총점: {totalScore}</div>
 
       {/* 요일을 표시하는 부분 */}
       <div className="grid grid-cols-7 gap-0 mt-0 text-center">
