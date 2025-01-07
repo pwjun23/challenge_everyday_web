@@ -10,7 +10,7 @@ type MonthlyViewProp ={
 }
 const MonthlyView = (props :MonthlyViewProp) => {
  const {today, startDayOfWeek, daysInMonth, holidays} = props;
-
+console.log({holidays})
   const totalScore = 120; // Example total score
 
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];

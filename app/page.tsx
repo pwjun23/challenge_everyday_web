@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import MonthlyView from './contents/monthlyview';
 
@@ -11,13 +11,12 @@ interface HolidayItem {
 }
 
 const Home: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'monthly' | 'daily'>('monthly');
-
+  // const [activeTab, setActiveTab] = useState<'monthly' | 'daily'>('monthly');
+  const activeTab = useRef<'monthly' | 'daily'>('monthly');
   const today = new Date();
   const monthStart = startOfMonth(today);
   const monthEnd = endOfMonth(today);
   const [holidays, setHolidays] = useState<Date[]>([]);
-
   // 월의 첫 날이 어떤 요일인지 확인
   const startDayOfWeek = monthStart.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
 
@@ -68,7 +67,7 @@ const Home: React.FC = () => {
                   selected ? 'bg-white text-blue-500' : 'text-white'
                 }`
               }
-              onClick={() => setActiveTab('monthly')}
+              onClick={() => activeTab.current = 'monthly'}
             >
               월별
             </Tab>
@@ -78,20 +77,20 @@ const Home: React.FC = () => {
                   selected ? 'bg-white text-blue-500' : 'text-white'
                 }`
               }
-              onClick={() => setActiveTab('daily')}
+              onClick={() => activeTab.current = 'daily'}
             >
               오늘 체크
             </Tab>
           </Tab.List>
           <Tab.Panels>
-            {activeTab === 'monthly' 
+            {activeTab.current === 'monthly' 
             && <MonthlyView
             today={today}
             startDayOfWeek={startDayOfWeek}
             daysInMonth={daysInMonth}
             holidays={holidays}
              />}
-            {activeTab === 'daily' && <DailyChecklist />}
+            {activeTab.current === 'daily' && <DailyChecklist />}
           </Tab.Panels>
         </Tab.Group>
       </div>
