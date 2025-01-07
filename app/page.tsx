@@ -1,12 +1,40 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { collection, addDoc, getDocs } from "firebase/firestore";
+
 import { Tab } from '@headlessui/react';
 import MonthlyView from './contents/monthlyview';
 
 import { format, startOfMonth, endOfMonth, addDays } from 'date-fns';
 import DailyChecklist from './contents/dailyChecklist';
 import CheckAdm from './contents/checkadm';
+
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBOioNA2npe8VpMtFlOLXJjIYzTbiu3hWY",
+  authDomain: "molespapa2025.firebaseapp.com",
+  projectId: "molespapa2025",
+  storageBucket: "molespapa2025.firebasestorage.app",
+  messagingSenderId: "601631315534",
+  appId: "1:601631315534:web:9b8853fdefab730388551f",
+  measurementId: "G-ZH69TWC3DJ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app);
+const db = getFirestore(app);
 
 interface HolidayItem {
   locdate: string; // 공휴일 날짜 (yyyyMMdd 형식의 문자열)
@@ -44,8 +72,32 @@ const Home: React.FC = () => {
       console.error('공휴일 데이터를 불러오는 데 실패했습니다.', error);
     }
   };
+// 수정된 코드
+async function fetchData() {
+  const result = await getDocs(collection(db, "users"));
+  result.forEach((doc) => {
+    console.log(doc.id + ' | ' , doc.data());
+  });
+  // console.log(result);
+}
+
+const addUserData = async() =>{
+  try {
+      const docRef = await addDoc(collection(db, "users"), {
+        first: "Ada",
+        last: "Lovelace",
+        born: 1815
+      });
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
 
   useEffect(() => {
+  
+    fetchData();
+    // addUserData();
     fetchHolidays(); // 컴포넌트가 마운트되었을 때 공휴일 데이터를 가져옵니다.
   }, []); // 의존성 배열이 비어 있으므로 컴포넌트 마운트 시에만 실행됩니다.
 
