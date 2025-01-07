@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import MonthlyView from './contents/monthlyview';
 
@@ -12,7 +12,6 @@ interface HolidayItem {
 }
 
 const Home: React.FC = () => {
-  // const [activeTab, setActiveTab] = useState<'monthly' | 'daily'>('monthly');
   const [activeTab, setActiveTab] = useState<'monthly' | 'daily'>('monthly');
   const today = new Date();
   const monthStart = startOfMonth(today);
