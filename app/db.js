@@ -1,5 +1,4 @@
-{
-    "Users": [
+export const user_won = 
 
         {
             "user_id" : "won",
@@ -8,7 +7,8 @@
 	        "email" : "aa@gmail.com",
             "auth" : "checker",
 	        "checklists" :	"checkList_0"
-        },
+        };
+export const user_on = 
         {
             "user_id" : "on",
             "user_name" : "ong",
@@ -16,12 +16,11 @@
 	        "email" : "aa@gmail.com",
             "auth" : "user",
 	        "checklists" :	"checkList_0"
-        }
-    ],
+        };
 		
 		
     
-    "CheckLists" : {
+export const checkLists_collection = {
                     "creation_user_id" : ["won","hyun"],
                     "name" : "2025 challenge every day",
                     "create_at" : {
@@ -79,5 +78,4 @@
                                     ]
                                 }
                     }
-}
 						

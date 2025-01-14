@@ -16,6 +16,9 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
+import {checkLists_collection, user_won} from "./db";
+import { CheckLists } from './common_type';
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -45,6 +48,7 @@ const Home: React.FC = () => {
   const today = new Date();
   const monthStart = startOfMonth(today);
   const monthEnd = endOfMonth(today);
+  const [checkLists, setCheckLists] = useState<any>();
   const [holidays, setHolidays] = useState<Date[]>([]);
   // 월의 첫 날이 어떤 요일인지 확인
   const startDayOfWeek = monthStart.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
@@ -74,21 +78,26 @@ const Home: React.FC = () => {
   };
 // 수정된 코드
 async function fetchData() {
-  const result = await getDocs(collection(db, "users"));
-  result.forEach((doc) => {
+  const users = await getDocs(collection(db, "Users"));
+  let checkLists = await getDocs(collection(db, "CheckLists"));
+  // users.forEach((doc) => {
+  //   console.log(doc.id + ' | ' , doc.data());
+  // });
+  checkLists.forEach((doc) => {
     console.log(doc.id + ' | ' , doc.data());
+    setCheckLists(doc.data());
   });
   // console.log(result);
 }
 
 const addUserData = async() =>{
+  const users = user_won;
+  const checkLists = checkLists_collection;
   try {
-      const docRef = await addDoc(collection(db, "users"), {
-        first: "Ada",
-        last: "Lovelace",
-        born: 1815
-      });
-    console.log("Document written with ID: ", docRef.id);
+    // const docRef = await addDoc(collection(db, "users"), users);
+    // console.log("docRef : ", {docRef});
+    const docRef = await addDoc(collection(db, "CheckLists"), checkLists);
+    console.log("docRef : ", {docRef});
   } catch (e) {
     console.error("Error adding document: ", e);
   }
@@ -147,10 +156,11 @@ const addUserData = async() =>{
           </Tab.List>
           <Tab.Panels>
             {activeTab === 'monthly' 
-            && <MonthlyView
+            && checkLists && <MonthlyView
             today={today}
             startDayOfWeek={startDayOfWeek}
             daysInMonth={daysInMonth}
+            checkLists={checkLists}
             holidays={holidays}
              />}
             {activeTab === 'daily' && <DailyChecklist />}

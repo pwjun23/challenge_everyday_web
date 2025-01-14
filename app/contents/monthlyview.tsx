@@ -1,16 +1,11 @@
 
 
 import { format } from 'date-fns';
+import { MonthlyViewProp } from '../common_type';
 
-type MonthlyViewProp ={
-  today:Date
-  startDayOfWeek:number
-  daysInMonth:Date[]
-  holidays:Date[]
-}
 const MonthlyView = (props :MonthlyViewProp) => {
- const {today, startDayOfWeek, daysInMonth, holidays} = props;
-console.log({holidays})
+  const {today, startDayOfWeek, daysInMonth, checkLists, holidays} = props;
+  const {create_at, creation_user_id, name, task_hist} = checkLists || {create_at : "", creation_user_id : [], name : "", task_hist : []};
   const totalScore = 120; // Example total score
 
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
