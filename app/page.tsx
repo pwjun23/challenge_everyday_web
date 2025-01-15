@@ -154,6 +154,7 @@ const addUserData = async() =>{
               미션리스트 관리
             </Tab>
           </Tab.List>
+          <h2>{checkLists && checkLists.name ?checkLists.name:'제목을 넣어주세요.'}</h2>
           <Tab.Panels>
             {activeTab === 'monthly' 
             && checkLists && <MonthlyView
