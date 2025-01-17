@@ -135,10 +135,10 @@ const addUserData = async() =>{
             {activeTab === 'daily' && <DailyChecklist />}
             {activeTab === 'checkadm' && <CheckAdm/>}
           </Tab.Panels>
-          <Tab.List className="flex space-x-1 rounded-lg bg-blue-500 p-1">
+          <Tab.List className="fixed w-full left-0 bottom-0 rounded-lg bg-blue-500 p-1">
             <Tab
               className={({ selected }: { selected: boolean }) =>
-                `w-full py-2.5 text-sm font-medium leading-5 rounded-lg ${
+                `w-1/3 py-2.5 text-sm font-medium leading-5 rounded-lg ${
                   selected ? 'bg-white text-blue-500' : 'text-white'
                 }`
               }
@@ -148,7 +148,7 @@ const addUserData = async() =>{
             </Tab>
             <Tab
               className={({ selected }: { selected: boolean }) =>
-                `w-full py-2.5 text-sm font-medium leading-5 rounded-lg ${
+                `w-1/3 py-2.5 text-sm font-medium leading-5 rounded-lg ${
                   selected ? 'bg-white text-blue-500' : 'text-white'
                 }`
               }
@@ -158,7 +158,7 @@ const addUserData = async() =>{
             </Tab>
             <Tab
               className={({ selected }: { selected: boolean }) =>
-                `w-full py-2.5 text-sm font-medium leading-5 rounded-lg ${
+                `w-1/3 py-2.5 text-sm font-medium leading-5 rounded-lg ${
                   selected ? 'bg-white text-blue-500' : 'text-white'
                 }`
               }
