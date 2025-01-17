@@ -2,6 +2,7 @@
 
 import { format } from 'date-fns';
 import { MonthlyViewProp } from '../common_type';
+import { useRouter } from 'next/router';
 
 const MonthlyView = (props :MonthlyViewProp) => {
   const {today, startDayOfWeek, daysInMonth, checkLists, holidays} = props;
@@ -18,6 +19,12 @@ const MonthlyView = (props :MonthlyViewProp) => {
         holiday.getFullYear() === date.getFullYear()
     );
   };
+  
+  const onClickHandle =(createAt:any)=>{
+    // const router = useRouter();
+    // const queryString = new URLSearchParams(createAt).toString(); // 데이터를 쿼리로 변환
+    // router.push(`/page?${queryString}`, "_blank"); // 새 탭 열기
+  }
   return (
     <div className="p-4">
       <div className="text-center text-xl font-extrabold text-blue-600">
@@ -54,7 +61,7 @@ const MonthlyView = (props :MonthlyViewProp) => {
               if(d.split('-')[2] === format(day, 'd')){
                 const users_total_point = create_at[d]['users_total_point'];
               return(
-              <div className="text-xs mt-0" key={i}>
+              <div className="text-xs mt-0" key={i} onClick={()=>onClickHandle(create_at)}>
                 {users_total_point.map((pointByUser:{[k:string] : any}, idx)=>(
                   <div key={idx}>{pointByUser.user_name} {pointByUser.total_point}</div>
                 ))
