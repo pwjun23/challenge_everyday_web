@@ -84,7 +84,7 @@ async function fetchData() {
   //   console.log(doc.id + ' | ' , doc.data());
   // });
   checkLists.forEach((doc) => {
-    console.log(doc.id + ' | ' , doc.data());
+    console.log('page > fetchData : '+doc.id + ' | ' , doc.data());
     setCheckLists(doc.data());
   });
   // console.log(result);
@@ -141,7 +141,7 @@ const addUserData = async() =>{
               }
               onClick={() => setActiveTab('daily')}
             >
-              오늘 미션 체크
+              미션 체크
             </Tab>
             <Tab
               className={({ selected }: { selected: boolean }) =>
@@ -154,7 +154,7 @@ const addUserData = async() =>{
               미션리스트 관리
             </Tab>
           </Tab.List>
-          <h2>{checkLists && checkLists.name ?checkLists.name:'제목을 넣어주세요.'}</h2>
+          <h2 className= {`uppercase font-extrabold text-center m-2`}>{checkLists && checkLists.name ?checkLists.name:'제목을 넣어주세요.'}</h2>
           <Tab.Panels>
             {activeTab === 'monthly' 
             && checkLists && <MonthlyView

@@ -1,5 +1,5 @@
 export type CheckLists = {
-    create_at:string
+    create_at:{[k:string]: {[k:string] :[]}}
     creation_user_id:string
     name:string
     task_hist:[]
