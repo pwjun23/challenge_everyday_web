@@ -20,6 +20,10 @@ const DailyChecklist: React.FC = () => {
 
   return (
     <div className="p-4">
+      <div className="p-4">
+        <label htmlFor='date_id' className='mr-2'>체크 할 날짜</label>
+        <input type='date' id="date_id"/>
+      </div>
       {children.map((child, idx) => (
         <div key={idx} className="mb-4 border border-gray-300 rounded-lg bg-white p-4">
           <div className="flex items-center">
