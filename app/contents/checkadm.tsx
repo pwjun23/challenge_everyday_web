@@ -104,10 +104,9 @@ const CheckAdm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="bg-gray-100 p-4">
       <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4">체크리스트 관리</h1>
-
         {/* 새로운 체크리스트 추가 */}
         <div className="mb-6">
           <div className="flex items-center space-x-2 mb-2">
