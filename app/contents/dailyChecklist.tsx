@@ -45,9 +45,9 @@ const DailyChecklist: React.FC = () => {
           </div>
         </div>
       ))}
-      <div className="fixed bottom-4 left-0 right-0 p-4 bg-blue-500 text-white text-center text-lg font-bold">
+      {/* <div className="fixed bottom-4 left-0 right-0 p-4 bg-blue-500 text-white text-center text-lg font-bold">
         오늘의 총점: {score}
-      </div>
+      </div> */}
     </div>
   );
 };

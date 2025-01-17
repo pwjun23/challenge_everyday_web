@@ -122,6 +122,19 @@ const addUserData = async() =>{
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w-md mx-auto">
         <Tab.Group>
+          <h2 className= {`uppercase font-extrabold text-center m-2`}>{checkLists && checkLists.name ?checkLists.name:'제목을 넣어주세요.'}</h2>
+          <Tab.Panels>
+            {activeTab === 'monthly' 
+            && checkLists && <MonthlyView
+            today={today}
+            startDayOfWeek={startDayOfWeek}
+            daysInMonth={daysInMonth}
+            checkLists={checkLists}
+            holidays={holidays}
+             />}
+            {activeTab === 'daily' && <DailyChecklist />}
+            {activeTab === 'checkadm' && <CheckAdm/>}
+          </Tab.Panels>
           <Tab.List className="flex space-x-1 rounded-lg bg-blue-500 p-1">
             <Tab
               className={({ selected }: { selected: boolean }) =>
@@ -154,19 +167,6 @@ const addUserData = async() =>{
               미션리스트 관리
             </Tab>
           </Tab.List>
-          <h2 className= {`uppercase font-extrabold text-center m-2`}>{checkLists && checkLists.name ?checkLists.name:'제목을 넣어주세요.'}</h2>
-          <Tab.Panels>
-            {activeTab === 'monthly' 
-            && checkLists && <MonthlyView
-            today={today}
-            startDayOfWeek={startDayOfWeek}
-            daysInMonth={daysInMonth}
-            checkLists={checkLists}
-            holidays={holidays}
-             />}
-            {activeTab === 'daily' && <DailyChecklist />}
-            {activeTab === 'checkadm' && <CheckAdm/>}
-          </Tab.Panels>
         </Tab.Group>
       </div>
     </div>
