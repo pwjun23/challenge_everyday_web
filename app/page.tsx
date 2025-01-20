@@ -143,15 +143,17 @@ const updateTasks = async() =>{
         <Tab.Group>
           <h2 className= {`uppercase font-extrabold text-center m-2`}>{checkLists && checkLists.title ?checkLists.title:'제목을 넣어주세요.'}</h2>
           <Tab.Panels>
-            {activeTab === 'monthly' 
-            && checkLists && <MonthlyView
+            {activeTab === 'monthly' && checkLists && <MonthlyView
             today={today}
             startDayOfWeek={startDayOfWeek}
             daysInMonth={daysInMonth}
             checkLists={checkLists}
             holidays={holidays}
              />}
-            {activeTab === 'daily' && <DailyChecklist />}
+            {activeTab === 'daily' && checkLists && <DailyChecklist
+              today={today}
+              checkLists={checkLists}
+            />}
             {activeTab === 'checkadm' && <CheckAdm/>}
           </Tab.Panels>
           <Tab.List className="fixed w-full left-0 bottom-0 rounded-lg bg-blue-500 p-1">

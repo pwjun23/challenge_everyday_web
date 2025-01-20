@@ -1,18 +1,21 @@
 "use client";
 
 import React, { useState } from 'react';
+import { DailyChecklistProp } from '../common_type';
 
 interface Child {
   name: string;
   photo: string;
   checklist: string[];
 }
-const DailyChecklist: React.FC = () => {
+const DailyChecklist = (props : DailyChecklistProp) => {
+  const {today, checkLists} = props;
+  const {users_to_check, tasks} = checkLists || {};
   const [score, setScore] = useState<number>(0);
-  const children: Child[] = [
-    { name: '온겸', photo: '', checklist: ['Brush teeth', 'Make bed'] },
-    { name: '소빈', photo: '', checklist: ['Homework', 'Clean room'] },
-  ];
+  // const children: Child[] = [
+  //   { name: '온겸', photo: '', checklist: ['Brush teeth', 'Make bed'] },
+  //   { name: '소빈', photo: '', checklist: ['Homework', 'Clean room'] },
+  // ];
 
   const handleCheck = (points: number): void => {
     setScore(score + points);
@@ -24,18 +27,35 @@ const DailyChecklist: React.FC = () => {
         <label htmlFor='date_id' className='mr-2'>체크 할 날짜</label>
         <input type='date' id="date_id"/>
       </div>
-      {children.map((child, idx) => (
+      {users_to_check && users_to_check.map((child, idx) => (
         <div key={idx} className="mb-4 border border-gray-300 rounded-lg bg-white p-4">
           <div className="flex items-center">
             <img
-              src={child.photo===''?'/profile_default.svg':child.photo}
+              src={child.user_name===''?'/profile_default.svg':child.photo}
               alt={child.name}
               className="w-12 h-12 rounded-full mr-4"
             />
-            <div className="font-bold text-lg">{child.name}</div>
+            <div className="font-bold text-lg">{child.user_name}</div>
           </div>
           <div className="mt-4">
-            {child.checklist.map((task, i) => (
+            {
+              tasks.map((task, i)=>{
+                  if(child.user_id === task.user_id_to_check && task.used){
+                    return(
+                      <div key={i} className="flex items-center mb-2">
+                        <input
+                          type="checkbox"
+                          id={`checkbox-${idx}-${i}`}
+                          onChange={(e) => handleCheck(e.target.checked ? 5 : -5)}
+                          className="mr-2"
+                        />
+                        <label htmlFor={`checkbox-${idx}-${i}`}>{task.task_name} ({task.task_point}점)</label>
+                      </div>
+                    )
+                  }
+                })
+            }
+            {/* {child.checklist.map((task, i) => (
               <div key={i} className="flex items-center mb-2">
                 <input
                   type="checkbox"
@@ -45,7 +65,7 @@ const DailyChecklist: React.FC = () => {
                 />
                 <label htmlFor={`checkbox-${idx}-${i}`}>{task}</label>
               </div>
-            ))}
+            ))} */}
           </div>
         </div>
       ))}

@@ -1,9 +1,10 @@
 export type CheckLists = {
     users_total_point:[{[k:string]:string}]
-    tasks:[]
+    tasks:[{[k:string]:any}]
     creation_user_id:string
     title:string
-    task_hist:[]
+    task_hist:[{[k:string]:string}]
+    users_to_check:[{[k:string]:string}]
   }
   export type MonthlyViewProp ={
     today:Date
@@ -11,4 +12,9 @@ export type CheckLists = {
     daysInMonth:Date[]
     checkLists:CheckLists
     holidays:Date[]
+  }
+
+  export type DailyChecklistProp ={
+    today:Date
+    checkLists:CheckLists
   }
