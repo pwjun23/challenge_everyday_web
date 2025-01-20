@@ -18,3 +18,8 @@ export type CheckLists = {
     today:Date
     checkLists:CheckLists
   }
+
+  export type ChecklistProp ={
+    user_to_check:{[k:string]:string}
+    tasks: [{[k:string]:any}]
+  }
