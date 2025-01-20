@@ -21,14 +21,16 @@ export const user_on =
 		
     
 export const checkLists_collection = {
-                    "creation_user_id" : ["won","hyun"],
+                    "creation_users_id" : ["won","hyun"],
+                    "user_to_chcheck" : ["on","so"],
                     "title" : "2025 challenge every day",
                     "tasks" : [ 
                         { 
+                            "create_user" : "won",
                             "create_at" : "2025-01-13",
                             "task_name" : "신발정리",
                             "task_point" : 3,
-                            "target_users" : 
+                            "user_to_chcheck" : 
                                 [
                                     {
                                         "user_id" : "on",
@@ -43,10 +45,11 @@ export const checkLists_collection = {
                                 ]
                         },
                         { 
+                            "create_user" : "won",
                             "create_at" : "2025-01-13",
                             "task_name" : "이불정리",
                             "task_point" : 2,
-                            "target_users" : 
+                            "user_to_chcheck" : 
                                 [
                                     {
                                         "user_id" : "on",
@@ -61,10 +64,11 @@ export const checkLists_collection = {
                                 ]
                         },
                         { 
+                            "create_user" : "won",
                             "create_at" : "2025-01-13",
                             "task_name" : "단어필사",
                             "task_point" : 5,
-                            "target_users" : 
+                            "user_to_chcheck" : 
                                 [
                                     {
                                         "user_id" : "on",
@@ -79,10 +83,11 @@ export const checkLists_collection = {
                                 ]
                         },
                         { 
+                            "create_user" : "won",
                             "create_at" : "2025-01-13",
                             "task_name" : "반찬 안남기기",
                             "task_point" : 2,
-                            "target_users" : 
+                            "user_to_chcheck" : 
                                 [
                                     {
                                         "user_id" : "on",
@@ -97,10 +102,11 @@ export const checkLists_collection = {
                                 ]
                         },
                         { 
+                            "create_user" : "won",
                             "create_at" : "2025-01-13",
                             "task_name" : "9시40분까지 잘 준비",
                             "task_point" : 3,
-                            "target_users" : 
+                            "user_to_chcheck" : 
                                 [
                                     {
                                         "user_id" : "on",
@@ -115,10 +121,11 @@ export const checkLists_collection = {
                                 ]
                         },
                         { 
+                            "create_user" : "won",
                             "create_at" : "2025-01-13",
                             "task_name" : "저녁밥 먹고 스쿼트 50개",
                             "task_point" : 3,
-                            "target_users" : 
+                            "user_to_chcheck" : 
                                 [
                                     {
                                         "user_id" : "on",
@@ -133,10 +140,11 @@ export const checkLists_collection = {
                                 ]
                         },
                         { 
+                            "create_user" : "won",
                             "create_at" : "2025-01-13",
                             "task_name" : "저녁밥 먹고 스쿼트 30개",
                             "task_point" : 3,
-                            "target_users" : 
+                            "user_to_chcheck" : 
                                 [
                                     {
                                         "user_id" : "on",
@@ -165,32 +173,149 @@ export const checkLists_collection = {
                                                 "total_point" : 19
                                             }
                                         ],
-                    "task_hist" : {
-                                    "v_0" :
-                                    [ 
-                                        {
-                                        "task_name" : "이불정리",
-                                        "task_point" : 5,
-                                        "target_users" : [
-                                            {
-                                                "user_id" : "on",
-                                                "used" : true
-                                            },
-                                            {
-                                                "user_id" : "so",
-                                                "used" : false
-                                            }
-                                        ]
-                                        }
-                                    ]
-                                }
+                    "task_hist" : [ 
+                        { 
+                            "version" : 0,
+                            "create_at" : "2025-01-13",
+                            "task_name" : "신발정리",
+                            "task_point" : 3,
+                            "user_to_chcheck" : 
+                                [
+                                    {
+                                        "user_id" : "on",
+                                        "used" : true,
+                                        "completed" : true
+                                    },
+                                    {
+                                        "user_id" : "so",
+                                        "used" : true,
+                                        "completed" : true
+                                    }
+                                ]
+                        },
+                        { 
+                            "version" : 0,
+                            "create_at" : "2025-01-13",
+                            "task_name" : "이불정리",
+                            "task_point" : 2,
+                            "user_to_chcheck" : 
+                                [
+                                    {
+                                        "user_id" : "on",
+                                        "used" : true,
+                                        "completed" : false
+                                    },
+                                    {
+                                        "user_id" : "so",
+                                        "used" : true,
+                                        "completed" : false
+                                    }
+                                ]
+                        },
+                        { 
+                            "version" : 0,
+                            "create_at" : "2025-01-13",
+                            "task_name" : "단어필사",
+                            "task_point" : 5,
+                            "user_to_chcheck" : 
+                                [
+                                    {
+                                        "user_id" : "on",
+                                        "used" : true,
+                                        "completed" : false
+                                    },
+                                    {
+                                        "user_id" : "so",
+                                        "used" : true,
+                                        "completed" : false
+                                    }
+                                ]
+                        },
+                        { 
+                            "version" : 0,
+                            "create_at" : "2025-01-13",
+                            "task_name" : "반찬 안남기기",
+                            "task_point" : 2,
+                            "user_to_chcheck" : 
+                                [
+                                    {
+                                        "user_id" : "on",
+                                        "used" : true,
+                                        "completed" : false
+                                    },
+                                    {
+                                        "user_id" : "so",
+                                        "used" : true,
+                                        "completed" : false
+                                    }
+                                ]
+                        },
+                        { 
+                            "version" : 0,
+                            "create_at" : "2025-01-13",
+                            "task_name" : "9시40분까지 잘 준비",
+                            "task_point" : 3,
+                            "user_to_chcheck" : 
+                                [
+                                    {
+                                        "user_id" : "on",
+                                        "used" : true,
+                                        "completed" : false
+                                    },
+                                    {
+                                        "user_id" : "so",
+                                        "used" : true,
+                                        "completed" : false
+                                    }
+                                ]
+                        },
+                        { 
+                            "version" : 0,
+                            "create_at" : "2025-01-13",
+                            "task_name" : "저녁밥 먹고 스쿼트 50개",
+                            "task_point" : 3,
+                            "user_to_chcheck" : 
+                                [
+                                    {
+                                        "user_id" : "on",
+                                        "used" : true,
+                                        "completed" : false
+                                    },
+                                    {
+                                        "user_id" : "so",
+                                        "used" : false,
+                                        "completed" : false
+                                    }
+                                ]
+                        },
+                        { 
+                            "version" : 0,
+                            "create_at" : "2025-01-13",
+                            "task_name" : "저녁밥 먹고 스쿼트 30개",
+                            "task_point" : 3,
+                            "user_to_chcheck" : 
+                                [
+                                    {
+                                        "user_id" : "on",
+                                        "used" : false,
+                                        "completed" : false
+                                    },
+                                    {
+                                        "user_id" : "so",
+                                        "used" : true,
+                                        "completed" : false
+                                    }
+                                ]
+                        }
+                    ]
                     }
 
 export const tasks_250120 =  [ 
     { 
+        "create_at" : "2025-01-13",
         "task_name" : "신발정리",
         "task_point" : 3,
-        "target_users" : 
+        "user_to_chcheck" : 
             [
                 {
                     "user_id" : "on",
@@ -205,9 +330,10 @@ export const tasks_250120 =  [
             ]
     },
     { 
+        "create_at" : "2025-01-13",
         "task_name" : "이불정리",
         "task_point" : 2,
-        "target_users" : 
+        "user_to_chcheck" : 
             [
                 {
                     "user_id" : "on",
@@ -222,9 +348,10 @@ export const tasks_250120 =  [
             ]
     },
     { 
+        "create_at" : "2025-01-13",
         "task_name" : "단어필사",
         "task_point" : 5,
-        "target_users" : 
+        "user_to_chcheck" : 
             [
                 {
                     "user_id" : "on",
@@ -239,9 +366,10 @@ export const tasks_250120 =  [
             ]
     },
     { 
+        "create_at" : "2025-01-13",
         "task_name" : "반찬 안남기기",
         "task_point" : 2,
-        "target_users" : 
+        "user_to_chcheck" : 
             [
                 {
                     "user_id" : "on",
@@ -256,9 +384,10 @@ export const tasks_250120 =  [
             ]
     },
     { 
+        "create_at" : "2025-01-13",
         "task_name" : "9시40분까지 잘 준비",
         "task_point" : 3,
-        "target_users" : 
+        "user_to_chcheck" : 
             [
                 {
                     "user_id" : "on",
@@ -273,9 +402,10 @@ export const tasks_250120 =  [
             ]
     },
     { 
+        "create_at" : "2025-01-13",
         "task_name" : "저녁밥 먹고 스쿼트 50개",
         "task_point" : 3,
-        "target_users" : 
+        "user_to_chcheck" : 
             [
                 {
                     "user_id" : "on",
@@ -290,9 +420,10 @@ export const tasks_250120 =  [
             ]
     },
     { 
+        "create_at" : "2025-01-13",
         "task_name" : "저녁밥 먹고 스쿼트 30개",
         "task_point" : 3,
-        "target_users" : 
+        "user_to_chcheck" : 
             [
                 {
                     "user_id" : "on",
