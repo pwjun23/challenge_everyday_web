@@ -1,7 +1,8 @@
 export type CheckLists = {
-    create_at:{[k:string]: {[k:string] :[]}}
+    users_total_point:[{[k:string]:string}]
+    tasks:[]
     creation_user_id:string
-    name:string
+    title:string
     task_hist:[]
   }
   export type MonthlyViewProp ={

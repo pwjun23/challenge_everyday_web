@@ -16,7 +16,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
-import {checkLists_collection, user_won} from "./db";
+import {checkLists_collection, user_won, tasks_250120} from "./db";
 import { CheckLists } from './common_type';
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -103,6 +103,25 @@ const addUserData = async() =>{
   }
 }
 
+
+const updateTasks = async() =>{
+  const tasks = tasks_250120;
+  // const checkLists = checkLists_collection.create_at;
+  try {
+    // const docRef = await addDoc(collection(db, "users"), users);
+    // console.log("docRef : ", {docRef});
+    const docRef = await addDoc(collection(db, "CheckLists"), checkLists);
+    console.log("docRef : ", {docRef});
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
+/*
+
+
+
+*/
+
   useEffect(() => {
   
     fetchData();
@@ -122,7 +141,7 @@ const addUserData = async() =>{
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w-md mx-auto">
         <Tab.Group>
-          <h2 className= {`uppercase font-extrabold text-center m-2`}>{checkLists && checkLists.name ?checkLists.name:'제목을 넣어주세요.'}</h2>
+          <h2 className= {`uppercase font-extrabold text-center m-2`}>{checkLists && checkLists.title ?checkLists.title:'제목을 넣어주세요.'}</h2>
           <Tab.Panels>
             {activeTab === 'monthly' 
             && checkLists && <MonthlyView

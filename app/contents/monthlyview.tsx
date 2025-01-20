@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 
 const MonthlyView = (props :MonthlyViewProp) => {
   const {today, startDayOfWeek, daysInMonth, checkLists, holidays} = props;
-  const {create_at, creation_user_id, name, task_hist} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
+  const {tasks, users_total_point, creation_user_id, title, task_hist} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
   const totalScore = 120; // Example total score
 
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -57,7 +57,17 @@ const MonthlyView = (props :MonthlyViewProp) => {
             >
               {format(day, 'd')}
             </div>
-            {Object.keys(create_at).map((d:string,i)=>{
+            {users_total_point.map((point, index)=>{
+             const create_at:string = point['create_at'];
+             if(create_at.split('-')[2] === format(day, 'd')){
+               const users_total_point = point['users_total_point'];
+             return(
+             <div className="text-xs mt-0" key={index} onClick={()=>onClickHandle(create_at)}>
+                 <div key={idx}>{point.user_name} {point.total_point}</div>
+           </div>) 
+            }})
+            }
+            {/* {Object.keys(create_at).map((d:string,i)=>{
               if(d.split('-')[2] === format(day, 'd')){
                 const users_total_point = create_at[d]['users_total_point'];
               return(
@@ -68,7 +78,7 @@ const MonthlyView = (props :MonthlyViewProp) => {
                 }
             </div>)
               }
-            })}
+            })} */}
           </div>
         ))}
       </div>
