@@ -1,5 +1,5 @@
 export type CheckLists = {
-    users_total_point:[{[k:string]:string}]
+    users_total_point:{[k:string]:any}
     tasks:[{[k:string]:any}]
     creation_user_id:string
     title:string
@@ -12,14 +12,19 @@ export type CheckLists = {
     daysInMonth:Date[]
     checkLists:CheckLists
     holidays:Date[]
+    today_str:string
   }
 
   export type DailyChecklistProp ={
-    today:Date
+    today_str:string
     checkLists:CheckLists
+    key:any
+    updateItem:any
   }
 
   export type ChecklistProp ={
     user_to_check:{[k:string]:string}
-    tasks: [{[k:string]:any}]
+    tasks: {[k:string]:any}
+    today_str:string
+    updateItem:any
   }

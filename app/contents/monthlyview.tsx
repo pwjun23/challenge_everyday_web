@@ -4,8 +4,8 @@ import { format } from 'date-fns';
 import { MonthlyViewProp } from '../common_type';
 import { useRouter } from 'next/router';
 
-const MonthlyView = (props :MonthlyViewProp) => {
-  const {today, startDayOfWeek, daysInMonth, checkLists, holidays} = props;
+const MonthlyView = (props : MonthlyViewProp) => {
+  const {today, startDayOfWeek, daysInMonth, checkLists, holidays, today_str} = props;
   const {tasks, users_total_point, creation_user_id, title, task_hist} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
   const totalScore = 120; // Example total score
 
@@ -57,28 +57,15 @@ const MonthlyView = (props :MonthlyViewProp) => {
             >
               {format(day, 'd')}
             </div>
-            {users_total_point.map((point, index)=>{
+            {users_total_point && users_total_point[today_str].map((point:any, index:any)=>{
              const create_at:string = point['create_at'];
              if(create_at.split('-')[2] === format(day, 'd')){
-               const users_total_point = point['users_total_point'];
              return(
              <div className="text-xs mt-0" key={index} onClick={()=>onClickHandle(create_at)}>
                  <div key={idx}>{point.user_name} {point.total_point}</div>
            </div>) 
             }})
             }
-            {/* {Object.keys(create_at).map((d:string,i)=>{
-              if(d.split('-')[2] === format(day, 'd')){
-                const users_total_point = create_at[d]['users_total_point'];
-              return(
-              <div className="text-xs mt-0" key={i} onClick={()=>onClickHandle(create_at)}>
-                {users_total_point.map((pointByUser:{[k:string] : any}, idx)=>(
-                  <div key={idx}>{pointByUser.user_name} {pointByUser.total_point}</div>
-                ))
-                }
-            </div>)
-              }
-            })} */}
           </div>
         ))}
       </div>

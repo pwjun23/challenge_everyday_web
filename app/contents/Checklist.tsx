@@ -4,13 +4,35 @@ import React, { useEffect, useState } from 'react';
 import { ChecklistProp, DailyChecklistProp } from '../common_type';
 
 const Checklist = (props : ChecklistProp) => {
-  const {user_to_check, tasks} = props;
+  const {user_to_check, tasks, today_str, updateItem} = props;
   const [score, setScore] = useState<number>(0);
+  const [checklist, setCheckLists] = useState<{[k:string]:any}[]>([{}]);
 
-  const handleCheck = (points: number): void => {
+  const handleCheck = (task:any, points: number): void => {
     setScore(score + points);
+
+    const updatedChecklist:{[k:string]:any}[] = checklist.map((item) =>
+      item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, completed: !item.completed } : item
+    );
+
+    // 상태 업데이트
+    setCheckLists(updatedChecklist);
+
+    // 변경된 체크리스트 데이터 추출
+    const selectedItems = updatedChecklist
+      .filter((item) => item.completed)
+      .filter((item) => item.user_id_to_check === task.user_id_to_check)
+      .map((item) => item.task_name);
+
+    // 저장할 데이터 출력 (여기서 저장 로직을 추가)
+    updateItem("C00000000", today_str, selectedItems);
+    console.log("현재 변경된 항목:", selectedItems);
   };
-  
+  useEffect(()=>{
+    if(tasks && tasks[today_str]){
+      setCheckLists(tasks[today_str]);
+    }
+  }, [tasks])
   return (
         <div className="mb-4 border border-gray-300 rounded-lg bg-white p-4">
           <div className="flex items-center">
@@ -23,15 +45,16 @@ const Checklist = (props : ChecklistProp) => {
           </div>
           <div className="mt-4">
             {
-              tasks.map((task, i)=>{
+              checklist && checklist.map((task, i)=>{
                   if(user_to_check.user_id === task.user_id_to_check && task.used){
                     return(
                       <div key={i} className="flex items-center mb-2">
                         <input
                           type="checkbox"
                           id={`checkbox--${i}`}
-                          onChange={(e) => handleCheck(e.target.checked ? task.task_point : -task.task_point)}
+                          onChange={(e) => handleCheck(task, e.target.checked ? task.task_point : -task.task_point)}
                           className="mr-2"
+                          checked={task.completed}
                         />
                         <label htmlFor={`checkbox--${i}`}>{task.task_name} ({task.task_point}점)</label>
                       </div>

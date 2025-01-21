@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs, setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 
 import { Tab } from '@headlessui/react';
 import MonthlyView from './contents/monthlyview';
@@ -16,7 +16,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
-import {checkLists_collection, user_won, tasks_250120} from "./db";
+import {checkLists_collection, user_won} from "./db";
 import { CheckLists } from './common_type';
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -46,6 +46,11 @@ interface HolidayItem {
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'monthly' | 'daily' | 'checkadm'>('daily');
   const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const today_str = '2025-01-13';//`${year}-${month}-${day}`;//DO TO : 임시로 날짜 고정
+  
   const monthStart = startOfMonth(today);
   const monthEnd = endOfMonth(today);
   const [checkLists, setCheckLists] = useState<any>();
@@ -76,7 +81,8 @@ const Home: React.FC = () => {
       console.error('공휴일 데이터를 불러오는 데 실패했습니다.', error);
     }
   };
-// 수정된 코드
+
+
 async function fetchData() {
   const users = await getDocs(collection(db, "Users"));
   let checkLists = await getDocs(collection(db, "CheckLists"));
@@ -87,8 +93,46 @@ async function fetchData() {
     console.log('page > fetchData : '+doc.id + ' | ' , doc.data());
     setCheckLists(doc.data());
   });
-  // console.log(result);
+
 }
+
+async function fetchDocumentById(collectionName:string, documentId:string) {
+  try {
+    // 특정 컬렉션과 문서 ID를 참조
+    const docRef = doc(db, collectionName, documentId);
+
+    // 문서 가져오기
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      // 문서 데이터 가져오기
+      console.log("문서 데이터:", docSnap.data());
+      return docSnap.data(); // 문서 데이터 반환
+    } else {
+      console.log("해당 문서를 찾을 수 없습니다.");
+      return null;
+    }
+  } catch (error) {
+    console.error("문서 가져오기 중 오류 발생:", error);
+    throw error;
+  }
+}
+
+const handleFetch = () => {
+  const collectionName = "Checklists"; // 컬렉션 이름
+  const documentId = "C00000000"; // 문서 ID
+
+  fetchDocumentById(collectionName, documentId)
+    .then((data) => {
+      if (data) {
+        console.log("가져온 데이터:", data);
+        setCheckLists(data);
+      }
+    })
+    .catch((error) => {
+      console.error("오류 발생:", error);
+    });
+};
 
 const addUserData = async() =>{
   const users = user_won;
@@ -103,29 +147,48 @@ const addUserData = async() =>{
   }
 }
 
+// 날짜를 YYYY-MM-DD 형식으로 변환하는 함수
+const getFormattedDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
-const updateTasks = async() =>{
-  const tasks = tasks_250120;
-  // const checkLists = checkLists_collection.create_at;
+async function updateItem(documentId:string, day_str:string, updatedData:any) {
   try {
-    // const docRef = await addDoc(collection(db, "users"), users);
-    // console.log("docRef : ", {docRef});
-    const docRef = await addDoc(collection(db, "CheckLists"), checkLists);
-    console.log("docRef : ", {docRef});
-  } catch (e) {
-    console.error("Error adding document: ", e);
+    const itemRef = doc(db, "Checklists", documentId, "tasks", day_str);
+
+    // Firestore에서 해당 아이템 업데이트
+    await updateDoc(itemRef, updatedData);
+
+    console.log("특정 객체가 성공적으로 업데이트되었습니다.");
+  } catch (error) {
+    console.error("업데이트 중 오류 발생:", error);
   }
 }
-/*
 
+async function addDocumentWithId() {
+  // const documentId = getFormattedDate(); // 문서 ID를 날짜로 설정
+  const documentId = "C00000000";
+  const users = user_won;
+  const checkLists = checkLists_collection;
 
-
-*/
+  try {
+    // Firestore에 문서를 추가
+    await setDoc(doc(db, "CheckLists", documentId), checkLists);
+    console.log("문서가 성공적으로 추가되었습니다!");
+  } catch (error) {
+    console.error("문서 추가 중 오류 발생:", error);
+  }
+}
 
   useEffect(() => {
   
     fetchData();
     // addUserData();
+    // addDocumentWithId();
     fetchHolidays(); // 컴포넌트가 마운트되었을 때 공휴일 데이터를 가져옵니다.
   }, []); // 의존성 배열이 비어 있으므로 컴포넌트 마운트 시에만 실행됩니다.
 
@@ -149,10 +212,13 @@ const updateTasks = async() =>{
             daysInMonth={daysInMonth}
             checkLists={checkLists}
             holidays={holidays}
+            today_str={today_str}
              />}
             {activeTab === 'daily' && checkLists && <DailyChecklist
-              today={today}
+              today_str={today_str}
               checkLists={checkLists}
+              key={'daily'}
+              updateItem={updateItem}
             />}
             {activeTab === 'checkadm' && <CheckAdm/>}
           </Tab.Panels>
