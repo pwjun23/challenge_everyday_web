@@ -85,7 +85,7 @@ const Home: React.FC = () => {
 
 async function fetchData() {
   const users = await getDocs(collection(db, "Users"));
-  let checkLists = await getDocs(collection(db, "CheckLists"));
+  const checkLists = await getDocs(collection(db, "CheckLists"));
   // users.forEach((doc) => {
   //   console.log(doc.id + ' | ' , doc.data());
   // });
@@ -156,12 +156,19 @@ const getFormattedDate = () => {
   return `${year}-${month}-${day}`;
 };
 
-async function updateItem(documentId:string, day_str:string, updatedData:any) {
+async function updateItem(documentId:string, root:string, updatedData:any) {
   try {
-    const itemRef = doc(db, "Checklists", documentId, "tasks", day_str);
+    const docRef = doc(db, "CheckLists", documentId);
+    const docSnap = await getDoc(docRef);
 
-    // Firestore에서 해당 아이템 업데이트
-    await updateDoc(itemRef, updatedData);
+    if (docSnap.exists()) {
+      console.log("문서 데이터:", docSnap.data());
+    } else {
+      console.log("해당 문서는 존재하지 않습니다.");
+    }
+  
+// Firestore에서 해당 아이템 업데이트
+    await updateDoc(docRef, {[root] : updatedData});
 
     console.log("특정 객체가 성공적으로 업데이트되었습니다.");
   } catch (error) {

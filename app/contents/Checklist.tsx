@@ -4,12 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { ChecklistProp, DailyChecklistProp } from '../common_type';
 
 const Checklist = (props : ChecklistProp) => {
-  const {user_to_check, tasks, today_str, updateItem} = props;
+  const {user_to_check, tasks, today_str, updateItem, user_id_to_check} = props;
   const [score, setScore] = useState<number>(0);
-  const [checklist, setCheckLists] = useState<{[k:string]:any}[]>([{}]);
+  const [checklist, setCheckLists] = useState<{[k:string]:any}[] >([{}]);
 
-  const handleCheck = (task:any, points: number): void => {
-    setScore(score + points);
+  const handleCheck = (task:any): void => {
 
     const updatedChecklist:{[k:string]:any}[] = checklist.map((item) =>
       item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, completed: !item.completed } : item
@@ -17,7 +16,7 @@ const Checklist = (props : ChecklistProp) => {
 
     // 상태 업데이트
     setCheckLists(updatedChecklist);
-
+    countPoints(updatedChecklist);
     // 변경된 체크리스트 데이터 추출
     const selectedItems = updatedChecklist
       .filter((item) => item.completed)
@@ -25,12 +24,27 @@ const Checklist = (props : ChecklistProp) => {
       .map((item) => item.task_name);
 
     // 저장할 데이터 출력 (여기서 저장 로직을 추가)
-    updateItem("C00000000", today_str, selectedItems);
-    console.log("현재 변경된 항목:", selectedItems);
+    const root = `tasks.${today_str}.${user_id_to_check}`;
+    console.log({root});
+    updateItem("C00000000", root, updatedChecklist);
+    // console.log("현재 변경된 항목:", selectedItems);
   };
+
+  const countPoints = (updatedChecklist:{[k:string]:any}) =>{
+    let totalPoint = 0;
+    updatedChecklist.forEach((element: { completed: any; task_point: number; user_id_to_check:string }) => {
+      if(element.completed){
+        totalPoint = totalPoint + element.task_point;
+        // console.log({totalPoint})
+      }
+      setScore(totalPoint);
+    });
+  }
   useEffect(()=>{
-    if(tasks && tasks[today_str]){
-      setCheckLists(tasks[today_str]);
+    if(tasks){
+      // const task = tasks[today_str][user_id_to_check];
+      setCheckLists(tasks);
+      countPoints(tasks);
     }
   }, [tasks])
   return (
@@ -46,17 +60,17 @@ const Checklist = (props : ChecklistProp) => {
           <div className="mt-4">
             {
               checklist && checklist.map((task, i)=>{
-                  if(user_to_check.user_id === task.user_id_to_check && task.used){
+                  if(task.used){
                     return(
                       <div key={i} className="flex items-center mb-2">
                         <input
                           type="checkbox"
-                          id={`checkbox--${i}`}
-                          onChange={(e) => handleCheck(task, e.target.checked ? task.task_point : -task.task_point)}
+                          id={`checkbox-${task.user_id_to_check}-${i}`}
+                          onChange={(e) => handleCheck(task)}
                           className="mr-2"
                           checked={task.completed}
                         />
-                        <label htmlFor={`checkbox--${i}`}>{task.task_name} ({task.task_point}점)</label>
+                        <label htmlFor={`checkbox-${task.user_id_to_check}-${i}`}>{task.task_name} ({task.task_point}점)</label>
                       </div>
                     )
                   }

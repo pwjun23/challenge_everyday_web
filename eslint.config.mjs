@@ -18,6 +18,7 @@ const eslintConfig = [
       '@next/next/no-page-custom-font': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       'react-hooks/rules-of-hooks': 'off',
+      "@typescript-eslint/no-explicit-any": "off",
     },
   }),
 ];

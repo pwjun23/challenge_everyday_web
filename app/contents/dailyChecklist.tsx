@@ -23,10 +23,11 @@ const DailyChecklist = (props : DailyChecklistProp) => {
       {users_to_check && users_to_check.map((child, idx) => (
         <Checklist
           user_to_check ={child}
-          tasks = {tasks}
+          tasks = {tasks[today_str][child.user_id]}
           key = {idx}
           today_str = {today_str}
           updateItem = {updateItem}
+          user_id_to_check ={child.user_id}
         />
       ))}
       {/* <div className="fixed bottom-4 left-0 right-0 p-4 bg-blue-500 text-white text-center text-lg font-bold">
