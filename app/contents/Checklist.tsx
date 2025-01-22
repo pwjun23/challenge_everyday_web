@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { ChecklistProp, DailyChecklistProp } from '../common_type';
 
 const Checklist = (props : ChecklistProp) => {
-  const {user_to_check, tasks, today_str, updateItem, user_id_to_check} = props;
+  const {user_to_check, tasks, selectedDate, updateItem, user_id_to_check} = props;
   const [score, setScore] = useState<number>(0);
   const [checklist, setCheckLists] = useState<{[k:string]:any}[] >([{}]);
 
@@ -17,15 +17,9 @@ const Checklist = (props : ChecklistProp) => {
     // 상태 업데이트
     setCheckLists(updatedChecklist);
     countPoints(updatedChecklist);
-    // 변경된 체크리스트 데이터 추출
-    const selectedItems = updatedChecklist
-      .filter((item) => item.completed)
-      .filter((item) => item.user_id_to_check === task.user_id_to_check)
-      .map((item) => item.task_name);
 
     // 저장할 데이터 출력 (여기서 저장 로직을 추가)
-    const root = `tasks.${today_str}.${user_id_to_check}`;
-    console.log({root});
+    const root = `tasks.${selectedDate}.${user_id_to_check}`;
     updateItem("C00000000", root, updatedChecklist);
     // console.log("현재 변경된 항목:", selectedItems);
   };
@@ -36,12 +30,11 @@ const Checklist = (props : ChecklistProp) => {
       if(element.completed){
         totalPoint = totalPoint + element.task_point;
       }
-      setScore(totalPoint);
     });
+    setScore(totalPoint);
   }
   useEffect(()=>{
     if(tasks){
-      // const task = tasks[today_str][user_id_to_check];
       setCheckLists(tasks);
       countPoints(tasks);
     }

@@ -44,7 +44,7 @@ interface HolidayItem {
 }
 
 const Home: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'monthly' | 'daily' | 'checkadm'>('monthly');
+  const [activeTab, setActiveTab] = useState<'monthly' | 'daily' | 'checkadm'>('daily');
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -193,9 +193,8 @@ async function addDocumentWithId() {
 }
 
   useEffect(() => {
-  
-    fetchData();
     // addDocumentWithId();
+    fetchData();
     fetchHolidays(); // 컴포넌트가 마운트되었을 때 공휴일 데이터를 가져옵니다.
   }, []); // 의존성 배열이 비어 있으므로 컴포넌트 마운트 시에만 실행됩니다.
 
