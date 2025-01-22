@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 
 const MonthlyView = (props : MonthlyViewProp) => {
   const {today, startDayOfWeek, daysInMonth, checkLists, holidays, today_str} = props;
-  const {tasks, users_total_point, creation_user_id, title, task_hist} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
+  const {tasks, users_to_check, users_total_point, creation_user_id, title, task_hist} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
   const totalScore = 120; // Example total score
 
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -57,7 +57,34 @@ const MonthlyView = (props : MonthlyViewProp) => {
             >
               {format(day, 'd')}
             </div>
-            {users_total_point && users_total_point[today_str].map((point:any, index:any)=>{
+            {tasks && Object.keys(tasks).map((date, index)=>{
+              if(date.split('-')[2] === format(day, 'd')){
+                  const tasks_by_user_id:{[k:string]:any} = tasks[today_str];
+                  return(
+                  <div className="text-xs mt-0" key={index} onClick={()=>onClickHandle(date)}>
+                    {tasks_by_user_id && Object.keys(tasks_by_user_id).map((user_id, i)=>{
+                      let total_point = 0;
+                      const idx = users_to_check.findIndex((user)=> user.user_id === user_id);
+                      const user_name = users_to_check[idx].user_name;
+                      const tasks:[{[k:string]:any}] = tasks_by_user_id[user_id];
+                      tasks.forEach((task)=>{
+                        if(task.used && task.completed){
+                          total_point += task.task_point;
+                        }
+                      });
+                      return(
+                      <div key={i}>{user_name} {total_point}</div>
+                      )
+                    })}
+                      {/* {const user_names = tasks[today_str];
+                      user_names && user_names.map((name, i)=>{
+      
+                        <div key={idx}>{point.user_name} {point.total_point}</div>
+                      })} */}
+                  </div>)
+                }
+            })}
+            {/* {users_total_point && users_total_point[today_str].map((point:any, index:any)=>{
              const create_at:string = point['create_at'];
              if(create_at.split('-')[2] === format(day, 'd')){
              return(
@@ -65,7 +92,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
                  <div key={idx}>{point.user_name} {point.total_point}</div>
            </div>) 
             }})
-            }
+            } */}
           </div>
         ))}
       </div>
