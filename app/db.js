@@ -20,7 +20,7 @@ export const user_on =
 		
 		
     
-export const checkLists_collection = {
+export const checklists_collection = { // 문서코드 C+숫자8자리( C는 Checklist의 약자)
                     "creation_users_id" : ["won","hyun"],
                     "users_to_check" : [
                         { "user_id" : 'on',"user_name" : '온겸', "photo":'/profile_default.svg'},
@@ -179,13 +179,11 @@ export const checkLists_collection = {
                 },
                 "users_total_point"	: { "2025-01-13" : [
                                             {
-                                                "create_at" : "2025-01-13",
                                                 "user_id" : "on",
                                                 "user_name" : "온겸",
                                                 "total_point" : 20
                                             },
                                             {
-                                                "create_at" : "2025-01-13",
                                                 "user_id" : "so",
                                                 "user_name" : "소빈",
                                                 "total_point" : 19

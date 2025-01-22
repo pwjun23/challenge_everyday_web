@@ -16,7 +16,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
-import {checkLists_collection, user_won} from "./db";
+import {checklists_collection, user_won} from "./db";
 import { CheckLists } from './common_type';
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -85,11 +85,11 @@ const Home: React.FC = () => {
 
 async function fetchData() {
   const users = await getDocs(collection(db, "Users"));
-  const checkLists = await getDocs(collection(db, "CheckLists"));
+  const checklists = await getDocs(collection(db, "Checklists"));
   // users.forEach((doc) => {
   //   console.log(doc.id + ' | ' , doc.data());
   // });
-  checkLists.forEach((doc) => {
+  checklists.forEach((doc) => {
     console.log('page > fetchData : '+doc.id + ' | ' , doc.data());
     setCheckLists(doc.data());
   });
@@ -134,19 +134,6 @@ const handleFetch = () => {
     });
 };
 
-const addUserData = async() =>{
-  const users = user_won;
-  const checkLists = checkLists_collection;
-  try {
-    // const docRef = await addDoc(collection(db, "users"), users);
-    // console.log("docRef : ", {docRef});
-    const docRef = await addDoc(collection(db, "CheckLists"), checkLists);
-    console.log("docRef : ", {docRef});
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
-}
-
 // 날짜를 YYYY-MM-DD 형식으로 변환하는 함수
 const getFormattedDate = () => {
   const now = new Date();
@@ -158,7 +145,7 @@ const getFormattedDate = () => {
 
 async function updateItem(documentId:string, root:string, updatedData:any) {
   try {
-    const docRef = doc(db, "CheckLists", documentId);
+    const docRef = doc(db, "Checklists", documentId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -180,11 +167,11 @@ async function addDocumentWithId() {
   // const documentId = getFormattedDate(); // 문서 ID를 날짜로 설정
   const documentId = "C00000000";
   const users = user_won;
-  const checkLists = checkLists_collection;
+  const checklists = checklists_collection;
 
   try {
     // Firestore에 문서를 추가
-    await setDoc(doc(db, "CheckLists", documentId), checkLists);
+    await setDoc(doc(db, "Checklists", documentId), checklists);
     console.log("문서가 성공적으로 추가되었습니다!");
   } catch (error) {
     console.error("문서 추가 중 오류 발생:", error);
@@ -194,7 +181,6 @@ async function addDocumentWithId() {
   useEffect(() => {
   
     fetchData();
-    // addUserData();
     // addDocumentWithId();
     fetchHolidays(); // 컴포넌트가 마운트되었을 때 공휴일 데이터를 가져옵니다.
   }, []); // 의존성 배열이 비어 있으므로 컴포넌트 마운트 시에만 실행됩니다.
@@ -227,7 +213,7 @@ async function addDocumentWithId() {
               key={'daily'}
               updateItem={updateItem}
             />}
-            {activeTab === 'checkadm' && <CheckAdm/>}
+            {/* {activeTab === 'checkadm' && <CheckAdm/>} */}
           </Tab.Panels>
           <Tab.List className="fixed w-full left-0 bottom-0 rounded-lg bg-blue-500 p-1">
             <Tab
@@ -250,7 +236,7 @@ async function addDocumentWithId() {
             >
               미션 체크
             </Tab>
-            <Tab
+            {/* <Tab
               className={({ selected }: { selected: boolean }) =>
                 `w-1/3 py-2.5 text-sm font-medium leading-5 rounded-lg ${
                   selected ? 'bg-white text-blue-500' : 'text-white'
@@ -259,7 +245,7 @@ async function addDocumentWithId() {
               onClick={() => setActiveTab('checkadm')}
             >
               미션리스트 관리
-            </Tab>
+            </Tab> */}
           </Tab.List>
         </Tab.Group>
       </div>
