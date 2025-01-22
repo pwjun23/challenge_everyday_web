@@ -91,8 +91,22 @@ async function fetchData() {
   // });
   checklists.forEach((doc) => {
     console.log('page > fetchData : '+doc.id + ' | ' , doc.data());
-    setCheckLists(doc.data());
-  });
+    let _checklists:any= doc.data()
+    let tasks:any= _checklists.tasks;
+    let totalPoint = 0;
+    Object.keys(tasks).map((d)=>{
+      Object.keys(tasks[d]).map((n)=>{
+        tasks[d][n].forEach((check:any)=>{
+            if(check.used && check.completed){
+              totalPoint += check.task_point;
+            }
+        });
+      })
+    });
+    _checklists["total_point"] = totalPoint;
+    console.log({totalPoint})
+    setCheckLists(_checklists);
+    });
 
 }
 
@@ -154,7 +168,7 @@ async function updateItem(documentId:string, root:string, updatedData:any) {
       console.log("해당 문서는 존재하지 않습니다.");
     }
   
-// Firestore에서 해당 아이템 업데이트
+    // Firestore에서 해당 아이템 업데이트
     await updateDoc(docRef, {[root] : updatedData});
 
     console.log("특정 객체가 성공적으로 업데이트되었습니다.");
@@ -193,6 +207,10 @@ async function addDocumentWithId() {
     daysInMonth.push(day);
   }
 
+  const onClickTab = (tabName:'monthly'|'daily')=>{
+    fetchData();
+    setActiveTab(tabName);
+  }
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w-md mx-auto">
@@ -222,7 +240,7 @@ async function addDocumentWithId() {
                   selected ? 'bg-white text-blue-500' : 'text-white'
                 }`
               }
-              onClick={() => setActiveTab('monthly')}
+              onClick={() => onClickTab('monthly')}
             >
               월별
             </Tab>
@@ -232,7 +250,7 @@ async function addDocumentWithId() {
                   selected ? 'bg-white text-blue-500' : 'text-white'
                 }`
               }
-              onClick={() => setActiveTab('daily')}
+              onClick={() => onClickTab('daily')}
             >
               미션 체크
             </Tab>

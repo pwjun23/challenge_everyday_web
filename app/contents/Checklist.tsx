@@ -35,7 +35,6 @@ const Checklist = (props : ChecklistProp) => {
     updatedChecklist.forEach((element: { completed: any; task_point: number; user_id_to_check:string }) => {
       if(element.completed){
         totalPoint = totalPoint + element.task_point;
-        // console.log({totalPoint})
       }
       setScore(totalPoint);
     });

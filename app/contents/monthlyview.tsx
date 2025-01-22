@@ -3,11 +3,11 @@
 import { format } from 'date-fns';
 import { MonthlyViewProp } from '../common_type';
 import { useRouter } from 'next/router';
+import { useRef } from 'react';
 
 const MonthlyView = (props : MonthlyViewProp) => {
   const {today, startDayOfWeek, daysInMonth, checkLists, holidays, today_str} = props;
-  const {tasks, users_to_check, users_total_point, creation_user_id, title, task_hist} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
-  const totalScore = 120; // Example total score
+  const {tasks, total_point, users_to_check, users_total_point, creation_user_id, title, task_hist} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
 
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
   // 공휴일인지 체크하는 함수
@@ -30,7 +30,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
       <div className="text-center text-xl font-extrabold text-blue-600">
         {format(today, 'M')} 월
       </div>
-      <div className="text-center text-lg font-bold mt-2 mb-2">총점: {totalScore}</div>
+      <div className="text-center text-lg font-bold mt-2 mb-2">총점: {total_point}</div>
 
       {/* 요일을 표시하는 부분 */}
       <div className="grid grid-cols-7 gap-0 mt-0 text-center">
@@ -76,23 +76,9 @@ const MonthlyView = (props : MonthlyViewProp) => {
                       <div key={i}>{user_name} {total_point}</div>
                       )
                     })}
-                      {/* {const user_names = tasks[today_str];
-                      user_names && user_names.map((name, i)=>{
-      
-                        <div key={idx}>{point.user_name} {point.total_point}</div>
-                      })} */}
                   </div>)
                 }
             })}
-            {/* {users_total_point && users_total_point[today_str].map((point:any, index:any)=>{
-             const create_at:string = point['create_at'];
-             if(create_at.split('-')[2] === format(day, 'd')){
-             return(
-             <div className="text-xs mt-0" key={index} onClick={()=>onClickHandle(create_at)}>
-                 <div key={idx}>{point.user_name} {point.total_point}</div>
-           </div>) 
-            }})
-            } */}
           </div>
         ))}
       </div>
