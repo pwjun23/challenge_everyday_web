@@ -1,29 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChecklistProp } from '../common_type';
 
 const Checklist = (props : ChecklistProp) => {
   const {user_to_check, tasks, selectedDate, updateItem, user_id_to_check} = props;
   const [score, setScore] = useState<number>(0);
   const [checklist, setCheckLists] = useState<{[k:string]:any}[] >([{}]);
-
-  const handleCheck = (task:any): void => {
-
-    const updatedChecklist:{[k:string]:any}[] = checklist.map((item) =>
-      item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, completed: !item.completed } : item
-    );
-
-    // 상태 업데이트
-    setCheckLists(updatedChecklist);
-    countPoints(updatedChecklist);
-
-    // 저장할 데이터 출력 (여기서 저장 로직을 추가)
-    const root = `tasks.${selectedDate}.${user_id_to_check}`;
-    updateItem("C00000000", root, updatedChecklist);
-    // console.log("현재 변경된 항목:", selectedItems);
-  };
-
+  const checkbox_all = useRef<any>(null);
   const countPoints = (updatedChecklist:{[k:string]:any}) =>{
     let totalPoint = 0;
     updatedChecklist.forEach((element: { completed: any; task_point: number; user_id_to_check:string }) => {
@@ -32,6 +16,47 @@ const Checklist = (props : ChecklistProp) => {
       }
     });
     setScore(totalPoint);
+  }
+
+  const isCheckAll = (tasks:any)=>{
+    let isAllComplete = true;
+    tasks.forEach((task:any)=>{
+      if(task.completed === false){
+        isAllComplete = false;
+        return false;
+      }
+    });
+    if(checkbox_all && checkbox_all.current){
+      const ch = checkbox_all.current;
+      if(isAllComplete){
+        ch.checked = true;
+      }else{
+        ch.checked = false;
+      }
+    }
+  }
+
+  const handleCheck = (task:any): void => {
+    const updatedChecklist:{[k:string]:any}[] = checklist.map((item) =>
+      item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, completed: !item.completed } : item
+    );
+    updateChecklist(updatedChecklist);
+    isCheckAll(updatedChecklist);
+  };
+
+  const handleAllCheck = (e:any): void => {
+    const value = e.target.checked;
+    const updatedChecklist:{[k:string]:any}[] = checklist.map((item) => {return{...item, completed  : value}});
+    updateChecklist(updatedChecklist)
+  };
+
+  const updateChecklist =(updatedChecklist:any)=>{
+    // 상태 업데이트
+    setCheckLists(updatedChecklist);
+    countPoints(updatedChecklist);
+
+    const root = `tasks.${selectedDate}.${user_id_to_check}`;
+    updateItem("C00000000", root, updatedChecklist);
   }
   useEffect(()=>{
     if(tasks){
@@ -56,7 +81,8 @@ const Checklist = (props : ChecklistProp) => {
                     className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 mr-2">모두 체크</label>
               <input id={`all-checkbox-${selectedDate}-${user_id_to_check}`}
                      type="checkbox"
-                     value="" 
+                     onChange={(e) => handleAllCheck(e)}
+                     ref={checkbox_all}
                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
           </div>
           <div className="mt-4">
