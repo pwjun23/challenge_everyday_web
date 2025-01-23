@@ -264,9 +264,22 @@ async function addDocumentWithId() {
   return (
     <div className="min-h-screen bg-gray-100">
       {showInstallButton && (
-        <button id="installButton" onClick={handleInstallClick}>
-          앱 설치
-        </button>
+        <div className={`absolute z-[999] text-center bg-white p-4 shadow-lx rounded-b-xl w-full`}>
+          <div className=''>
+            <button className={`rounded-full text-white px-4 py-2 bg-green-600`}id="installButton" onClick={handleInstallClick}>
+             Install App
+            </button>
+            <p className='text-stone-600 mt-4 text-sm'>원활한 사용을 위해서 앱을 설치하시겠습니까?</p>
+          </div>
+          <button type="button"
+                  onClick={()=>setShowInstallButton(false)}
+                  className="absolute right-5 top-5 text-stone-700 bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+              <span className="sr-only">Close menu</span>
+              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+          </button>
+        </div>
       )}
       <div className="w-full max-w-md mx-auto">
           <h2 className= {`uppercase font-extrabold text-center m-2 text-white rounded-b-full bg-blue-500 drop-shadow-xl`}>{checkLists && checkLists.title ?checkLists.title:'제목을 넣어주세요.'}</h2>
