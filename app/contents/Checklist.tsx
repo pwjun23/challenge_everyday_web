@@ -49,6 +49,12 @@ const Checklist = (props : ChecklistProp) => {
     const updatedChecklist:{[k:string]:any}[] = checklist.map((item) => {return{...item, completed  : value}});
     updateChecklist(updatedChecklist)
   };
+  const pointHandler = (task:any, point:number) =>{
+    const updatedChecklist:{[k:string]:any}[] = checklist.map((item) =>
+      item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, task_point: item.task_point+point } : item
+    );
+    updateChecklist(updatedChecklist);
+  }
 
   const updateChecklist =(updatedChecklist:any)=>{
     // 상태 업데이트
@@ -60,10 +66,9 @@ const Checklist = (props : ChecklistProp) => {
   }
   useEffect(()=>{
     if(tasks){
-      if(tasks.length ===0){
-
-      }else{
+      if(tasks.length !==0){
         setCheckLists(tasks);
+        isCheckAll(tasks);
       }
       countPoints(tasks);
     }
@@ -99,6 +104,14 @@ const Checklist = (props : ChecklistProp) => {
                           checked={task.completed}
                         />
                         <label htmlFor={`checkbox-${task.user_id_to_check}-${i}`}>{task.task_name} ({task.task_point}점)</label>
+                        <div className="ml-4 inline-flex rounded-md shadow-sm" role="group">
+                          <button type="button" onClick={(e)=>pointHandler(task,+1)} className="px-3 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            +1
+                          </button>
+                          <button type="button" onClick={(e)=>pointHandler(task,-1)} className="px-3 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            -1
+                          </button>
+                        </div>
                       </div>
                     )
                   }

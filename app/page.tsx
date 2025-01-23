@@ -45,7 +45,7 @@ interface HolidayItem {
 }
 
 const Home: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('score_sheet');//'monthly' | 'daily' | 'checkadm'| 'score_sheet';
+  const [activeTab, setActiveTab] = useState<TabType>('monthly');//'monthly' | 'daily' | 'checkadm'| 'score_sheet';
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
