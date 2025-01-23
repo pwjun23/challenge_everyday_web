@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { ChecklistProp, DailyChecklistProp } from '../common_type';
+import { ChecklistProp } from '../common_type';
 
 const Checklist = (props : ChecklistProp) => {
   const {user_to_check, tasks, selectedDate, updateItem, user_id_to_check} = props;
@@ -35,7 +35,11 @@ const Checklist = (props : ChecklistProp) => {
   }
   useEffect(()=>{
     if(tasks){
-      setCheckLists(tasks);
+      if(tasks.length ===0){
+
+      }else{
+        setCheckLists(tasks);
+      }
       countPoints(tasks);
     }
   }, [tasks])
@@ -47,7 +51,13 @@ const Checklist = (props : ChecklistProp) => {
               alt={user_to_check.name}
               className="w-12 h-12 rounded-full mr-4"
             />
-            <div className="font-bold text-lg">{user_to_check.user_name} (총{score}점)</div>
+            <div className="font-bold text-lg mr-4">{user_to_check.user_name} (총{score}점)</div>
+              <label htmlFor={`all-checkbox-${selectedDate}-${user_id_to_check}`}
+                    className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 mr-2">모두 체크</label>
+              <input id={`all-checkbox-${selectedDate}-${user_id_to_check}`}
+                     type="checkbox"
+                     value="" 
+                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
           </div>
           <div className="mt-4">
             {

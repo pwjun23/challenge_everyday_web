@@ -11,11 +11,18 @@ const DailyChecklist = (props : DailyChecklistProp) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [tasks_by_date, setTask_by_date] = useState<{[k:string]:any}>({});
 
-  const getBlankTasks = ()=>{
+  const getBlankTasks = (value:string)=>{
     let newTasks:{[k:string]:any} =  _.cloneDeep(tasks[tasks_template[0]]);
     Object.keys(newTasks).map((user_id)=>
       newTasks[user_id].map((task:any)=>task.completed = false)
     );
+    if(Object.keys(tasks).includes(value)){
+      Object.keys(tasks[value]).map((user_id)=>{
+        if(tasks[value][user_id].length !== 0){
+          newTasks[user_id] = tasks[value][user_id];
+        }
+      });
+    }
     return newTasks
   }
   const onChangeHandler = (value:string)=>{
@@ -24,30 +31,14 @@ const DailyChecklist = (props : DailyChecklistProp) => {
     없으면 양식을 불러와서 새로 만든다.
     있으면 불러온다.
     */
-    let newTasks:{[k:string]:any} = getBlankTasks();
-    Object.keys(newTasks).map((user_id)=>
-      newTasks[user_id].map((task:any)=>task.completed = false)
-    );
-
-    if(Object.keys(tasks).includes(value)){
-      // console.log('task가 있어 그대로 불러오자!');
-      Object.keys(tasks[value]).map((user_id)=>{
-        if(tasks[value][user_id].length !== 0){
-          newTasks[user_id] = tasks[value][user_id];
-        }
-      });
-    }
+    let newTasks:{[k:string]:any} = getBlankTasks(value);
     setTask_by_date(newTasks);
     setSelectedDate(value);
   }
   
   useEffect(()=>{
     setSelectedDate(today_str);
-    if(tasks[today_str]){
-      setTask_by_date(tasks[today_str]);
-    }else{
-      setTask_by_date(getBlankTasks());
-    }
+    setTask_by_date(getBlankTasks(today_str));
   },[])
 
   return (

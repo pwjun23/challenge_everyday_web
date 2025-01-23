@@ -35,7 +35,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
       {/* 요일을 표시하는 부분 */}
       <div className="grid grid-cols-7 gap-0 mt-0 text-center">
         {weekDays.map((day, idx) => (
-          <div key={idx} className="text-sm font-bold text-gray-600 bg-slate-50">
+          <div key={`week-${idx}`} className="text-sm font-bold text-gray-600 bg-slate-50">
             {day}
           </div>
         ))}
@@ -45,11 +45,11 @@ const MonthlyView = (props : MonthlyViewProp) => {
       <div className="grid grid-cols-7 gap-0 mt-0 border">
         {/* 빈 칸을 추가하여 첫 번째 날짜가 올바른 요일에 맞춰지게 조정 */}
         {Array.from({ length: startDayOfWeek }).map((_, idx) => (
-          <div key={idx} className="text-center"></div>
+          <div key={`blank-${idx}`} className="text-center"></div>
         ))}
 
         {daysInMonth.map((day, idx) => (
-          <div key={idx} className={`p-1 text-center border wrap-day-in-month`}>
+          <div key={`daysInMonth-${day}-${idx}`} className={`p-1 text-center border wrap-day-in-month`}>
             <div
               className={`text-sm font-bold ${
                 isHoliday(day) ? 'text-red-600' : 'text-stone-600'
@@ -61,7 +61,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
               if(date.split('-')[2] === format(day, 'd')){
                   const tasks_by_user_id:{[k:string]:any} = tasks[date];
                   return(
-                  <div className="text-xs mt-0" key={index} onClick={()=>onClickHandle(date)}>
+                  <div className="text-xs mt-0" key={`points-${day}-${index}`} onClick={()=>onClickHandle(date)}>
                     {tasks_by_user_id && Object.keys(tasks_by_user_id).map((user_id, i)=>{
                       let total_point = 0;
                       const idx = users_to_check.findIndex((user)=> user.user_id === user_id);
@@ -72,9 +72,8 @@ const MonthlyView = (props : MonthlyViewProp) => {
                           total_point += task.task_point;
                         }
                       });
-                      return(
-                      <div key={i}>{user_name} {total_point}</div>
-                      )
+                      const tag_name_point = total_point!==0?<div key={`${day}-${user_id}-${i}`}>{user_name} {total_point}</div>:<div key={i}></div>;
+                      return tag_name_point;
                     })}
                   </div>)
                 }
