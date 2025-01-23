@@ -1,3 +1,4 @@
+export type TabType = 'monthly' | 'daily' | 'checkadm'| 'score_sheet';
 export type CheckLists = {
     users_total_point:{[k:string]:any}
     tasks:{[k:string]:any}
@@ -6,8 +7,9 @@ export type CheckLists = {
     task_hist:{[k:string]:any}
     users_to_check:[{[k:string]:string}]
     total_point:number
-    tasks_template:string[]
+    tasks_template:{[k:string]:any}
   }
+
   export type MonthlyViewProp ={
     today:Date
     startDayOfWeek:number
@@ -31,3 +33,8 @@ export type CheckLists = {
     updateItem:any
     user_id_to_check:string
   }
+
+  export type ScoreSheetProp ={
+    checkLists:CheckLists
+  }
+

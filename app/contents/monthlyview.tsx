@@ -2,8 +2,6 @@
 
 import { format } from 'date-fns';
 import { MonthlyViewProp } from '../common_type';
-import { useRouter } from 'next/router';
-import { useRef } from 'react';
 
 const MonthlyView = (props : MonthlyViewProp) => {
   const {today, startDayOfWeek, daysInMonth, checkLists, holidays, today_str} = props;

@@ -4,11 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { collection, addDoc, getDocs, setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 
 import { Tab } from '@headlessui/react';
-import MonthlyView from './contents/monthlyview';
 
 import { format, startOfMonth, endOfMonth, addDays } from 'date-fns';
-import DailyChecklist from './contents/dailyChecklist';
-import CheckAdm from './contents/checkadm';
+// import CheckAdm from './ontents/Checkadm';
 
 
 // Import the functions you need from the SDKs you need
@@ -17,7 +15,10 @@ import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
 import {checklists_collection, user_won} from "./db";
-import { CheckLists } from './common_type';
+import { CheckLists, TabType } from './common_type';
+import ScoreSheet from './contents/ScoreSheet';
+import MonthlyView from './contents/Monthlyview';
+import DailyChecklist from './contents/DailyChecklist';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -44,7 +45,7 @@ interface HolidayItem {
 }
 
 const Home: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'monthly' | 'daily' | 'checkadm'>('monthly');
+  const [activeTab, setActiveTab] = useState<TabType>('score_sheet');//'monthly' | 'daily' | 'checkadm'| 'score_sheet';
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -104,10 +105,8 @@ async function fetchData() {
       })
     });
     _checklists["total_point"] = totalPoint;
-    console.log({totalPoint})
     setCheckLists(_checklists);
-    });
-
+  });
 }
 
 async function fetchDocumentById(collectionName:string, documentId:string) {
@@ -206,7 +205,7 @@ async function addDocumentWithId() {
     daysInMonth.push(day);
   }
 
-  const onClickTab = (tabName:'monthly'|'daily')=>{
+  const onClickTab = (tabName:TabType)=>{
     fetchData();
     setActiveTab(tabName);
   }
@@ -216,21 +215,28 @@ async function addDocumentWithId() {
         <Tab.Group>
           <h2 className= {`uppercase font-extrabold text-center m-2`}>{checkLists && checkLists.title ?checkLists.title:'제목을 넣어주세요.'}</h2>
           <Tab.Panels>
-            {activeTab === 'monthly' && checkLists && <MonthlyView
-            today={today}
-            startDayOfWeek={startDayOfWeek}
-            daysInMonth={daysInMonth}
-            checkLists={checkLists}
-            holidays={holidays}
-            today_str={today_str}
+            {activeTab === 'monthly' && checkLists &&
+            <MonthlyView
+              today={today}
+              startDayOfWeek={startDayOfWeek}
+              daysInMonth={daysInMonth}
+              checkLists={checkLists}
+              holidays={holidays}
+              today_str={today_str}
              />}
-            {activeTab === 'daily' && checkLists && <DailyChecklist
+            {activeTab === 'daily' && checkLists &&
+            <DailyChecklist
               today_str={today_str}
               checkLists={checkLists}
               key={'daily'}
               updateItem={updateItem}
             />}
             {/* {activeTab === 'checkadm' && <CheckAdm/>} */}
+            {activeTab === 'score_sheet' &&
+            <ScoreSheet
+              checkLists={checkLists}
+             />
+            }
           </Tab.Panels>
           <Tab.List className="fixed w-full left-0 bottom-0 rounded-lg bg-blue-500 p-1">
             <Tab
@@ -252,6 +258,16 @@ async function addDocumentWithId() {
               onClick={() => onClickTab('daily')}
             >
               미션 체크
+            </Tab>
+            <Tab
+              className={({ selected }: { selected: boolean }) =>
+                `w-1/3 py-2.5 text-sm font-medium leading-5 rounded-lg ${
+                  selected ? 'bg-white text-blue-500' : 'text-white'
+                }`
+              }
+              onClick={() => onClickTab('score_sheet')}
+            >
+              점수표
             </Tab>
             {/* <Tab
               className={({ selected }: { selected: boolean }) =>

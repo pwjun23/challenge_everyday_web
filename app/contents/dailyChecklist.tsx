@@ -12,7 +12,13 @@ const DailyChecklist = (props : DailyChecklistProp) => {
   const [tasks_by_date, setTask_by_date] = useState<{[k:string]:any}>({});
 
   const getBlankTasks = (value:string)=>{
-    let newTasks:{[k:string]:any} =  _.cloneDeep(tasks[tasks_template[0]]);
+    const template = Object.keys(tasks_template).map((dt, i)=>{
+      if(i===0){ // TODO : 우선은 가장 최근한 탬플릿으로.
+        return tasks_template[dt]
+      }
+    })[0];
+    
+    let newTasks:{[k:string]:any} =  _.cloneDeep(template);
     Object.keys(newTasks).map((user_id)=>
       newTasks[user_id].map((task:any)=>task.completed = false)
     );
@@ -43,7 +49,7 @@ const DailyChecklist = (props : DailyChecklistProp) => {
 
   return (
     <div className="p-4">
-      <div className="p-4">
+      <div className="pb-4">
         <label htmlFor='date_id' className='mr-2'>체크 할 날짜</label>
         <input 
           type='date'
