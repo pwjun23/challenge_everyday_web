@@ -28,7 +28,7 @@ import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-
+// import { AppProps } from 'next/app';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -55,6 +55,9 @@ interface HolidayItem {
 }
 
 const Home: React.FC= () => {
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
   const [activeTab, setActiveTab] = useState<string>('monthly');
   const today = new Date();
   const year = today.getFullYear();
@@ -68,6 +71,35 @@ const Home: React.FC= () => {
   const [holidays, setHolidays] = useState<Date[]>([]);
   // 월의 첫 날이 어떤 요일인지 확인
   const startDayOfWeek = monthStart.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      setShowInstallButton(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+          setDeferredPrompt(null);
+          setShowInstallButton(false);
+        } else {
+          console.log('User dismissed the A2HS prompt');
+        }
+      });
+    }
+  };
 
   // 공휴일을 동적으로 불러오는 함수
   const fetchHolidays = async () => {
@@ -231,6 +263,11 @@ async function addDocumentWithId() {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      {showInstallButton && (
+        <button id="installButton" onClick={handleInstallClick}>
+          앱 설치
+        </button>
+      )}
       <div className="w-full max-w-md mx-auto">
           <h2 className= {`uppercase font-extrabold text-center m-2 text-white rounded-b-full bg-blue-500 drop-shadow-xl`}>{checkLists && checkLists.title ?checkLists.title:'제목을 넣어주세요.'}</h2>
           <Swiper
