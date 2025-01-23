@@ -232,7 +232,7 @@ async function addDocumentWithId() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="w-full max-w-md mx-auto">
-          <h2 className= {`uppercase font-extrabold text-center m-2`}>{checkLists && checkLists.title ?checkLists.title:'제목을 넣어주세요.'}</h2>
+          <h2 className= {`uppercase font-extrabold text-center m-2 text-white rounded-b-full bg-blue-500 drop-shadow-xl`}>{checkLists && checkLists.title ?checkLists.title:'제목을 넣어주세요.'}</h2>
           <Swiper
           // initialSlide={activeIndex}
           modules={[Navigation]}
@@ -272,7 +272,7 @@ async function addDocumentWithId() {
           </Swiper>
         <Tab.Group className={`nav-tab`}>
           
-          <Tab.List className="fixed w-full left-0 bottom-0 rounded-lg bg-blue-500 p-1">
+          <Tab.List className="fixed w-full left-0 bottom-0 rounded-t-lg bg-blue-500 drop-shadow-[20px_0_20px_rgba(0,0,0,0.25)] p-1">
             {tabs && tabs.map((tab)=>
             <Tab
               key={`tab-${tab.tab_id}`}

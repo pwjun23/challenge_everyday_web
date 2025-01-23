@@ -50,8 +50,9 @@ const DailyChecklist = (props : DailyChecklistProp) => {
   return (
     <div className="p-4">
       <div className="pb-4">
-        <label htmlFor='date_id' className='mr-2'>체크 할 날짜</label>
+        <label htmlFor='date_id' className='mr-2 text-sm text-stone-700'>체크 할 날짜</label>
         <input 
+          className='text-sm text-stone-700'
           type='date'
           id="date_id"
           value={selectedDate}

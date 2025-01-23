@@ -33,8 +33,8 @@ const MonthlyView = (props : MonthlyViewProp) => {
       <div className="text-center text-xl font-extrabold text-blue-600">
         {format(today, 'M')} 월
       </div>
-      <div className="text-center text-lg font-bold mt-2">총점: {total_point?.total}</div>
-      <div className="text-center text-xs mb-4" >
+      <div className="text-center text-lg font-bold text-stone-700 mt-2">총점: {total_point?.total}</div>
+      <div className="text-center text-xs text-stone-500 mb-4" >
       { 
         Object.keys(total_point.users).sort((a,b)=> a<b?-1:a>b?1:0).map((user_id, i)=>{
         const user_name = getUserNameByUserId(user_id);

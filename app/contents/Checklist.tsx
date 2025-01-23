@@ -81,9 +81,9 @@ const Checklist = (props : ChecklistProp) => {
               alt={user_to_check.name}
               className="w-12 h-12 rounded-full mr-4"
             />
-            <div className="font-bold text-lg mr-4">{user_to_check.user_name} (총{score}점)</div>
+            <div className="font-bold text-md text-stone-700 mr-4">{user_to_check.user_name} ({score}점)</div>
               <label htmlFor={`all-checkbox-${selectedDate}-${user_id_to_check}`}
-                    className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 mr-2">모두 체크</label>
+                    className="ms-2 text-sm font-medium text-gray-900 dark:text-stone-700 mr-2">모두 체크</label>
               <input id={`all-checkbox-${selectedDate}-${user_id_to_check}`}
                      type="checkbox"
                      onChange={(e) => handleAllCheck(e)}
@@ -103,7 +103,9 @@ const Checklist = (props : ChecklistProp) => {
                           className="mr-2"
                           checked={task.completed}
                         />
-                        <label htmlFor={`checkbox-${task.user_id_to_check}-${i}`}>{task.task_name} ({task.task_point}점)</label>
+                        <label 
+                        className="text-sm text-gray-900 dark:text-stone-700"
+                        htmlFor={`checkbox-${task.user_id_to_check}-${i}`}>{task.task_name} ({task.task_point}점)</label>
                         <div className="add-delete-point-btn ml-4 inline-flex rounded-md shadow-sm" role="group">
                           <button type="button" onClick={(e)=>pointHandler(task,+1)} className="px-3 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             +1
