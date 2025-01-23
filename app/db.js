@@ -3195,7 +3195,7 @@ export const checklists_collection = {
             "rankingName": "참가상",
             "award_detail": "2천원 용돈",
             "point_reward": 0,
-            "point_reward_detail": "참가상"
+            "point_reward_detail": "참가"
         }
     ]
 }
