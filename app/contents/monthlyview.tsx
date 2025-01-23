@@ -59,7 +59,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
             </div>
             {tasks && Object.keys(tasks).map((date, index)=>{
               if(date.split('-')[2] === format(day, 'd')){
-                  const tasks_by_user_id:{[k:string]:any} = tasks[today_str];
+                  const tasks_by_user_id:{[k:string]:any} = tasks[date];
                   return(
                   <div className="text-xs mt-0" key={index} onClick={()=>onClickHandle(date)}>
                     {tasks_by_user_id && Object.keys(tasks_by_user_id).map((user_id, i)=>{

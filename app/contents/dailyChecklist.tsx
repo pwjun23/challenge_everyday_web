@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { DailyChecklistProp } from '../common_type';
 import Checklist from './Checklist';
+import _ from 'lodash';
 
 const DailyChecklist = (props : DailyChecklistProp) => {
   const {today_str, checkLists, updateItem} = props;
@@ -16,20 +17,20 @@ const DailyChecklist = (props : DailyChecklistProp) => {
     없으면 양식을 불러와서 새로 만든다.
     있으면 불러온다.
     */
+    let newTasks =  _.cloneDeep(tasks[tasks_template[0]]);
+    Object.keys(newTasks).map((user_id)=>
+      newTasks[user_id].map((task:any)=>task.completed = false)
+    );
+
     if(Object.keys(tasks).includes(value)){
-      console.log('task가 있어 그대로 불러오자!');
-      setTask_by_date(tasks[value]);
-    }else{
-      console.log('task가 없어서 새로 만들자!');
-      /*
-      TODO : 탭플릿을 날짜로 불러오고 현재는 최근 꺼로 ... 더 추가 하는 기능은 아직 없지만. 
-      */
-      let newTasks =  tasks[tasks_template[0]];
-      Object.keys(newTasks).map((user_id)=>
-        newTasks[user_id].map((task:any)=>task.completed = false)
-      );
-      setTask_by_date(newTasks);
+      // console.log('task가 있어 그대로 불러오자!');
+      Object.keys(tasks[value]).map((user_id)=>{
+        if(tasks[value][user_id].length !== 0){
+          newTasks[user_id] = tasks[value][user_id];
+        }
+      });
     }
+    setTask_by_date(newTasks);
     setSelectedDate(value);
   }
   
