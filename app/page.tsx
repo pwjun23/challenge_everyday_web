@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { JSX, useEffect, useRef, useState } from 'react';
 import { collection, addDoc, getDocs, setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 
 import { Tab } from '@headlessui/react';
@@ -21,6 +21,13 @@ import { CheckLists, TabType } from './common_type';
 import ScoreSheet from './contents/ScoreSheet';
 import MonthlyView from './contents/Monthly';
 import DailyChecklist from './contents/DailyCheck';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Navigation, Pagination } from "swiper";
+import { Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -47,8 +54,8 @@ interface HolidayItem {
   locdate: string; // 공휴일 날짜 (yyyyMMdd 형식의 문자열)
 }
 
-const Home: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('monthly');//'monthly' | 'daily' | 'checkadm'| 'score_sheet';
+const Home: React.FC= () => {
+  const [activeTab, setActiveTab] = useState<string>('monthly');
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -138,22 +145,6 @@ async function fetchDocumentById(collectionName:string, documentId:string) {
   }
 }
 
-const handleFetch = () => {
-  const collectionName = "Checklists"; // 컬렉션 이름
-  const documentId = "C00000000"; // 문서 ID
-
-  fetchDocumentById(collectionName, documentId)
-    .then((data) => {
-      if (data) {
-        console.log("가져온 데이터:", data);
-        setCheckLists(data);
-      }
-    })
-    .catch((error) => {
-      console.error("오류 발생:", error);
-    });
-};
-
 // 날짜를 YYYY-MM-DD 형식으로 변환하는 함수
 const getFormattedDate = () => {
   const now = new Date();
@@ -211,19 +202,51 @@ async function addDocumentWithId() {
   for (let day = monthStart; day <= monthEnd; day = addDays(day, 1)) {
     daysInMonth.push(day);
   }
+  const tabs:{[k:string]:any}[] = [{tab_id :'monthly', label : '월별'} ,{tab_id :'missionCheck' , label : '미션체크'} , {tab_id :'score_sheet' , label : '점수표'}];
 
-  const onClickTab = (tabName:TabType)=>{
+  const onClickTab = (tab_id:string)=>{
     fetchData();
-    setActiveTab(tabName);
+    setActiveTab(tab_id);
+    const index = tabs.findIndex((v)=> v.tab_id === tab_id);
+    if (swiperRef.current && swiperRef.current) {
+      swiperRef.current.slideTo(index); // 특정 인덱스로 이동
+    }
   }
+  const onSlideChangese = (index:number)=>{
+    const tab_id:string = tabs[index].tab_id;
+    fetchData();
+    setActiveTab(tab_id);
+  }
+  // const [activeIndex, setActiveIndex] = useState(0);
+  const swiperRef = useRef<any>(null); // Swiper ref 생성
+  const classHandleForTab = (tab_id:string)=>{
+    let className = `w-1/3 py-2.5 text-sm font-medium leading-5 rounded-lg `;
+    if(tab_id === activeTab){
+      className += 'bg-white text-blue-500';
+    }else{
+      className += 'text-white';
+    }
+    return className;
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="w-full max-w-md mx-auto">
-        <Tab.Group>
           <h2 className= {`uppercase font-extrabold text-center m-2`}>{checkLists && checkLists.title ?checkLists.title:'제목을 넣어주세요.'}</h2>
-          <Tab.Panels>
-            {activeTab === 'monthly' && checkLists &&
-            <MonthlyView
+          <Swiper
+          // initialSlide={activeIndex}
+          modules={[Navigation]}
+        // pagination={pagination}
+        // modules={[Pagination]}
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper; // Swiper 인스턴스 저장
+        }}
+        className="mySwiper"
+        slidesPerView={1}
+        onSlideChange={(swiper) => onSlideChangese(swiper.activeIndex)}
+      >
+          <SwiperSlide>
+            {checkLists &&<MonthlyView
               today={today}
               startDayOfWeek={startDayOfWeek}
               daysInMonth={daysInMonth}
@@ -231,62 +254,34 @@ async function addDocumentWithId() {
               holidays={holidays}
               today_str={today_str}
              />}
-            {activeTab === 'daily' && checkLists &&
+          </SwiperSlide>
+          <SwiperSlide>
+          {checkLists &&
             <DailyChecklist
               today_str={today_str}
               checkLists={checkLists}
               key={'daily'}
               updateItem={updateItem}
             />}
-            {/* {activeTab === 'checkadm' && <CheckAdm/>} */}
-            {activeTab === 'score_sheet' &&
-            <ScoreSheet
+          </SwiperSlide>
+          <SwiperSlide>
+          {checkLists &&<ScoreSheet
               checkLists={checkLists}
-             />
-            }
-          </Tab.Panels>
+             />}
+          </SwiperSlide>
+          </Swiper>
+        <Tab.Group className={`nav-tab`}>
+          
           <Tab.List className="fixed w-full left-0 bottom-0 rounded-lg bg-blue-500 p-1">
+            {tabs && tabs.map((tab)=>
             <Tab
-              className={({ selected }: { selected: boolean }) =>
-                `w-1/3 py-2.5 text-sm font-medium leading-5 rounded-lg ${
-                  selected ? 'bg-white text-blue-500' : 'text-white'
-                }`
-              }
-              onClick={() => onClickTab('monthly')}
-            >
-              월별
+              key={`tab-${tab.tab_id}`}
+              className={classHandleForTab(tab.tab_id)}    
+              onClick={() => onClickTab(tab.tab_id)}
+            >{tab.label}
             </Tab>
-            <Tab
-              className={({ selected }: { selected: boolean }) =>
-                `w-1/3 py-2.5 text-sm font-medium leading-5 rounded-lg ${
-                  selected ? 'bg-white text-blue-500' : 'text-white'
-                }`
-              }
-              onClick={() => onClickTab('daily')}
-            >
-              미션 체크
-            </Tab>
-            <Tab
-              className={({ selected }: { selected: boolean }) =>
-                `w-1/3 py-2.5 text-sm font-medium leading-5 rounded-lg ${
-                  selected ? 'bg-white text-blue-500' : 'text-white'
-                }`
-              }
-              onClick={() => onClickTab('score_sheet')}
-            >
-              점수표
-            </Tab>
-            {/* <Tab
-              className={({ selected }: { selected: boolean }) =>
-                `w-1/3 py-2.5 text-sm font-medium leading-5 rounded-lg ${
-                  selected ? 'bg-white text-blue-500' : 'text-white'
-                }`
-              }
-              onClick={() => setActiveTab('checkadm')}
-            >
-              미션리스트 관리
-            </Tab> */}
-          </Tab.List>
+            )}
+          </Tab.List> 
         </Tab.Group>
       </div>
     </div>

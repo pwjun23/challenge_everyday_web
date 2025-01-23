@@ -27,3 +27,8 @@ body {
 .add-delete-point-btn{
   margin-left: auto;
 }
+
+.nav-tab{
+  position: fixed;
+  z-index: 99999;
+}
