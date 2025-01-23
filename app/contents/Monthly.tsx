@@ -6,7 +6,7 @@ import { MonthlyViewProp } from '../common_type';
 
 const MonthlyView = (props : MonthlyViewProp) => {
   const {today, startDayOfWeek, daysInMonth, checkLists, holidays, today_str} = props;
-  const {tasks, total_point, users_to_check, users_total_point, creation_user_id, title, task_hist} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
+  const {tasks, total_point, users_to_check, points_reward} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
 
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
   // 공휴일인지 체크하는 함수
@@ -93,6 +93,23 @@ const MonthlyView = (props : MonthlyViewProp) => {
             })}
           </div>
         ))}
+      </div>
+      <div className='flex justify-center mt-4 overflow-x-auto'>
+        <table className={`text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 shadow-xl sm:rounded-lg`}>
+          <thead>
+            <tr className={`mt-4 text-md text-green-700 font-bold text-center`}>
+              <th colSpan={2} className='px-4 py-2'>상품</th>
+            </tr>
+          </thead>
+          <tbody>
+            {points_reward && points_reward.map((reward,idx)=>
+              (<tr key={`reward-${idx}`}>
+                <th className={`mt-4 text-sm text-stone-700 font-bold text-center px-4 py-2`}>{reward.rankingName}({reward.point_reward_detail})</th>
+                <td className={`mt-4 text-sm text-stone-500 text-left  px-4 py-2`}>{reward.award_detail}</td>
+              </tr>)
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

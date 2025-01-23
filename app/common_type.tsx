@@ -8,6 +8,7 @@ export type CheckLists = {
     users_to_check:[{[k:string]:string}]
     total_point:{[k:string]:any}
     tasks_template:{[k:string]:any}
+    points_reward:{[k:string]:any}[]
   }
 
   export type MonthlyViewProp ={
