@@ -60,7 +60,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
                   const tasks_by_user_id:{[k:string]:any} = tasks[date];
                   return(
                   <div className="text-xs mt-0" key={`points-${day}-${index}`} onClick={()=>onClickHandle(date)}>
-                    {tasks_by_user_id && Object.keys(tasks_by_user_id).map((user_id, i)=>{
+                    {tasks_by_user_id && Object.keys(tasks_by_user_id).sort((a:any,b:any) => (a < b?-1: a > b ? 1 : 0)).map((user_id, i)=>{
                       let total_point = 0;
                       const idx = users_to_check.findIndex((user)=> user.user_id === user_id);
                       const user_name = users_to_check[idx].user_name;
@@ -70,7 +70,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
                           total_point += task.task_point;
                         }
                       });
-                      const tag_name_point = total_point!==0?<div key={`${day}-${user_id}-${i}`}>{user_name} {total_point}</div>:<div key={i}></div>;
+                      const tag_name_point = total_point!==0?<div className={`float-left`} key={`${day}-${user_id}-${i}`}>{user_name} {total_point}</div>:<div key={i}></div>;
                       return tag_name_point;
                     })}
                   </div>)
