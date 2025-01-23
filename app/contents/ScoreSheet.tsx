@@ -25,7 +25,7 @@ const ScoreSheet = (props : ScoreSheetProp) => {
                 return (
                 <div key={`score_sheet-${user_id}-${j}`}>
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-4">
-                    <h3 className={`pl-2 pb-2`} >{user_name}<span className={`text-xs`}> 의 점수표</span></h3>
+                    <h3 className={`pl-2 pb-2 text-stone-700`} >{user_name}<span className={`text-xs`}> 의 점수표</span></h3>
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                  <tr>
