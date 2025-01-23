@@ -44,12 +44,12 @@ interface HolidayItem {
 }
 
 const Home: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'monthly' | 'daily' | 'checkadm'>('daily');
+  const [activeTab, setActiveTab] = useState<'monthly' | 'daily' | 'checkadm'>('monthly');
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');
-  const today_str = '2025-01-13';//`${year}-${month}-${day}`;//DO TO : 임시로 날짜 고정
+  const today_str = `${year}-${month}-${day}`;
   
   const monthStart = startOfMonth(today);
   const monthEnd = endOfMonth(today);

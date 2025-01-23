@@ -11,13 +11,20 @@ const DailyChecklist = (props : DailyChecklistProp) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [tasks_by_date, setTask_by_date] = useState<{[k:string]:any}>({});
 
+  const getBlankTasks = ()=>{
+    let newTasks:{[k:string]:any} =  _.cloneDeep(tasks[tasks_template[0]]);
+    Object.keys(newTasks).map((user_id)=>
+      newTasks[user_id].map((task:any)=>task.completed = false)
+    );
+    return newTasks
+  }
   const onChangeHandler = (value:string)=>{
     /* 여기서 날짜를 변경하면
     해당 날짜의 tasks가 있는지 확인.
     없으면 양식을 불러와서 새로 만든다.
     있으면 불러온다.
     */
-    let newTasks =  _.cloneDeep(tasks[tasks_template[0]]);
+    let newTasks:{[k:string]:any} = getBlankTasks();
     Object.keys(newTasks).map((user_id)=>
       newTasks[user_id].map((task:any)=>task.completed = false)
     );
@@ -36,7 +43,11 @@ const DailyChecklist = (props : DailyChecklistProp) => {
   
   useEffect(()=>{
     setSelectedDate(today_str);
-    setTask_by_date(tasks[today_str]);
+    if(tasks[today_str]){
+      setTask_by_date(tasks[today_str]);
+    }else{
+      setTask_by_date(getBlankTasks());
+    }
   },[])
 
   return (
@@ -53,7 +64,7 @@ const DailyChecklist = (props : DailyChecklistProp) => {
       {selectedDate && users_to_check && users_to_check.map((child, idx) => (
         <Checklist
           user_to_check ={child}
-          tasks = {tasks_by_date[child.user_id] || []}
+          tasks = {tasks_by_date?.[child.user_id] || []}
           key = {idx}
           selectedDate = {selectedDate}
           updateItem = {updateItem}
