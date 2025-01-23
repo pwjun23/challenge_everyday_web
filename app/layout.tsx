@@ -13,6 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <meta name="apple-mobile-web-app-title" content="매일 매일 도전" />
       <body
         className={`antialiased`}
       >
