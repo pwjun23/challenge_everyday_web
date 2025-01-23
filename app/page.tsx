@@ -20,6 +20,8 @@ import ScoreSheet from './contents/ScoreSheet';
 import MonthlyView from './contents/Monthly';
 import DailyChecklist from './contents/DailyCheck';
 
+import SwipeableViews from 'react-swipeable-views';
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
