@@ -23,3 +23,7 @@ body {
 .wrap-day-in-month{
   min-height:62px;
 }
+
+.add-delete-point-btn{
+  margin-left: auto;
+}

@@ -210,7 +210,7 @@ async function addDocumentWithId() {
     setActiveTab(tabName);
   }
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-gray-100">
       <div className="w-full max-w-md mx-auto">
         <Tab.Group>
           <h2 className= {`uppercase font-extrabold text-center m-2`}>{checkLists && checkLists.title ?checkLists.title:'제목을 넣어주세요.'}</h2>

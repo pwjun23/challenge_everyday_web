@@ -74,7 +74,7 @@ const Checklist = (props : ChecklistProp) => {
     }
   }, [tasks])
   return (
-        <div className="mb-4 border border-gray-300 rounded-lg bg-white p-4">
+        <div className="mb-4 border border-gray-300 rounded-lg bg-white p-2">
           <div className="flex items-center">
             <img
               src={user_to_check.user_name===''?'/profile_default.svg':user_to_check.photo}
@@ -95,7 +95,7 @@ const Checklist = (props : ChecklistProp) => {
               checklist && checklist.map((task, i)=>{
                   if(task.used){
                     return(
-                      <div key={i} className="flex items-center mb-2">
+                      <div key={i} className="flex justify-start items-center mb-2">
                         <input
                           type="checkbox"
                           id={`checkbox-${task.user_id_to_check}-${i}`}
@@ -104,7 +104,7 @@ const Checklist = (props : ChecklistProp) => {
                           checked={task.completed}
                         />
                         <label htmlFor={`checkbox-${task.user_id_to_check}-${i}`}>{task.task_name} ({task.task_point}점)</label>
-                        <div className="ml-4 inline-flex rounded-md shadow-sm" role="group">
+                        <div className="add-delete-point-btn ml-4 inline-flex rounded-md shadow-sm" role="group">
                           <button type="button" onClick={(e)=>pointHandler(task,+1)} className="px-3 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             +1
                           </button>
