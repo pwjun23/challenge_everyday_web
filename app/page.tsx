@@ -17,8 +17,8 @@ import { getFirestore } from "firebase/firestore";
 import {checklists_collection, user_won} from "./db";
 import { CheckLists, TabType } from './common_type';
 import ScoreSheet from './contents/ScoreSheet';
-import MonthlyView from './contents/Monthlyview';
-import DailyChecklist from './contents/DailyChecklist';
+import MonthlyView from './contents/Monthly';
+import DailyChecklist from './contents/DailyCheck';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
