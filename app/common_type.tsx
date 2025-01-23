@@ -6,7 +6,7 @@ export type CheckLists = {
     title:string
     task_hist:{[k:string]:any}
     users_to_check:[{[k:string]:string}]
-    total_point:number
+    total_point:{[k:string]:any}
     tasks_template:{[k:string]:any}
   }
 

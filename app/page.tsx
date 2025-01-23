@@ -6,6 +6,8 @@ import { collection, addDoc, getDocs, setDoc, doc, getDoc, updateDoc } from "fir
 import { Tab } from '@headlessui/react';
 
 import { format, startOfMonth, endOfMonth, addDays } from 'date-fns';
+import _ from 'lodash';
+
 // import CheckAdm from './ontents/Checkadm';
 
 
@@ -20,7 +22,6 @@ import ScoreSheet from './contents/ScoreSheet';
 import MonthlyView from './contents/Monthly';
 import DailyChecklist from './contents/DailyCheck';
 
-import SwipeableViews from 'react-swipeable-views';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -94,19 +95,23 @@ async function fetchData() {
   // });
   checklists.forEach((doc) => {
     console.log('page > fetchData : '+doc.id + ' | ' , doc.data());
-    let _checklists:any= doc.data()
+    let _checklists:any= _.cloneDeep(doc.data())
     let tasks:any= _checklists.tasks;
     let totalPoint = 0;
+    let users:{[k:string]:number} = {};
     Object.keys(tasks).map((d)=>{
       Object.keys(tasks[d]).map((n)=>{
+        if(!users[n]) users[n] = 0;
         tasks[d][n].forEach((check:any)=>{
             if(check.used && check.completed){
               totalPoint += check.task_point;
+              users[n] += check.task_point;
             }
         });
       })
     });
-    _checklists["total_point"] = totalPoint;
+    _checklists["total_point"] = {"total": totalPoint,"users": users};
+
     setCheckLists(_checklists);
   });
 }
