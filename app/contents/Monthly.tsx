@@ -85,7 +85,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
                           total_point += task.task_point;
                         }
                       });
-                      const tag_name_point = total_point!==0?<div className={`float-left text-sm text-stone-600`} key={`${day}-${user_id}-${i}`}>{user_name} <b>{total_point}</b></div>:<div key={i}></div>;
+                      const tag_name_point = total_point!==0?<div className={`float-left text-sm text-stone-500`} key={`${day}-${user_id}-${i}`}>{user_name} <b className='text-blue-400'>{total_point}</b></div>:<div key={i}></div>;
                       return tag_name_point;
                     })}
                   </div>)
