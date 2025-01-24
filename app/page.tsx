@@ -282,7 +282,7 @@ async function addDocumentWithId() {
         </div>
       )}
       <div className="w-full max-w-md mx-auto">
-          <h2 className= {`uppercase font-extrabold text-center m-2 text-white rounded-b-full bg-blue-500 drop-shadow-xl`}>{checkLists && checkLists.title ?checkLists.title:'제목을 넣어주세요.'}</h2>
+          <h2 className= {`font-OwnglyphWiseelistRg uppercase font-extralight text-center p-1 text-white rounded-b-full bg-blue-500 drop-shadow-xl`}>{checkLists && checkLists.title ?checkLists.title:''}</h2>
           <Swiper
           // initialSlide={activeIndex}
           modules={[Navigation]}

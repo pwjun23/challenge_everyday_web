@@ -9,6 +9,11 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        Cafe24Shiningstar: ["Cafe24Shiningstar"],
+        OwnglyphWiseelistRg :['Ownglyph_wiseelist-Rg']
+      },
+      //fontFamily 추가
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
