@@ -13,9 +13,10 @@ const MonthlyView = (props : MonthlyViewProp) => {
   const isHoliday = (date: Date): boolean => {
     return holidays.some(
       (holiday) =>
-        holiday.getDate() === date.getDate() &&
+        (holiday.getDate() === date.getDate() &&
         holiday.getMonth() === date.getMonth() &&
-        holiday.getFullYear() === date.getFullYear()
+        holiday.getFullYear() === date.getFullYear() ) ||
+        date.getDay() === 0 //일요일
     );
   };
   const getUserNameByUserId = (user_id:string)=>{
