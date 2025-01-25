@@ -3,12 +3,13 @@
 import { format } from 'date-fns';
 import { MonthlyViewProp } from '../common_type';
 import Image from 'next/image';
-
+import { useSwiperStore } from '../store/swiperStore';
+import { useEffect } from 'react';
 
 const MonthlyView = (props : MonthlyViewProp) => {
-  const {today, startDayOfWeek, daysInMonth, checkLists, holidays, today_str} = props;
+  const {today, today_str, startDayOfWeek, daysInMonth, checkLists, holidays, swiperRef } = props;
   const {tasks, total_point, users_to_check, points_reward} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
-
+  const { selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate } = useSwiperStore();
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
   // 공휴일인지 체크하는 함수
   const isHoliday = (date: Date): boolean => {
@@ -31,10 +32,22 @@ const MonthlyView = (props : MonthlyViewProp) => {
     return users_to_check[idx];
   }
   const onClickHandle =(createAt:any)=>{
-    // const router = useRouter();
-    // const queryString = new URLSearchParams(createAt).toString(); // 데이터를 쿼리로 변환
-    // router.push(`/page?${queryString}`, "_blank"); // 새 탭 열기
+    // fetchData();
+    setSlideIndex(1);
+    if(createAt === selectedDate){
+      swiperRef.current.slideTo(1);
+    }else{
+      setSelectedDate(createAt);
+    }
+   
   }
+  useEffect(() => {
+    // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
+    if (currentSlideIndex && swiperRef && swiperRef && swiperRef.current) {
+      swiperRef.current.slideTo(currentSlideIndex);
+    }
+  }, [selectedDate]);
+
   return (
     <div className="p-4">
       <div className="text-center text-xl font-extrabold text-blue-600">

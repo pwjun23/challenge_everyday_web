@@ -4,12 +4,15 @@ import React, { useEffect, useState } from 'react';
 import { DailyChecklistProp } from '../common_type';
 import Checklist from './Checklist';
 import _ from 'lodash';
+import { useSwiperStore } from '../store/swiperStore';
 
 const DailyChecklist = (props : DailyChecklistProp) => {
-  const {today_str, checkLists, updateItem} = props;
+  const {checkLists, updateItem} = props;
   const {users_to_check, tasks, tasks_template} = checkLists || {};
-  const [selectedDate, setSelectedDate] = useState('');
+  const [inputSelectedDate, setInputSelectedDate] = useState('');
   const [tasks_by_date, setTask_by_date] = useState<{[k:string]:any}>({});
+  const {selectedDate} = useSwiperStore();
+  
 
   const getBlankTasks = (value:string)=>{
     const template = Object.keys(tasks_template).map((dt, i)=>{
@@ -39,13 +42,15 @@ const DailyChecklist = (props : DailyChecklistProp) => {
     */
     const newTasks:{[k:string]:any} = getBlankTasks(value);
     setTask_by_date(newTasks);
-    setSelectedDate(value);
+    setInputSelectedDate(value);
   }
   
   useEffect(()=>{
-    setSelectedDate(today_str);
-    setTask_by_date(getBlankTasks(today_str));
-  },[])
+    if(selectedDate){
+      setInputSelectedDate(selectedDate);
+      setTask_by_date(getBlankTasks(selectedDate));
+    }
+  },[selectedDate])
 
   return (
     <div className="p-4">
@@ -55,7 +60,7 @@ const DailyChecklist = (props : DailyChecklistProp) => {
           className='text-sm text-stone-700'
           type='date'
           id="date_id"
-          value={selectedDate}
+          value={inputSelectedDate}
           onChange={(e) => onChangeHandler(e.target.value)}
         />
       </div>

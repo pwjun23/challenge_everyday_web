@@ -235,7 +235,7 @@ async function addDocumentWithId() {
     daysInMonth.push(day);
   }
   const tabs:{[k:string]:any}[] = [{tab_id :'monthly', label : '월별'} ,{tab_id :'missionCheck' , label : '미션체크'} , {tab_id :'score_sheet' , label : '점수표'}];
-
+  
   const onClickTab = (tab_id:string)=>{
     fetchData();
     setActiveTab(tab_id);
@@ -249,6 +249,7 @@ async function addDocumentWithId() {
     fetchData();
     setActiveTab(tab_id);
   }
+
   // const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<any>(null); // Swiper ref 생성
   const classHandleForTab = (tab_id:string)=>{
@@ -296,13 +297,14 @@ async function addDocumentWithId() {
         onSlideChange={(swiper) => onSlideChangese(swiper.activeIndex)}
       >
           <SwiperSlide>
-            {checkLists &&<MonthlyView
+            {checkLists&& swiperRef &&<MonthlyView
               today={today}
               startDayOfWeek={startDayOfWeek}
               daysInMonth={daysInMonth}
               checkLists={checkLists}
               holidays={holidays}
               today_str={today_str}
+              swiperRef={swiperRef}
              />}
           </SwiperSlide>
           <SwiperSlide>

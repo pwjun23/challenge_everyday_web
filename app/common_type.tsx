@@ -18,6 +18,7 @@ export type CheckLists = {
     checkLists:CheckLists
     holidays:Date[]
     today_str:string
+    swiperRef:any
   }
 
   export type DailyChecklistProp ={
