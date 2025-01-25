@@ -93,14 +93,21 @@ const MonthlyView = (props : MonthlyViewProp) => {
           <div key={`blank-${idx}`} className="text-center"></div>
         ))}
 
-        {daysInMonth.map((day, idx) => (
-          <div key={`daysInMonth-${day}-${idx}`} className={`p-1 text-center border wrap-day-in-month`}>
+        {daysInMonth.map((day, idx) => {
+          const year = day.getFullYear();
+          const month = String(day.getMonth() + 1).padStart(2, '0');
+          const _day = String(day.getDate()).padStart(2, '0');
+          const _date = `${year}-${month}-${_day}`;
+          return(
+          <div key={`daysInMonth-${day}-${idx}`} 
+          onClick={()=>onClickHandle(_date)}
+          className={`p-1 text-center border wrap-day-in-month`}>
             <div
               className={`text-sm font-bold ${
                 isHoliday(day) ? 'text-red-600' : 'text-stone-600'
               }`}
             >
-              {format(day, 'd')}
+              {format(day,'d')}
             </div>
             {tasks && Object.keys(tasks).map((date, index)=>{
               let dayDD = format(day, 'd');
@@ -109,7 +116,9 @@ const MonthlyView = (props : MonthlyViewProp) => {
               if(dayDD_task === dayDD){
                   const tasks_by_user_id:{[k:string]:any} = tasks[date];
                   return(
-                  <div className="text-xs mt-0" key={`points-${day}-${index}`} onClick={()=>onClickHandle(date)}>
+                  <div className="text-xs mt-0" key={`points-${day}-${index}`}
+                  // onClick={()=>onClickHandle(date)}
+                  >
                     {tasks_by_user_id && Object.keys(tasks_by_user_id).sort((a:any,b:any) => (a < b?-1: a > b ? 1 : 0)).map((user_id, i)=>{
                       let total_point = 0;
                       const user_name = getUserNameByUserId(user_id);
@@ -126,7 +135,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
                 }
             })}
           </div>
-        ))}
+          )})}
       </div>
       <div className='flex justify-center mt-4 overflow-x-auto'>
         <table className={`text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 shadow-xl sm:rounded-lg`}>

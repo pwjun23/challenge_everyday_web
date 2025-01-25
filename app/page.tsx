@@ -18,7 +18,7 @@ import { getFirestore } from "firebase/firestore";
 
 import {checklists_collection, user_won} from "./db";
 import { CheckLists, TabType } from './common_type';
-import ScoreSheet from './contents/ScoreSheet';
+import ScoreSheet from './contents/ScoreSheets';
 import MonthlyView from './contents/Monthly';
 import DailyChecklist from './contents/DailyCheck';
 
@@ -28,6 +28,7 @@ import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import ScoreSheets from './contents/ScoreSheets';
 // import { AppProps } from 'next/app';
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -317,7 +318,7 @@ async function addDocumentWithId() {
             />}
           </SwiperSlide>
           <SwiperSlide>
-          {checkLists &&<ScoreSheet
+          {checkLists &&<ScoreSheets
               checkLists={checkLists}
              />}
           </SwiperSlide>
