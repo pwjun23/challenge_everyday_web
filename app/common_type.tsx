@@ -36,7 +36,15 @@ export type CheckLists = {
     user_id_to_check:string
   }
 
-  export type ScoreSheetProp ={
+  export type ScoreSheetsProp ={
     checkLists:CheckLists
+  }
+
+  export type ScoreSheetProp ={
+    tasks:{[k:string]:any}[]
+    user_id:string
+    user_name:string
+    index:number
+    total_index:number
   }
 

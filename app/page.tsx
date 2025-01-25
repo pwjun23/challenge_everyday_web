@@ -29,6 +29,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import ScoreSheets from './contents/ScoreSheets';
+import { useSwiperStore } from './store/swiperStore';
 // import { AppProps } from 'next/app';
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -72,6 +73,7 @@ const Home: React.FC= () => {
   const [holidays, setHolidays] = useState<Date[]>([]);
   // 월의 첫 날이 어떤 요일인지 확인
   const startDayOfWeek = monthStart.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
+  const {currentSlideIndex, setIsEdit, setSlideIndex} = useSwiperStore();
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -86,6 +88,11 @@ const Home: React.FC= () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
   }, []);
+
+  useEffect(() => {
+    // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
+    setIsEdit(false);
+  }, [currentSlideIndex]);
 
   const handleInstallClick = () => {
     if (deferredPrompt) {
@@ -249,6 +256,7 @@ async function addDocumentWithId() {
     const tab_id:string = tabs[index].tab_id;
     fetchData();
     setActiveTab(tab_id);
+    setSlideIndex(index);
   }
 
   // const [activeIndex, setActiveIndex] = useState(0);

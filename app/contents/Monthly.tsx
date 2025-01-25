@@ -48,6 +48,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
     }
   }, [selectedDate]);
 
+
   return (
     <div className="p-4">
       <div className="text-center text-xl font-extrabold text-blue-600">
