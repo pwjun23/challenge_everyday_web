@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { ChecklistProp } from '../common_type';
+import Image from 'next/image';
 
 const Checklist = (props : ChecklistProp) => {
   const {user_to_check, tasks, selectedDate, updateItem, user_id_to_check} = props;
@@ -76,9 +77,11 @@ const Checklist = (props : ChecklistProp) => {
   return (
         <div className="mb-4 border border-gray-300 rounded-lg bg-white p-2">
           <div className="flex items-center">
-            <img
+            <Image
+              width={12}
+              height={12}
               src={user_to_check.user_name===''?'/profile_default.svg':user_to_check.photo}
-              alt={user_to_check.name}
+              alt={user_to_check.user_name}
               className="w-12 h-12 rounded-full mr-4"
             />
             <div className="font-bold text-md text-stone-700 mr-4">{user_to_check.user_name} ({score}점)</div>

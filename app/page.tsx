@@ -134,10 +134,10 @@ async function fetchData() {
   // });
   checklists.forEach((doc) => {
     console.log('page > fetchData : '+doc.id + ' | ' , doc.data());
-    let _checklists:any= _.cloneDeep(doc.data())
-    let tasks:any= _checklists.tasks;
+    const _checklists:any= _.cloneDeep(doc.data())
+    const tasks:any= _checklists.tasks;
     let totalPoint = 0;
-    let users:{[k:string]:number} = {};
+    const users:{[k:string]:number} = {};
     Object.keys(tasks).map((d)=>{
       Object.keys(tasks[d]).map((n)=>{
         if(!users[n]) users[n] = 0;

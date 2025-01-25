@@ -18,7 +18,7 @@ const DailyChecklist = (props : DailyChecklistProp) => {
       }
     })[0];
     
-    let newTasks:{[k:string]:any} =  _.cloneDeep(template);
+    const newTasks:{[k:string]:any} =  _.cloneDeep(template);
     Object.keys(newTasks).map((user_id)=>
       newTasks[user_id].map((task:any)=>task.completed = false)
     );
@@ -37,7 +37,7 @@ const DailyChecklist = (props : DailyChecklistProp) => {
     없으면 양식을 불러와서 새로 만든다.
     있으면 불러온다.
     */
-    let newTasks:{[k:string]:any} = getBlankTasks(value);
+    const newTasks:{[k:string]:any} = getBlankTasks(value);
     setTask_by_date(newTasks);
     setSelectedDate(value);
   }

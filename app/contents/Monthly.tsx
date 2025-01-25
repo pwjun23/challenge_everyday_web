@@ -2,6 +2,7 @@
 
 import { format } from 'date-fns';
 import { MonthlyViewProp } from '../common_type';
+import Image from 'next/image';
 
 
 const MonthlyView = (props : MonthlyViewProp) => {
@@ -24,6 +25,11 @@ const MonthlyView = (props : MonthlyViewProp) => {
     const user_name = users_to_check[idx].user_name;
     return user_name;
   }
+  const getUserInfoByUserId = (user_id:string)=>{
+    const idx = users_to_check.findIndex((user)=> user.user_id === user_id);
+    const user_name = users_to_check[idx].user_name;
+    return users_to_check[idx];
+  }
   const onClickHandle =(createAt:any)=>{
     // const router = useRouter();
     // const queryString = new URLSearchParams(createAt).toString(); // 데이터를 쿼리로 변환
@@ -34,12 +40,26 @@ const MonthlyView = (props : MonthlyViewProp) => {
       <div className="text-center text-xl font-extrabold text-blue-600">
         {format(today, 'M')} 월
       </div>
-      <div className="text-center text-lg font-bold text-stone-700 mt-2">총점: {total_point?.total}</div>
-      <div className="text-center text-xs text-stone-500 mb-4" >
+      {/* <div className="text-center text-lg font-bold text-stone-700 mt-2">총점: {total_point?.total}</div> */}
+      <div className="flex justify-center text-xl text-stone-700 mb-4" >
       { 
         Object.keys(total_point.users).sort((a,b)=> a<b?-1:a>b?1:0).map((user_id, i)=>{
-        const user_name = getUserNameByUserId(user_id);
-        return  <span className='mr-2' key={`total-${user_id}-${i}`}>{user_name} :  {total_point.users[user_id]}</span>})
+        const {user_name, photo} = getUserInfoByUserId(user_id);
+        return(
+          <div className='rounded-xl bg-white drop-shadow p-2 flex justify-center ml-2 mr-2' key={`total-${user_id}-${i}`}>
+            <div className='mr-2'>
+              <Image
+                width={12}
+                height={12}
+                src={photo}
+                alt={user_name}
+                className="text-center w-12 h-12 rounded-full"
+              />
+            <div className='text-center text-sm'>{user_name}</div>
+            </div>
+            <div className='flex items-center font-extrabold text-xl'>{total_point.users[user_id]}</div>
+          </div>
+          )})
         }
       </div>
       
