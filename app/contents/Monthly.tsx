@@ -1,15 +1,35 @@
 
 
-import { format } from 'date-fns';
 import { MonthlyViewProp } from '../common_type';
 import Image from 'next/image';
-import { useSwiperStore } from '../store/swiperStore';
-import { useEffect } from 'react';
+import { useCheckListsStore } from '../store/checklistStore';
+import { useEffect, useState } from 'react';
+import { format, startOfMonth, endOfMonth, addDays } from 'date-fns';
+import { fetchHolidays } from '../commonService';
+
 
 const MonthlyView = (props : MonthlyViewProp) => {
-  const {today, today_str, startDayOfWeek, daysInMonth, checkLists, holidays, swiperRef } = props;
-  const {tasks, total_point, users_to_check, points_reward} = checkLists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
-  const { selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate } = useSwiperStore();
+  const {swiperRef } = props;
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const today_str = `${year}-${month}-${day}`;
+  // 월의 첫 날이 어떤 요일인지 확인
+  const monthStart = startOfMonth(today);
+  const startDayOfWeek = monthStart.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
+  const monthEnd = endOfMonth(today);
+  const [holidays, setHolidays] = useState<Date[]>([]);
+  const daysInMonth: Date[] = [];
+  
+  // 달력의 각 날짜를 계산하여 daysInMonth 배열에 넣기
+  for (let day = monthStart; day <= monthEnd; day = addDays(day, 1)) {
+    daysInMonth.push(day);
+  }
+  const { checklists, selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate } = useCheckListsStore();
+  
+  const {tasks, total_point, users_to_check, points_reward} = checklists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
   // 공휴일인지 체크하는 함수
   const isHoliday = (date: Date): boolean => {
@@ -46,6 +66,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
     if (currentSlideIndex && swiperRef && swiperRef && swiperRef.current) {
       swiperRef.current.slideTo(currentSlideIndex);
     }
+    fetchHolidays(today).then((res)=> setHolidays(res));
   }, [selectedDate]);
 
 
@@ -57,7 +78,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
       {/* <div className="text-center text-lg font-bold text-stone-700 mt-2">총점: {total_point?.total}</div> */}
       <div className="flex justify-center text-xl text-stone-700 mb-4" >
       { 
-        Object.keys(total_point.users).sort((a,b)=> a<b?-1:a>b?1:0).map((user_id, i)=>{
+        total_point.users && Object.keys(total_point.users).sort((a,b)=> a<b?-1:a>b?1:0).map((user_id, i)=>{
         const {user_name, photo} = getUserInfoByUserId(user_id);
         return(
           <div className='rounded-xl bg-white drop-shadow p-2 flex justify-center ml-2 mr-2' key={`total-${user_id}-${i}`}>

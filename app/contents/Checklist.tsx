@@ -3,12 +3,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChecklistProp } from '../common_type';
 import Image from 'next/image';
+import { useCheckListsStore } from '../store/checklistStore';
+import { updateItem } from '../commonService';
 
 const Checklist = (props : ChecklistProp) => {
-  const {user_to_check, tasks, selectedDate, updateItem, user_id_to_check} = props;
+  const {user_to_check, tasks, user_id_to_check} = props;
   const [score, setScore] = useState<number>(0);
-  const [checklist, setCheckLists] = useState<{[k:string]:any}[] >([{}]);
+  const [checklists, setCheckLists] = useState<{[k:string]:any}[] >([{}]);
   const checkbox_all = useRef<any>(null);
+  const { selectedDate } = useCheckListsStore();
+  
   const countPoints = (updatedChecklist:{[k:string]:any}) =>{
     let totalPoint = 0;
     updatedChecklist.forEach((element: { completed: any; task_point: number; user_id_to_check:string }) => {
@@ -38,7 +42,7 @@ const Checklist = (props : ChecklistProp) => {
   }
 
   const handleCheck = (task:any): void => {
-    const updatedChecklist:{[k:string]:any}[] = checklist.map((item) =>
+    const updatedChecklist:{[k:string]:any}[] = checklists.map((item) =>
       item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, completed: !item.completed } : item
     );
     updateChecklist(updatedChecklist);
@@ -47,14 +51,14 @@ const Checklist = (props : ChecklistProp) => {
 
   const handleAllCheck = (e:any): void => {
     const value = e.target.checked;
-    const updatedChecklist:{[k:string]:any}[] = checklist.map((item) => {return{...item, completed  : value}});
+    const updatedChecklist:{[k:string]:any}[] = checklists.map((item) => {return{...item, completed  : value}});
     updateChecklist(updatedChecklist)
   };
   const pointHandler = (task:any, point:number) =>{
-    const updatedChecklist:{[k:string]:any}[] = checklist.map((item) =>
+    const updatedChecklist:{[k:string]:any}[] = checklists.map((item) =>
       item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, task_point: item.task_point+point } : item
     );
-    updateChecklist(updatedChecklist);
+    // updateChecklist(updatedChecklist);
   }
 
   const updateChecklist =(updatedChecklist:any)=>{
@@ -62,9 +66,14 @@ const Checklist = (props : ChecklistProp) => {
     setCheckLists(updatedChecklist);
     countPoints(updatedChecklist);
 
-    const root = `tasks.${selectedDate}.${user_id_to_check}`;
-    updateItem("C00000000", root, updatedChecklist);
+    
   }
+
+  const saveChecklists = ()=>{
+    const root = `tasks.${selectedDate}.${user_id_to_check}`;
+    updateItem("C00000000", root, checklists);
+  }
+
   useEffect(()=>{
     if(tasks){
       if(tasks.length !==0){
@@ -76,6 +85,7 @@ const Checklist = (props : ChecklistProp) => {
   }, [tasks])
   return (
         <div className="mb-4 border border-gray-300 rounded-lg bg-white p-2">
+          {user_to_check.photo &&
           <div className="flex items-center">
             <Image
               width={12}
@@ -92,10 +102,16 @@ const Checklist = (props : ChecklistProp) => {
                      onChange={(e) => handleAllCheck(e)}
                      ref={checkbox_all}
                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+              <button type="button" 
+                    onClick={()=> saveChecklists}
+                    className="text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-sm text-sm py-1 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2">
+                    <span className=''>저장</span>
+              </button>
           </div>
+          }
           <div className="mt-4">
             {
-              checklist && checklist.map((task, i)=>{
+              checklists && checklists.map((task, i)=>{
                   if(task.used){
                     return(
                       <div key={i} className="flex justify-start items-center mb-2">

@@ -4,17 +4,17 @@ import React, { useEffect, useState } from 'react';
 import { DailyChecklistProp } from '../common_type';
 import Checklist from './Checklist';
 import _ from 'lodash';
-import { useSwiperStore } from '../store/swiperStore';
+import { useCheckListsStore } from '../store/checklistStore';
 
 const DailyChecklist = (props : DailyChecklistProp) => {
-  const {checkLists, updateItem} = props;
-  const {users_to_check, tasks, tasks_template} = checkLists || {};
+  const {checklists, selectedDate} = useCheckListsStore();
+  const {users_to_check, tasks, tasks_template} = checklists || {};
   const [inputSelectedDate, setInputSelectedDate] = useState('');
   const [tasks_by_date, setTask_by_date] = useState<{[k:string]:any}>({});
-  const {selectedDate} = useSwiperStore();
   
 
   const getBlankTasks = (value:string)=>{
+    if(Object.keys(tasks_template).length ===0)return{};
     const template = Object.keys(tasks_template).map((dt, i)=>{
       if(i===0){ // TODO : 우선은 가장 최근한 탬플릿으로.
         return tasks_template[dt]
@@ -46,11 +46,11 @@ const DailyChecklist = (props : DailyChecklistProp) => {
   }
   
   useEffect(()=>{
-    if(selectedDate){
+    if(selectedDate && tasks_template && tasks_template){
       setInputSelectedDate(selectedDate);
       setTask_by_date(getBlankTasks(selectedDate));
     }
-  },[selectedDate])
+  },[selectedDate, tasks_template])
 
   return (
     <div className="p-4">
@@ -70,7 +70,6 @@ const DailyChecklist = (props : DailyChecklistProp) => {
           tasks = {tasks_by_date?.[child.user_id] || []}
           key = {idx}
           selectedDate = {selectedDate}
-          updateItem = {updateItem}
           user_id_to_check ={child.user_id}
         />
       ))}

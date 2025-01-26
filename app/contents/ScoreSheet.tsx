@@ -3,12 +3,12 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import {ScoreSheetProp } from '../common_type';
 import _ from 'lodash';
-import { useSwiperStore } from '../store/swiperStore';
+import { useCheckListsStore } from '../store/checklistStore';
 
 const ScoreSheet = (props : ScoreSheetProp) => {
   const {tasks, user_id, user_name, index, total_index} = props;
   const [tempTasks, setTempTasks] = useState<{[key:string]:any}[]>([{}]);
-  const {isEdit, setIsEdit } = useSwiperStore();
+  const {isEdit, setIsEdit } = useCheckListsStore();
 
   const onChangeTask =(index:number, e:any)=>{
 

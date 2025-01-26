@@ -1,5 +1,5 @@
 export type TabType = 'monthly' | 'daily' | 'checkadm'| 'score_sheet';
-export type CheckLists = {
+export type Checklists = {
     users_total_point:{[k:string]:any}
     tasks:{[k:string]:any}
     creation_user_id:string
@@ -12,33 +12,23 @@ export type CheckLists = {
   }
 
   export type MonthlyViewProp ={
-    today:Date
-    startDayOfWeek:number
-    daysInMonth:Date[]
-    checkLists:CheckLists
-    holidays:Date[]
-    today_str:string
     swiperRef:any
   }
 
   export type DailyChecklistProp ={
-    today_str:string
-    checkLists:CheckLists
     key:any
-    updateItem:any
   }
 
   export type ChecklistProp ={
     user_to_check:{[k:string]:string}
     tasks: {[k:string]:any}[] 
     selectedDate:string
-    updateItem:any
     user_id_to_check:string
   }
 
-  export type ScoreSheetsProp ={
-    checkLists:CheckLists
-  }
+  // export type ScoreSheetsProp ={
+  //   // checkLists:Checklists
+  // }
 
   export type ScoreSheetProp ={
     tasks:{[k:string]:any}[]
@@ -48,3 +38,6 @@ export type CheckLists = {
     total_index:number
   }
 
+  export interface HolidayItem {
+    locdate: string; // 공휴일 날짜 (yyyyMMdd 형식의 문자열)
+  }
