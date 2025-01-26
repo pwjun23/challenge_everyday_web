@@ -9,11 +9,13 @@ interface ChecklistState {
   slideData: { [key: number]: string };
   isEdit: boolean;
   modalShow:boolean,
+  editing:boolean,
   setChecklists:(value:Checklists) => void;
   setSlideIndex: (index: number) => void;
   setSelectedDate: (yyyyMMdd: string) => void;
   setIsEdit: (value:boolean) => void;
   setModalShow: (value:boolean) => void;
+  setEditing: (value:boolean)=> void;
 }
 const date = new Date();
 const year = date.getFullYear();
@@ -43,9 +45,11 @@ export const useCheckListsStore = create<ChecklistState>((set) => ({
     1: '슬라이드 2의 데이터',
     2: '슬라이드 3의 데이터',
   },
+  editing:false,
   setChecklists: (value) => set({checklists:value}),
   setSlideIndex: (index) => set({ currentSlideIndex: index }),
   setSelectedDate: (yyyyMMdd) => set({ selectedDate: yyyyMMdd }),
   setIsEdit: (value) => set({isEdit: value}),
-  setModalShow: (value) => set({modalShow: value})
+  setModalShow: (value) => set({modalShow: value}),
+  setEditing: (value) => set({editing:value})
 }));

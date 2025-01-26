@@ -19,10 +19,10 @@ const Home: React.FC= () => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
 
-  const [activeTab, setActiveTab] = useState<string>('monthly');
+  const [activeTab, setActiveTab] = useState<string>('monthly');//'monthly' | 'daily' | 'checkadm'| 'score_sheet';
 
   
-  const {checklists, currentSlideIndex, setChecklists, setIsEdit, setSlideIndex} = useCheckListsStore();
+  const {checklists, currentSlideIndex, editing, setChecklists, setIsEdit, setSlideIndex} = useCheckListsStore();
 
 
   useEffect(() => {
@@ -34,6 +34,31 @@ const Home: React.FC= () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
+    // addDocumentWithId();
+    fetchData().then((res)=>{
+      setChecklists(res);
+      // swiperRef.current.slideTo(1); // 특정 인덱스로 이동
+    }); 
+    // if (swiperRef.current) {
+    //   const swiperInstance = swiperRef.current;
+
+    //   swiperInstance.on('beforeSlideChangeStart', () => {//beforeSlideChangeStart
+    //     // 특정 조건 확인 (예: 현재 슬라이드가 마지막 슬라이드가 아니고, 특정 값이 false인 경우)
+    //     // const isLastSlide = swiperInstance.isEnd;
+    //     // const someValue = false; // 실제 조건으로 대체해야 함
+        
+    //     // if (!isLastSlide && someValue) {
+    //     if (!editing) {
+    //       // swiperInstance.preventSlide(); // 슬라이드 전환 막기
+    //       // swiperInstance.destroy(); // 슬라이드 전환 막기
+    //       setShowModal(true); // 모달 표시
+    //       // alert('특정 조건을 충족해야 다음 슬라이드로 이동할 수 있습니다.'); // 알림 표시 (모달 대신 사용 가능)
+    //     } else {
+    //         setShowModal(false);
+    //     }
+    //   });
+    // }
+
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
@@ -42,7 +67,36 @@ const Home: React.FC= () => {
   useEffect(() => {
     // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
     setIsEdit(false);
+    fetchData().then((res)=>{
+      setChecklists(res);
+    });
   }, [currentSlideIndex]);
+
+  useEffect(() => {
+    if (swiperRef.current) {
+      const swiperInstance = swiperRef.current;
+
+      swiperInstance.on('beforeSlideChangeStart', () => {//beforeSlideChangeStart
+        // 특정 조건 확인 (예: 현재 슬라이드가 마지막 슬라이드가 아니고, 특정 값이 false인 경우)
+        // const isLastSlide = swiperInstance.isEnd;
+        // const someValue = false; // 실제 조건으로 대체해야 함
+        
+        // if (!isLastSlide && someValue) {
+        if (editing) {
+          // swiperInstance.preventSlide(); // 슬라이드 전환 막기
+          // swiperInstance.destroy(); // 슬라이드 전환 막기
+          setShowModal(true); // 모달 표시
+          // alert('특정 조건을 충족해야 다음 슬라이드로 이동할 수 있습니다.'); // 알림 표시 (모달 대신 사용 가능)
+        } else {
+            setShowModal(false);
+        }
+      });
+    }
+    if (swiperRef.current) {
+      swiperRef.current.off('beforeSlideChange');
+    }
+
+  }, [editing]);
 
   const handleInstallClick = () => {
     if (deferredPrompt) {
@@ -59,17 +113,6 @@ const Home: React.FC= () => {
     }
   };
 
-  useEffect(() => {
-    // addDocumentWithId();
-    fetchData().then((res)=>{
-      console.log({res});
-      setChecklists(res);
-    }); 
-    // fetchHolidays(); // 컴포넌트가 마운트되었을 때 공휴일 데이터를 가져옵니다.
-  }, []); // 의존성 배열이 비어 있으므로 컴포넌트 마운트 시에만 실행됩니다.
-
-
-  
   const tabs:{[k:string]:any}[] = [{tab_id :'monthly', label : '월별'} ,{tab_id :'missionCheck' , label : '미션체크'} , {tab_id :'score_sheet' , label : '점수표'}];
   
   const onClickTab = (tab_id:string)=>{
@@ -96,6 +139,10 @@ const Home: React.FC= () => {
       className += 'text-white';
     }
     return className;
+  };
+  const [showModal, setShowModal] = useState(true); // 모달 표시 여부 상태
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -163,6 +210,15 @@ const Home: React.FC= () => {
           </Tab.List> 
         </Tab.Group>
       </div>
+      {/* 모달 */}
+      {/* {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <p className='text-stone-900'>특정 조건을 충족해야 합니다.</p>
+            <button className='text-stone-900' onClick={closeModal}>닫기</button>
+          </div>
+        </div>
+      )} */}
     </div>
   );
 };

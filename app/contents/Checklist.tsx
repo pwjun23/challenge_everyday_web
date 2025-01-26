@@ -11,7 +11,7 @@ const Checklist = (props : ChecklistProp) => {
   const [score, setScore] = useState<number>(0);
   const [checklists, setCheckLists] = useState<{[k:string]:any}[] >([{}]);
   const checkbox_all = useRef<any>(null);
-  const { selectedDate } = useCheckListsStore();
+  const { selectedDate, setEditing } = useCheckListsStore();
   
   const countPoints = (updatedChecklist:{[k:string]:any}) =>{
     let totalPoint = 0;
@@ -47,6 +47,7 @@ const Checklist = (props : ChecklistProp) => {
     );
     updateChecklist(updatedChecklist);
     isCheckAll(updatedChecklist);
+    setEditing(true);
   };
 
   const handleAllCheck = (e:any): void => {
@@ -65,13 +66,14 @@ const Checklist = (props : ChecklistProp) => {
     // 상태 업데이트
     setCheckLists(updatedChecklist);
     countPoints(updatedChecklist);
-
-    
   }
 
   const saveChecklists = ()=>{
     const root = `tasks.${selectedDate}.${user_id_to_check}`;
-    updateItem("C00000000", root, checklists);
+    updateItem("C00000000", root, checklists).then((res)=>{
+      debugger;
+      alert('저장되었습니다.')
+    });
   }
 
   useEffect(()=>{
@@ -103,8 +105,8 @@ const Checklist = (props : ChecklistProp) => {
                      ref={checkbox_all}
                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
               <button type="button" 
-                    onClick={()=> saveChecklists}
-                    className="text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-sm text-sm py-1 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2">
+                    onClick={()=> saveChecklists()}
+                    className="absolute right-4 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-sm text-sm px-2 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2">
                     <span className=''>저장</span>
               </button>
           </div>
