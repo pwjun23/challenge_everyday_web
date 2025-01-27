@@ -37,27 +37,7 @@ const Home: React.FC= () => {
     // addDocumentWithId();
     fetchData().then((res)=>{
       setChecklists(res);
-      // swiperRef.current.slideTo(1); // 특정 인덱스로 이동
     }); 
-    // if (swiperRef.current) {
-    //   const swiperInstance = swiperRef.current;
-
-    //   swiperInstance.on('beforeSlideChangeStart', () => {//beforeSlideChangeStart
-    //     // 특정 조건 확인 (예: 현재 슬라이드가 마지막 슬라이드가 아니고, 특정 값이 false인 경우)
-    //     // const isLastSlide = swiperInstance.isEnd;
-    //     // const someValue = false; // 실제 조건으로 대체해야 함
-        
-    //     // if (!isLastSlide && someValue) {
-    //     if (!editing) {
-    //       // swiperInstance.preventSlide(); // 슬라이드 전환 막기
-    //       // swiperInstance.destroy(); // 슬라이드 전환 막기
-    //       setShowModal(true); // 모달 표시
-    //       // alert('특정 조건을 충족해야 다음 슬라이드로 이동할 수 있습니다.'); // 알림 표시 (모달 대신 사용 가능)
-    //     } else {
-    //         setShowModal(false);
-    //     }
-    //   });
-    // }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
