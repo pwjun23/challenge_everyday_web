@@ -126,6 +126,8 @@ export const fetchHolidays = async (today:Date) => {
           });
           return holidayDates;
           // setHolidays(holidayDates); // 공휴일 배열 저장
+        }else{
+          return [];
         }
       } catch (error) {
         console.error('공휴일 데이터를 불러오는 데 실패했습니다.', error);

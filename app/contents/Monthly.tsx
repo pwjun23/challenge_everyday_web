@@ -33,13 +33,13 @@ const MonthlyView = (props : MonthlyViewProp) => {
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
   // 공휴일인지 체크하는 함수
   const isHoliday = (date: Date): boolean => {
-    return holidays.some(
+    return holidays.length !==0 ? holidays.some(
       (holiday) =>
         (holiday.getDate() === date.getDate() &&
         holiday.getMonth() === date.getMonth() &&
         holiday.getFullYear() === date.getFullYear() ) ||
         date.getDay() === 0 //일요일
-    );
+    ): date.getDay() === 0 //일요일
   };
   const getUserNameByUserId = (user_id:string)=>{
     const idx = users_to_check.findIndex((user)=> user.user_id === user_id);
