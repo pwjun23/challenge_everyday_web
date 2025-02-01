@@ -1,10 +1,12 @@
-import { collection, addDoc, getDocs, setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, updateDoc, Timestamp, addDoc, setDoc, doc, getDoc, writeBatch} from 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 import _ from 'lodash';
-import {checklists_collection, user_won} from "./db";
+import {checklists_collection, data_250201, user_won} from "./db";
 import { HolidayItem } from "./common_type";
-import { format} from 'date-fns';
+import { format } from 'date-fns';
+import * as FileSaver from 'file-saver';
+// import { readFile } from 'fs/promises';
+// import fs from 'fs';
 
 
 
@@ -24,39 +26,92 @@ const firebaseConfig = {
   measurementId: "G-ZH69TWC3DJ"
 };
 
+const backupJson = (json:any)=>{
+// 파일 저장
+  const jsonData = json;
+  const now = new Date();
+  const fileName = `data_${now.toISOString().replace(/:/g, '-')}.json`;
+  const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+  FileSaver.saveAs(blob, fileName);
+}
 
-export async function fetchData() {
+// 특정 월의 시작과 끝 날짜를 Timestamp 객체로 변환하는 함수
+const getMonthTimestamps = (year:number, month:number) => {
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0); // 해당 월의 마지막 날
+  return {
+      start: Timestamp.fromDate(startDate),
+      end: Timestamp.fromDate(endDate)
+  };
+}
+async function getTasksByUsed(db:any, checklistId:string) {
+  const tasksCollection = collection(db, "Checklists");
+  // const tasksCollection = collection(db, "Checklists", checklistId, "tasks");
+  // const q = query(tasksCollection, where("used", "==", true)); // "used" 키 값이 true인 문서만 필터링
+  // const users = await getDocs(tasksCollection);
+
+  try {
+    // const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(tasksCollection);
+
+    const tasks:any = [];
+    querySnapshot.forEach((doc) => {
+      tasks.push(doc.data());
+    });
+    return tasks;
+  } catch (error) {
+    console.error("Error getting tasks:", error);
+    return [];
+  }
+}
+
+export async function fetchData(_year:string,month:string) {
+  const documentId = "C00000000";
+  const year = parseInt(_year);
+  // 날짜 범위 계산
+  // 쿼리 시작 및 종료 날짜 설정 (해당 달의 1일 00:00:00 ~ 말일 23:59:59)
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-
-  const users = await getDocs(collection(db, "Users"));
-  const checklistsDB = await getDocs(collection(db, "Checklists"));
-  users.forEach((doc) => {
-    console.log(doc.id + ' | ' , doc.data());
-  });
-
-  let _checklists:any;
+  const startDate = new Date(year, parseInt(month) - 1, 1);
+  const endDate = new Date(year, parseInt(month), 1);
   
-  checklistsDB.forEach((doc) => {
-    console.log('page > fetchData : '+doc.id + ' | ' , doc.data());
-    if(doc.id === 'C00000000')_checklists= _.cloneDeep(doc.data())
-    const tasks:any= _checklists.tasks;
-    let totalPoint = 0;
-    const users:{[k:string]:number} = {};
-    Object.keys(tasks).map((d)=>{
-      Object.keys(tasks[d]).map((n)=>{
-        if(!users[n]) users[n] = 0;
-        tasks[d][n].forEach((check:any)=>{
-            if(check.used && check.completed){
-              totalPoint += check.task_point;
-              users[n] += check.task_point;
-            }
-        });
-      })
-    });
-    _checklists["total_point"] = {"total": totalPoint,"users": users};
+  const startTimestamp = Timestamp.fromDate(startDate);
+  const endTimestamp = Timestamp.fromDate(endDate);
+  
+  const q = query(
+    collection(db, "Checklists", documentId, "Tasks"),
+    where("date", ">=", startTimestamp),
+    where("date", "<", endTimestamp)
+  );
+
+  const checklists_c = collection(db,"Checklists");
+  const checklistsQ = await getDocs(checklists_c);
+  let checklists:any;
+  checklistsQ.forEach((ch)=>{
+    if(ch.id === documentId) checklists = ch.data();
   });
-  return _checklists;
+  console.log({checklists});
+  const querySnapshot = await getDocs(q);
+  const tasks:any = [];
+  querySnapshot.forEach((doc) => {
+    tasks.push(doc.data());
+  });
+
+  const users:{[k:string]:number} = {};
+  const userIds = Array.from(new Set(tasks.map((task:any) => task.user_id)));
+  userIds.forEach((user:any)=>{
+    if(!users[user]) users[user] = 0;
+    tasks.forEach((task:any)=>{
+      if(task.used && task.completed){
+        if(task.user_id === user){
+          users[user] += task.task_point;
+        }
+      }
+    })
+  });
+  checklists["total_point"] = {"users": users};
+  checklists["tasks"] = tasks;
+  return checklists;
 }
 
 export async function updateItem(documentId:string, root:string, updatedData:any) {
@@ -143,20 +198,109 @@ export const fetchHolidays = async (today:Date) => {
     return `${year}-${month}-${day}`;
   };
   
-  async function addDocumentWithId() {
+  export async function addDocumentWithId() {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     // const documentId = getFormattedDate(); // 문서 ID를 날짜로 설정
     const documentId = "C00000000";
     const users = user_won;
     const checklists = checklists_collection;
+    const ch = data_250201;
   
     try {
       // Firestore에 문서를 추가
-      await setDoc(doc(db, "Checklists", documentId), checklists);
-      console.log("문서가 성공적으로 추가되었습니다!");
+      // await setDoc(doc(db, "Checklists", documentId), checklists);
+
+      ch.tasks.forEach((data:any)=>{
+        const seconds = data.date.seconds;
+        const milliseconds = seconds * 1000; // 초를 밀리초로 변환
+        const date = new Date(milliseconds); // Date 객체 생성
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리로 맞춤
+        const day = String(date.getDate()).padStart(2, '0'); // 2자리로 맞춤
+
+        const formattedDate = `${year}_${month}_${day}`; // YYYY-MM-DD 형식 문자열
+        const docId = `task_${data.user_id}_${formattedDate}_${data.taskId}`; // 동적 문서 ID 생성 (날짜는 타임스탬프로 변환)
+        data["formattedDate"] = formattedDate;
+        const timestamp = Timestamp.fromDate(date); // Date 객체를 Timestamp 객체로 변환
+        data["date"] = timestamp;
+        setDocByDocumentId(db,"Checklists", documentId, "Tasks", docId, data);
+      })
+  
+
+      // console.log("문서가 성공적으로 추가되었습니다!");
     } catch (error) {
       console.error("문서 추가 중 오류 발생:", error);
     }
   }
+
+  async function setDocByDocumentId( db:any, collectionName:any, documentId:any, collectionName2:any, documentId2:any, task:any){
+    console.log({db, collectionName, documentId, task});
+    await setDoc(doc(db, collectionName, documentId, collectionName2, documentId2), task);
+  }
+
+  export const updateTasksToTimestamp = async ()=>{
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const checklistsRef = collection(db, "Checklists", "C00000000", "tasks");
+    const querySnapshot = await getDocs(checklistsRef);
+  
+    const batch = writeBatch(db);
+    const newTasks:any = [];
+  
+    querySnapshot.forEach((doc) => {
+      const docRef = doc.ref;
+      const data = doc.data();
+      const timestamp = new Timestamp(data.date.seconds, data.date.nanoseconds);
+      data.date = timestamp;
+      // newTasks.push(data);
+
+
+      // for (const taskDate in data.tasks) {
+      //   const timestamp = Timestamp.fromDate(new Date(taskDate));
+      //   // data.tasks[taskDate]["date"] = timestamp;
+      //   const task = data.tasks[taskDate];
+      //   // let newTask;
+      //   for (const user in task) {
+      //     task[user].map((newTask:any)=>{
+      //       newTask["date"] = timestamp;
+      //       newTask["user_id"] = user;
+      //       if(user==="on"){
+      //         newTask["user_name"] = "온겸";
+      //       }else{
+      //         newTask["user_name"] = "소빈";
+      //       }
+      //       newTasks.push(newTask);
+      //     });
+      //   }
+      // }
+      batch.update(docRef, { Tasks: data });
+    });
+    console.log("newTasks : ", newTasks);
+  
+    await batch.commit();
+    console.log("Tasks updated successfully!");
+  }
+
+  // export const getJsonData= async ()=>{
+  //   const app = initializeApp(firebaseConfig);
+  //   const db = getFirestore(app);
+  //   // JSON 파일 읽기
+  //   const checklistsRef = collection(db, "Checklists");
+  //   const querySnapshot = await getDocs(checklistsRef);
+  //   const batch = writeBatch(db);
+  //   readFile(new URL('data.json'),{encoding:'utf-8'}).then((jsonDataStr)=>{
+  //     const jsonData = JSON.parse(jsonDataStr);//, 'utf8'));
+  //     querySnapshot.forEach((doc) => {
+  //       const docRef = doc.ref;
+  //       const data = doc.data();
+        
+  //       batch.update(docRef, jsonData);
+  //       // console.log("newTasks : ", newTasks);
+  //     });
+    
+  //     console.log("Tasks upload successfully!");
+  //   })
+  //   await batch.commit();
+  // }
   

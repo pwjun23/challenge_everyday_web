@@ -27,7 +27,7 @@ const _date = `${year}-${month}-${day}`;
 export const useCheckListsStore = create<ChecklistState>((set) => ({
   checklists:{
     users_total_point:{},
-    tasks:{},
+    tasks:[],
     creation_user_id:'',
     title:'',
     task_hist:{},

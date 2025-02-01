@@ -117,9 +117,18 @@ const MonthlyView = (props : MonthlyViewProp) => {
 
         {daysInMonth.map((day, idx) => {
           const year = day.getFullYear();
-          const month = String(day.getMonth() + 1).padStart(2, '0');
+          const month = String(day.getMonth()).padStart(2, '0');
           const _day = String(day.getDate()).padStart(2, '0');
-          const _date = `${year}-${month}-${_day}`;
+          const _date = `${year}_${month}_${_day}`;
+          // const tasksByDate:any = tasks.filter((task)=> task.formattedDate === _date);
+          const userIds = Array.from(new Set(tasks.map((task:any) => task.user_id)));
+          const tasksByUserId:any = {};
+          if(userIds.length !== 0){
+            for(let i=0 ; i < userIds.length ; i++){
+              const userId = userIds[i];
+              tasksByUserId[userId] = tasks.filter((task:any)=> task.formattedDate === _date && task.user_id === userId);
+            }
+          }
           return(
           <div key={`daysInMonth-${day}-${idx}`} 
           onClick={()=>onClickHandle(_date)}
@@ -131,31 +140,26 @@ const MonthlyView = (props : MonthlyViewProp) => {
             >
               {format(day,'d')}
             </div>
-            {tasks && Object.keys(tasks).map((date, index)=>{
-              let dayDD = format(day, 'd');
-              const dayDD_task = date.split('-')[2];
-              if(dayDD.length === 1)dayDD = '0'+dayDD;
-              if(dayDD_task === dayDD){
-                  const tasks_by_user_id:{[k:string]:any} = tasks[date];
-                  return(
+            {tasksByUserId && Object.keys(tasksByUserId).map((userId, index)=>{
+                  let total_point = 0;
+                  const user_name = getUserNameByUserId(userId);
+                  const user_id = userId;
+                  const tasks:[{[k:string]:any}] = tasksByUserId[userId];
+                  tasks.forEach((task)=>{
+                    if(task.used && task.completed){
+                      total_point += task.task_point;
+                    }
+                  });
+                const tag_name_point = total_point!==0?<div className={`float-left text-sm text-stone-500`} key={`${day}-${user_id}-${index}`}>{user_name} <b className='text-blue-400'>{total_point}</b></div>:<div key={index}></div>; 
+                return(
                   <div className="text-xs mt-0" key={`points-${day}-${index}`}
                   // onClick={()=>onClickHandle(date)}
                   >
-                    {tasks_by_user_id && Object.keys(tasks_by_user_id).sort((a:any,b:any) => (a < b?-1: a > b ? 1 : 0)).map((user_id, i)=>{
-                      let total_point = 0;
-                      const user_name = getUserNameByUserId(user_id);
-                      const tasks:[{[k:string]:any}] = tasks_by_user_id[user_id];
-                      tasks.forEach((task)=>{
-                        if(task.used && task.completed){
-                          total_point += task.task_point;
-                        }
-                      });
-                      const tag_name_point = total_point!==0?<div className={`float-left text-sm text-stone-500`} key={`${day}-${user_id}-${i}`}>{user_name} <b className='text-blue-400'>{total_point}</b></div>:<div key={i}></div>;
-                      return tag_name_point;
-                    })}
-                  </div>)
-                }
+                  {tag_name_point} 
+                </div>)
             })}
+
+            
           </div>
           )})}
       </div>

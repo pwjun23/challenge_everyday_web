@@ -11,7 +11,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import ScoreSheets from './contents/ScoreSheets';
-import { fetchData, fetchHolidays } from './commonService';
+import { addDocumentWithId, fetchData, fetchHolidays, updateTasksToTimestamp } from './commonService';
 import { useCheckListsStore } from './store/checklistStore';
 
 
@@ -34,10 +34,12 @@ const Home: React.FC= () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // addDocumentWithId();
-    fetchData().then((res)=>{
+    // updateTasksToTimestamp();//batch로 데이터 모델 변경.
+    
+    // addDocumentWithId();//데이터 밀어넣기
+    fetchData('2025','01').then((res)=>{
       setChecklists(res);
-    }); 
+    });
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -47,7 +49,7 @@ const Home: React.FC= () => {
   useEffect(() => {
     // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
     setIsEdit(false);
-    fetchData().then((res)=>{
+    fetchData("2025","01").then((res)=>{
       setChecklists(res);
     });
   }, [currentSlideIndex]);
@@ -157,7 +159,7 @@ const Home: React.FC= () => {
         onSlideChange={(swiper) => onSlideChangese(swiper.activeIndex)}
       >
           <SwiperSlide>
-            {checklists&& swiperRef &&<MonthlyView
+            {checklists && checklists.tasks && checklists.tasks.length !== 0 && swiperRef &&<MonthlyView
               // today={today}
               // startDayOfWeek={startDayOfWeek}
               // daysInMonth={daysInMonth}

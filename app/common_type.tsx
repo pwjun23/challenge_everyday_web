@@ -1,7 +1,7 @@
 export type TabType = 'monthly' | 'daily' | 'checkadm'| 'score_sheet';
 export type Checklists = {
     users_total_point:{[k:string]:any}
-    tasks:{[k:string]:any}
+    tasks:{[k:string]:any}[]
     creation_user_id:string
     title:string
     task_hist:{[k:string]:any}
