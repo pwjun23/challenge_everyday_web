@@ -16,7 +16,7 @@ export type Checklists = {
   }
 
   export type DailyChecklistProp ={
-    key:any
+    user_id:string
   }
 
   export type ChecklistProp ={

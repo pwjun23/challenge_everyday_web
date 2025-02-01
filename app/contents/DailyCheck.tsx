@@ -22,16 +22,17 @@ const DailyChecklist = (props : DailyChecklistProp) => {
     })[0];
     
     const newTasks:{[k:string]:any} =  _.cloneDeep(template);
-    Object.keys(newTasks).map((user_id)=>
-      newTasks[user_id].map((task:any)=>task.completed = false)
-    );
-    if(Object.keys(tasks).includes(value)){
-      Object.keys(tasks[value]).map((user_id)=>{
-        if(tasks[value][user_id].length !== 0){
-          newTasks[user_id] = tasks[value][user_id];
-        }
-      });
-    }
+    Object.keys(newTasks).map((user_id)=>{
+      newTasks[user_id].map((task:any)=>task.completed = false);
+    });
+
+    
+    Object.keys(newTasks).forEach((user_id)=>{
+      const count = tasks.filter((task:any)=> task.user_id === user_id && task.formattedDate === value).length;
+      if(count !== 0){
+        newTasks[user_id] = tasks.filter((task:any)=> task.user_id === user_id && task.formattedDate === value);
+      }
+    });
     return newTasks
   }
   const onChangeHandler = (value:string)=>{

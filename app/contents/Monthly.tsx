@@ -119,8 +119,8 @@ const MonthlyView = (props : MonthlyViewProp) => {
           const year = day.getFullYear();
           const month = String(day.getMonth()).padStart(2, '0');
           const _day = String(day.getDate()).padStart(2, '0');
-          const _date = `${year}_${month}_${_day}`;
-          // const tasksByDate:any = tasks.filter((task)=> task.formattedDate === _date);
+          const _date = `${year}-${month}-${_day}`;
+          // console.log({_date});
           const userIds = Array.from(new Set(tasks.map((task:any) => task.user_id)));
           const tasksByUserId:any = {};
           if(userIds.length !== 0){

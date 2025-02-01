@@ -26,14 +26,14 @@ const firebaseConfig = {
   measurementId: "G-ZH69TWC3DJ"
 };
 
-// const backupJson = (json:any)=>{
-// // 파일 저장
-//   const jsonData = json;
-//   const now = new Date();
-//   const fileName = `data_${now.toISOString().replace(/:/g, '-')}.json`;
-//   const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
-//   FileSaver.saveAs(blob, fileName);
-// }
+const backupJson = (json:any)=>{
+// 파일 저장
+  const jsonData = json;
+  const now = new Date();
+  const fileName = `data_${now.toISOString().replace(/:/g, '-')}.json`;
+  const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+  // FileSaver.saveAs(blob, fileName);
+}
 
 // 특정 월의 시작과 끝 날짜를 Timestamp 객체로 변환하는 함수
 const getMonthTimestamps = (year:number, month:number) => {
@@ -93,9 +93,10 @@ export async function fetchData(_year:string,month:string) {
 
 
   const querySnapshot = await getDocs(q);
-  const tasks:any = [];
+  let tasks:any = [];
   querySnapshot.forEach((doc) => {
-    tasks.push(doc.data());
+    console.log("data : ",doc.data());
+    tasks = doc.data().tasks;
   });
 
   const users:{[k:string]:number} = {};
@@ -201,6 +202,15 @@ export const fetchHolidays = async (today:Date) => {
     const day = String(now.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+
+function convertYYYYMMToTimestamp(yyyymm:string) {
+  const year = parseInt(yyyymm.slice(0, 4)); // 년도 추출
+  const month = parseInt(yyyymm.slice(4, 6)) - 1; // 월 추출 (0부터 시작)
+
+  const date = new Date(year, month, 1); // Date 객체 생성 (1일)
+  return Timestamp.fromDate(date); // Timestamp 객체로 변환
+}
   
   export async function addDocumentWithId() {
     const app = initializeApp(firebaseConfig);
@@ -213,7 +223,13 @@ export const fetchHolidays = async (today:Date) => {
   
     try {
       await setDoc(doc(db, "Checklists", documentId), checklists);
-
+      const newTaskDoc:any = {};
+      const docId = `2025-01`; // 동적 문서 ID 생성 (날짜는 타임스탬프로 변환)
+      const yyyymm = "202501";
+      const timestampByMonth = convertYYYYMMToTimestamp(yyyymm);
+      newTaskDoc["formattedDate"] = `2025-01`;
+      newTaskDoc["date"] = timestampByMonth;
+      newTaskDoc["tasks"] = [];
       ch.tasks.forEach((data:any)=>{
         const seconds = data.date.seconds;
         const milliseconds = seconds * 1000; // 초를 밀리초로 변환
@@ -221,16 +237,14 @@ export const fetchHolidays = async (today:Date) => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리로 맞춤
         const day = String(date.getDate()).padStart(2, '0'); // 2자리로 맞춤
-
         const formattedDate = `${year}-${month}-${day}`; // YYYY-MM-DD 형식 문자열
-        const docId = `task_${data.user_id}_${formattedDate}_${data.taskId}`; // 동적 문서 ID 생성 (날짜는 타임스탬프로 변환)
-        // data["formattedDate"] = formattedDate;
-        // const timestamp = Timestamp.fromDate(date); // Date 객체를 Timestamp 객체로 변환
-        // data["date"] = timestamp;
-        data.formattedDate = data.formattedDate.replaceAll('_','-');
-
-        setDocByDocumentId(db,"Checklists", documentId, "Tasks", docId, data);
+        const timestamp = Timestamp.fromDate(date); // Date 객체를 Timestamp 객체로 변환
+        data["date"] = timestamp;
+        data["formattedDate"] = formattedDate;
+        newTaskDoc["tasks"].push(data);
       })
+      console.log({newTaskDoc});
+      setDocByDocumentId(db,"Checklists", documentId, "Tasks", docId, newTaskDoc);
   
 
       // console.log("문서가 성공적으로 추가되었습니다!");
@@ -247,7 +261,7 @@ export const fetchHolidays = async (today:Date) => {
   export const updateTasksToTimestamp = async ()=>{
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const checklistsRef = collection(db, "Checklists", "C00000000", "tasks");
+    const checklistsRef = collection(db, "Checklists", "C00000000", "Tasks");
     const querySnapshot = await getDocs(checklistsRef);
   
     const batch = writeBatch(db);
@@ -256,30 +270,30 @@ export const fetchHolidays = async (today:Date) => {
     querySnapshot.forEach((doc) => {
       const docRef = doc.ref;
       const data = doc.data();
-      // const timestamp = new Timestamp(data.date.seconds, data.date.nanoseconds);
-      // data.date = timestamp;
-      // newTasks.push(data);
+      const timestamp = new Timestamp(data.date.seconds, data.date.nanoseconds);
+      data.date = timestamp;
+      newTasks.push(data);
       data.formattedDate = data.formattedDate.replaceAll('_','-');
 
-      // for (const taskDate in data.tasks) {
-      //   const timestamp = Timestamp.fromDate(new Date(taskDate));
-      //   // data.tasks[taskDate]["date"] = timestamp;
-      //   const task = data.tasks[taskDate];
-      //   // let newTask;
-      //   for (const user in task) {
-      //     task[user].map((newTask:any)=>{
-      //       newTask["date"] = timestamp;
-      //       newTask["user_id"] = user;
-      //       if(user==="on"){
-      //         newTask["user_name"] = "온겸";
-      //       }else{
-      //         newTask["user_name"] = "소빈";
-      //       }
-      //       newTasks.push(newTask);
-      //     });
-      //   }
-      // }
-      batch.update(docRef, { Tasks: data });
+      for (const taskDate in data.tasks) {
+        const timestamp = Timestamp.fromDate(new Date(taskDate));
+        // data.tasks[taskDate]["date"] = timestamp;
+        const task = data.tasks[taskDate];
+        // let newTask;
+        for (const user in task) {
+          task[user].map((newTask:any)=>{
+            newTask["date"] = timestamp;
+            newTask["user_id"] = user;
+            if(user==="on"){
+              newTask["user_name"] = "온겸";
+            }else{
+              newTask["user_name"] = "소빈";
+            }
+            newTasks.push(newTask);
+          });
+        }
+      }
+      // batch.update(docRef, { Tasks: data });
     });
     console.log("newTasks : ", newTasks);
   

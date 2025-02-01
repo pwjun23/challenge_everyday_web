@@ -49,9 +49,11 @@ const Home: React.FC= () => {
   useEffect(() => {
     // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
     setIsEdit(false);
-    fetchData("2025","01").then((res)=>{
-      setChecklists(res);
-    });
+    if(currentSlideIndex){
+      // fetchData("2025","01").then((res)=>{
+      //   setChecklists(res);
+      // });
+    }
   }, [currentSlideIndex]);
 
   useEffect(() => {
@@ -159,7 +161,7 @@ const Home: React.FC= () => {
         onSlideChange={(swiper) => onSlideChangese(swiper.activeIndex)}
       >
           <SwiperSlide>
-            {checklists && checklists.tasks && checklists.tasks.length !== 0 && swiperRef &&<MonthlyView
+            {checklists && checklists.tasks && swiperRef &&<MonthlyView
               // today={today}
               // startDayOfWeek={startDayOfWeek}
               // daysInMonth={daysInMonth}
@@ -171,6 +173,7 @@ const Home: React.FC= () => {
           {checklists &&
             <DailyChecklist
               key={'daily'}
+              user_id=''
             />}
           </SwiperSlide>
           <SwiperSlide>
