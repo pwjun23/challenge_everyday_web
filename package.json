@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "if [\"$VERCEL_GIT_BANCH_NAME\" = \"DEV\" ]; then npm run buuid:dev; next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
