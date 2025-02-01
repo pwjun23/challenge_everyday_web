@@ -118,20 +118,22 @@ const MonthlyView = (props : MonthlyViewProp) => {
         {daysInMonth.map((day, idx) => {
           const year = day.getFullYear();
           const month = String(day.getMonth()).padStart(2, '0');
+          const monthC = String(day.getMonth()+1).padStart(2, '0');
           const _day = String(day.getDate()).padStart(2, '0');
           const _date = `${year}-${month}-${_day}`;
-          // console.log({_date});
+          const _dateC = `${year}-${monthC}-${_day}`;
           const userIds = Array.from(new Set(tasks.map((task:any) => task.user_id)));
           const tasksByUserId:any = {};
           if(userIds.length !== 0){
             for(let i=0 ; i < userIds.length ; i++){
               const userId = userIds[i];
-              tasksByUserId[userId] = tasks.filter((task:any)=> task.formattedDate === _date && task.user_id === userId);
+              tasksByUserId[userId] = tasks.filter((task:any)=> task.formattedDate === _dateC && task.user_id === userId);
             }
           }
+
           return(
           <div key={`daysInMonth-${day}-${idx}`} 
-          onClick={()=>onClickHandle(_date)}
+          onClick={()=>onClickHandle(_dateC)}
           className={`p-1 text-center border wrap-day-in-month`}>
             <div
               className={`text-sm font-bold ${

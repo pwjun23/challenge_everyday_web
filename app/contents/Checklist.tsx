@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChecklistProp } from '../common_type';
 import Image from 'next/image';
 import { useCheckListsStore } from '../store/checklistStore';
-import { updateItem } from '../commonService';
+import { mergeObjects, updateItem } from '../commonService';
 
 const Checklist = (props : ChecklistProp) => {
   const {user_to_check, tasks, user_id_to_check} = props;
@@ -69,11 +69,18 @@ const Checklist = (props : ChecklistProp) => {
   }
 
   const saveChecklists = ()=>{
-    const root = `tasks.${selectedDate}.${user_id_to_check}`;
-    updateItem("C00000000", root, checklists).then((res)=>{
-      debugger;
+    const date = selectedDate.slice(0, 7);
+    const documentId2 = `${date}`;
+    // const root = `${date}`;
+//     console.log(root);
+// debugger;
+    mergeObjects("C00000000", "Tasks", documentId2,"tasks", checklists).then((res)=>{
       alert('저장되었습니다.')
     });
+
+    // updateItem("C00000000", "Tasks", documentId2,"tasks", checklists).then((res)=>{
+    //   alert('저장되었습니다.')
+    // });
   }
 
   useEffect(()=>{

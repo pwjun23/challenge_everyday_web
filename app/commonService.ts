@@ -119,11 +119,11 @@ export async function fetchData(_year:string,month:string) {
   return checklists;
 }
 
-export async function updateItem(documentId:string, root:string, updatedData:any) {
+export async function updateItem(documentId:string, collectionName:string, documentId2:string, root:string, updatedData:any) {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
     try {
-      const docRef = doc(db, "Checklists", documentId);
+      const docRef = doc(db, "Checklists", documentId, collectionName, documentId2);
       const docSnap = await getDoc(docRef);
   
       if (docSnap.exists()) {
@@ -142,7 +142,61 @@ export async function updateItem(documentId:string, root:string, updatedData:any
       console.error("업데이트 중 오류 발생:", error);
     }
   }
+  export async function mergeObjects(documentId:string, collectionName:string, documentId2:string, arrayField:string, newObjects:any) {
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const docRef = doc(db, "Checklists", documentId, collectionName, documentId2);
+    const docSnap = await getDoc(docRef);
   
+    if (docSnap.exists()) {
+      const existingData = docSnap.data();
+
+
+      const existingArray = existingData[arrayField] || [];// 기존에 있던 배열
+      const addData:any = [];
+      existingArray.map((obj:any)=>{
+        const exKey = obj.user_id+obj.taskId+obj.formattedDate;
+        newObjects.forEach((nObj:any, index:number)=>{
+          const key = nObj.user_id+nObj.taskId+nObj.formattedDate;
+          if(exKey === key){
+            obj.completed = nObj.completed;
+            obj.task_point = nObj.task_point;
+          }
+          const findIndex = existingArray.findIndex((o:any)=> o.taskId + o.user_id_to_check + o.formattedDate === nObj.taskId + nObj.user_id_to_check + nObj.formattedDate);
+          if(findIndex == -1){
+            const newObj = newObjects.filter((o:any)=>o.taskId + o.user_id_to_check + o.formattedDate=== nObj.taskId + nObj.user_id_to_check + nObj.formattedDate)[0];
+            const keyNew = newObj.taskId + newObj.user_id_to_check + newObj.formattedDate;
+            const checkIdx = addData.findIndex((add:any)=> add.taskId + add.user_id_to_check + add.formattedDate === keyNew);
+            if(checkIdx === -1){
+              addData.push(newObj);
+            }
+          }
+        });
+      });
+
+      const uniqueArray = existingArray.concat(addData);
+      // 새로운 객체 배열과 기존 배열을 병합
+      // const mergedArray = [...existingArray, ...newObjects];
+  
+      // // 중복 제거 (원하는 기준으로)
+      // const uniqueArray = mergedArray.filter((obj, index, self) =>
+      //   self.findIndex((o) => o.taskId + o.user_id_to_check === obj.taskId + obj.user_id_to_check) === index // 키값을 기준으로 중복 제거
+      // );
+      console.log({uniqueArray});
+      await updateDoc(docRef, { [arrayField]: uniqueArray });
+    }else{
+      // await updateDoc(docRef, { [arrayField]: newObjects });
+      const newTaskDoc:any = {};
+      const yyyymm = newObjects[0].formattedDate.slice(0, 7).replaceAll("-","");
+      const timestampByMonth = convertYYYYMMToTimestamp(yyyymm);
+      newTaskDoc["formattedDate"] = newObjects[0].formattedDate.slice(0, 7);
+      newTaskDoc["date"] = timestampByMonth;
+      newTaskDoc["tasks"] = newObjects;
+      await setDocByDocumentId(db,"Checklists", documentId, "Tasks", documentId2, newTaskDoc);
+
+    }
+  }
+
   async function fetchDocumentById(collectionName:string, documentId:string) {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -218,11 +272,11 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     // const documentId = getFormattedDate(); // 문서 ID를 날짜로 설정
     const documentId = "C00000000";
     const users = user_won;
-    const checklists = checklists_collection;
+    // const checklists = checklists_collection;
     const ch = data_250201;
   
     try {
-      await setDoc(doc(db, "Checklists", documentId), checklists);
+      await setDoc(doc(db, "Checklists", documentId), ch);
       const newTaskDoc:any = {};
       const docId = `2025-01`; // 동적 문서 ID 생성 (날짜는 타임스탬프로 변환)
       const yyyymm = "202501";
@@ -253,7 +307,7 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     }
   }
 
-  async function setDocByDocumentId( db:any, collectionName:any, documentId:any, collectionName2:any, documentId2:any, task:any){
+export async function setDocByDocumentId( db:any, collectionName:any, documentId:any, collectionName2:any, documentId2:any, task:any){
     console.log({db, collectionName, documentId, task});
     await setDoc(doc(db, collectionName, documentId, collectionName2, documentId2), task);
   }

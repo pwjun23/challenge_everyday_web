@@ -5,9 +5,10 @@ import { DailyChecklistProp } from '../common_type';
 import Checklist from './Checklist';
 import _ from 'lodash';
 import { useCheckListsStore } from '../store/checklistStore';
+import { Timestamp } from 'firebase/firestore';
 
 const DailyChecklist = (props : DailyChecklistProp) => {
-  const {checklists, selectedDate} = useCheckListsStore();
+  const {checklists, selectedDate, setSelectedDate} = useCheckListsStore();
   const {users_to_check, tasks, tasks_template} = checklists || {};
   const [inputSelectedDate, setInputSelectedDate] = useState('');
   const [tasks_by_date, setTask_by_date] = useState<{[k:string]:any}>({});
@@ -23,10 +24,20 @@ const DailyChecklist = (props : DailyChecklistProp) => {
     
     const newTasks:{[k:string]:any} =  _.cloneDeep(template);
     Object.keys(newTasks).map((user_id)=>{
-      newTasks[user_id].map((task:any)=>task.completed = false);
+      newTasks[user_id].map((task:any)=>{
+        const date = new Date(selectedDate); // Date 객체 생성
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리로 맞춤
+        const day = String(date.getDate()).padStart(2, '0'); // 2자리로 맞춤
+        const formattedDate = `${year}-${month}-${day}`; // YYYY-MM-DD 형식 문자열
+        const timestamp = Timestamp.fromDate(date); // Date 객체를 Timestamp 객체로 변환
+        task.completed = false;
+        task["user_id"] = task.user_id_to_check;
+        task["date"] = timestamp;
+        task["formattedDate"] = formattedDate;
+      });
     });
 
-    
     Object.keys(newTasks).forEach((user_id)=>{
       const count = tasks.filter((task:any)=> task.user_id === user_id && task.formattedDate === value).length;
       if(count !== 0){
@@ -44,6 +55,7 @@ const DailyChecklist = (props : DailyChecklistProp) => {
     const newTasks:{[k:string]:any} = getBlankTasks(value);
     setTask_by_date(newTasks);
     setInputSelectedDate(value);
+    setSelectedDate(value);
   }
   
   useEffect(()=>{

@@ -4264,7 +4264,6 @@ Checklists(Collection) > C00000000(문서 Id))
                        > Tasks(Collection)  > 2025-01(문서 Id2)) 
                                               date : Timestemp
                                               tasks : [ // 7(건) * 2 (사용자 수) * 30(일)= 420개 , key : taskId + user_id
-                                              {
                                                 "completed": false,
                                                 "date": {
                                                     "seconds": 1735689600,
@@ -4304,6 +4303,138 @@ export const data_250201 = {
       }
     ],
     "tasks_template": {
+      "2025-02-01": {
+        "on": [
+          {
+            "user_id_to_check": "on",
+            "completed": true,
+            "task_name": "신발정리",
+            "used": true,
+            "create_user": "won",
+            "task_point": 2,
+            "taskId": "t000000"
+          },
+          {
+            "task_point": 2,
+            "taskId": "t000001",
+            "used": true,
+            "user_id_to_check": "on",
+            "completed": true,
+            "task_name": "이불정리",
+            "create_user": "won"
+          },
+          {
+            "user_id_to_check": "on",
+            "taskId": "t000002",
+            "create_user": "won",
+            "task_point": 3,
+            "used": true,
+            "completed": false,
+            "task_name": "독서(20분 이상)"
+          },
+          {
+            "create_user": "won",
+            "completed": false,
+            "used": true,
+            "user_id_to_check": "on",
+            "task_point": 3,
+            "task_name": "단어필사",
+            "taskId": "t000003"
+          },
+          {
+            "completed": false,
+            "user_id_to_check": "on",
+            "task_name": "반찬 안남기기",
+            "task_point": 2,
+            "used": true,
+            "taskId": "t000004",
+            "create_user": "won"
+          },
+          {
+            "completed": false,
+            "task_name": "9시40분까지 잘 준비",
+            "used": true,
+            "user_id_to_check": "on",
+            "create_user": "won",
+            "taskId": "t000005",
+            "task_point": 3
+          },
+          {
+            "taskId": "t000006",
+            "used": true,
+            "create_user": "won",
+            "task_name": "저녁밥 먹고 스쿼트 30개",
+            "task_point": 3,
+            "completed": false,
+            "user_id_to_check": "on"
+          }
+        ],
+        "so": [
+          {
+            "used": true,
+            "completed": false,
+            "task_name": "신발정리",
+            "task_point": 2,
+            "taskId": "t000000",
+            "create_user": "won",
+            "user_id_to_check": "so"
+          },
+          {
+            "completed": false,
+            "taskId": "t000001",
+            "task_name": "이불정리",
+            "user_id_to_check": "so",
+            "task_point": 2,
+            "used": true,
+            "create_user": "won"
+          },
+          {
+            "completed": false,
+            "used": true,
+            "task_name": "독서(20분 이상)",
+            "user_id_to_check": "so",
+            "task_point": 3,
+            "create_user": "won",
+            "taskId": "t000002"
+          },
+          {
+            "task_name": "단어필사",
+            "completed": false,
+            "user_id_to_check": "so",
+            "used": true,
+            "taskId": "t000003",
+            "create_user": "won",
+            "task_point": 3
+          },
+          {
+            "task_point": 2,
+            "task_name": "반찬 안남기기",
+            "completed": false,
+            "user_id_to_check": "so",
+            "create_user": "won",
+            "taskId": "t000004",
+            "used": true
+          },
+          {
+            "used": true,
+            "task_point": 3,
+            "taskId": "t000005",
+            "task_name": "9시40분까지 잘 준비",
+            "user_id_to_check": "so",
+            "create_user": "won",
+            "completed": false
+          },
+          {
+            "task_point": 2,
+            "completed": true,
+            "used": true,
+            "task_name": "저녁밥 먹고 스쿼트 30개",
+            "taskId": "t000007",
+            "create_user": "won",
+            "user_id_to_check": "so"
+          }
+        ]
+      },
       "2025-01-13": {
         "on": [
           {
@@ -4487,12 +4618,6 @@ export const data_250201 = {
           "user_name": "소빈"
         }
       ]
-    },
-    "total_point": {
-      "users": {
-        "on": 526,
-        "so": 516
-      }
     },
     "tasks": [
       {
