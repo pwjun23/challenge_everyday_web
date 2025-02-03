@@ -9,9 +9,10 @@ import { fetchHolidays } from '../commonService';
 
 
 const MonthlyView = (props : MonthlyViewProp) => {
-  const {swiperRef } = props;
+  const {swiperRef, totalMonthCount} = props;
+  const { checklists, selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate } = useCheckListsStore();
 
-  const today = new Date();
+  const today = new Date(selectedDate);
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');
@@ -27,7 +28,6 @@ const MonthlyView = (props : MonthlyViewProp) => {
   for (let day = monthStart; day <= monthEnd; day = addDays(day, 1)) {
     daysInMonth.push(day);
   }
-  const { checklists, selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate } = useCheckListsStore();
   
   const {tasks, total_point, users_to_check, points_reward} = checklists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -61,19 +61,31 @@ const MonthlyView = (props : MonthlyViewProp) => {
     }
    
   }
+  const onClickMonth = (month:number)=>{
+    const selectedDates:any = selectedDate.split('-');
+    const setMonth = `${selectedDates[0]}-${String(month).padStart(2, '0')}-01`;
+    setSelectedDate(setMonth);
+  }
+
   useEffect(() => {
     // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
     if (currentSlideIndex && swiperRef && swiperRef && swiperRef.current) {
       swiperRef.current.slideTo(currentSlideIndex);
     }
-    fetchHolidays(today).then((res)=> setHolidays(res));
+    fetchHolidays(new Date(selectedDate)).then((res)=> setHolidays(res));
   }, [selectedDate]);
 
 
   return (
     <div className="p-4">
-      <div className="text-center text-xl font-extrabold text-blue-600">
-        {format(today, 'M')} 월
+      <div className={`text-center`}>
+        {totalMonthCount && Array.from({ length: totalMonthCount+1 }, (_, i) => i + 1).map((number)=>(
+          <span key={number} className={`ml-1 mr-1 ${String(number)=== format(selectedDate, 'M')?"text-blue-600 font-extrabold text-xl":"text-black text-lg"}`}
+            onClick={()=> onClickMonth(number)}
+          >
+           {number}월
+          </span>
+        ))}
       </div>
       {/* <div className="text-center text-lg font-bold text-stone-700 mt-2">총점: {total_point?.total}</div> */}
       <div className="flex justify-center text-xl text-stone-700 mb-4" >
