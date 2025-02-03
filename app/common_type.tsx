@@ -13,6 +13,7 @@ export type Checklists = {
 
   export type MonthlyViewProp ={
     swiperRef:any
+    totalMonthCount:number
   }
 
   export type DailyChecklistProp ={

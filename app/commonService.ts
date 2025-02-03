@@ -65,15 +65,17 @@ async function getTasksByUsed(db:any, checklistId:string) {
   }
 }
 
-export async function fetchData(_year:string,month:string) {
+export async function fetchData(selectedDate:string) {
   const documentId = "C00000000";
-  const year = parseInt(_year);
+  const year = parseInt(selectedDate.split("-")[0]);
+  const month = parseInt(selectedDate.split("-")[1]);
+  // const year = parseInt(_year);
   // 날짜 범위 계산
   // 쿼리 시작 및 종료 날짜 설정 (해당 달의 1일 00:00:00 ~ 말일 23:59:59)
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const startDate = new Date(year, parseInt(month) - 1, 1);
-  const endDate = new Date(year, parseInt(month), 1);
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 1);
   
   const startTimestamp = Timestamp.fromDate(startDate);
   const endTimestamp = Timestamp.fromDate(endDate);
