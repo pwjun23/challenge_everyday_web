@@ -36,12 +36,7 @@ const Home: React.FC= () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // updateTasksToTimestamp();//batch로 데이터 모델 변경.
-    
-    // addDocumentWithId();//데이터 밀어넣기
-    // fetchData(selectedDate).then((res)=>{
-    //   setChecklists(res);
-    // });
+    // addDocumentWithId();//데이터 밀어넣기 or 배치
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -51,11 +46,9 @@ const Home: React.FC= () => {
   useEffect(() => {
     // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
     setIsEdit(false);
-    // if(currentSlideIndex){
       fetchData(selectedDate).then((res)=>{
         setChecklists(res);
       });
-    // }
   }, [currentSlideIndex, selectedDate]);
 
   useEffect(() => {
@@ -111,7 +104,6 @@ const Home: React.FC= () => {
   }
   const onSlideChangese = (index:number)=>{
     const tab_id:string = tabs[index].tab_id;
-    // fetchData();
     setActiveTab(tab_id);
     setSlideIndex(index);
   }

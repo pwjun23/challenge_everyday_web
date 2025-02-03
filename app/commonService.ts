@@ -278,29 +278,55 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     const ch = data_250201;
   
     try {
-      await setDoc(doc(db, "Checklists", documentId), ch);
+      // await setDoc(doc(db, "Checklists", documentId), ch);
       const newTaskDoc:any = {};
-      const docId = `2025-01`; // 동적 문서 ID 생성 (날짜는 타임스탬프로 변환)
-      const yyyymm = "202501";
-      const timestampByMonth = convertYYYYMMToTimestamp(yyyymm);
-      newTaskDoc["formattedDate"] = `2025-01`;
-      newTaskDoc["date"] = timestampByMonth;
-      newTaskDoc["tasks"] = [];
-      ch.tasks.forEach((data:any)=>{
-        const seconds = data.date.seconds;
-        const milliseconds = seconds * 1000; // 초를 밀리초로 변환
-        const date = new Date(milliseconds); // Date 객체 생성
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1, 2자리로 맞춤
-        const day = String(date.getDate()).padStart(2, '0'); // 2자리로 맞춤
-        const formattedDate = `${year}-${month}-${day}`; // YYYY-MM-DD 형식 문자열
-        const timestamp = Timestamp.fromDate(date); // Date 객체를 Timestamp 객체로 변환
-        data["date"] = timestamp;
-        data["formattedDate"] = formattedDate;
-        newTaskDoc["tasks"].push(data);
-      })
+      const batch = writeBatch(db);
+      let tasks = [];
+      // let check_formattedDate = "";
+      let documentId = '';//`${task.user_id}-${formattedDate}`;
+      let newTask:any = {};
+
+      ch.tasks.forEach((task:any, index:number)=>{
+        const formattedDate = task.formattedDate.replaceAll('_','-');
+        const ch_documentId = `${task.user_id}-${formattedDate}`;
+
+        const taskInTasks:any = {};
+        taskInTasks['taskId']= task.taskId;
+        taskInTasks['taskName']= task.taskId;
+        taskInTasks['taskPoint']= task.task_point;
+        taskInTasks['completed']=task.completed;
+        // console.log({documentId, ch_documentId})
+        if(documentId !== ch_documentId){
+          if(documentId !==''){
+            batch.set(doc(db, "tasks", documentId), newTask);
+            console.log({newTask, documentId});
+          }
+          
+
+          documentId = ch_documentId;
+          newTask['userId'] = 'admin';
+          newTask['date']= Timestamp.fromDate(new Date(formattedDate));
+          newTask['formattedDate']= task.task_name;
+          newTask['targetId'] = task.user_id;
+          newTask['targetName'] = task.user_name;
+          
+          newTask['tasks'] = [];
+          newTask['tasks'].push(taskInTasks);
+        }else{
+
+          newTask['tasks'].push(taskInTasks);
+        }
+        
+        newTaskDoc[documentId] = newTask;
+      });
+
+      // 배치 커밋
+    batch.commit().then(() => {
+      console.log("Documents written with batch");
       console.log({newTaskDoc});
-      setDocByDocumentId(db,"Checklists", documentId, "Tasks", docId, newTaskDoc);
+    });
+      // await setDoc(doc(db,"tasks"), newTaskDoc);
+      // setDocByDocumentId(db,"Checklists", documentId, "Tasks", docId, newTaskDoc);
   
 
       // console.log("문서가 성공적으로 추가되었습니다!");
