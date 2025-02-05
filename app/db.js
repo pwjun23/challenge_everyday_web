@@ -18,7 +18,17 @@ export const user_on =
 	        "checklists" :	"checkList_0"
         };
 		
-		
+export const users = {
+  "admin":{
+    "userName" : "park",
+    "userId" : "pwjun23",
+    "role" : "admin"
+
+  }
+
+}
+        
+
 /**
  * C00000000 문서코드 C+숫자8자리( C는 Checklist의 약자)   
  *  */ 
@@ -4621,20 +4631,18 @@ export const data_250201 = {
     },
     "tasks": [
       {
-        "completed": false,
         "date": {
           "seconds": 1735689600,
           "nanoseconds": 0
         },
+        "user_id": "on",
+        "user_name": "온겸",
+        "taskId": "t000000",
         "task_name": "신발정리",
         "task_point": 3,
-        "user_name": "온겸",
-        "create_user": "won",
-        "taskId": "t000000",
-        "formattedDate": "2025_01_01",
-        "user_id_to_check": "on",
-        "user_id": "on",
-        "used": true
+        "completed": false,
+        
+        
       },
       {
         "user_id_to_check": "on",
