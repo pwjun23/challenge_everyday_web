@@ -10,7 +10,7 @@ import { fetchHolidays } from '../commonService';
 
 const MonthlyView = (props : MonthlyViewProp) => {
   const {swiperRef, totalMonthCount} = props;
-  const { checklists, selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate } = useCheckListsStore();
+  const { checklists, selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate, tasks } = useCheckListsStore();
 
   const today = new Date(selectedDate);
   const year = today.getFullYear();
@@ -29,7 +29,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
     daysInMonth.push(day);
   }
   
-  const {tasks, total_point, users_to_check, points_reward} = checklists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
+  const {total_point, users_to_check, points_reward} = checklists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
   // 공휴일인지 체크하는 함수
   const isHoliday = (date: Date): boolean => {
@@ -127,21 +127,33 @@ const MonthlyView = (props : MonthlyViewProp) => {
           <div key={`blank-${idx}`} className="text-center"></div>
         ))}
 
-        {daysInMonth.map((day, idx) => {
+        {tasks && daysInMonth.map((day, idx) => {
           const year = day.getFullYear();
           const month = String(day.getMonth()).padStart(2, '0');
           const monthC = String(day.getMonth()+1).padStart(2, '0');
           const _day = String(day.getDate()).padStart(2, '0');
           const _date = `${year}-${month}-${_day}`;
           const _dateC = `${year}-${monthC}-${_day}`;
-          const userIds = Array.from(new Set(tasks.map((task:any) => task.user_id)));
+          // 날짜 맞는 배열을 필터링한다. 
+          // targetIds를 추출한다.
+          const pointInfoByDay:any = tasks.filter((task:any)=> task.formattedDate === _dateC);
+          const targetIds = Array.from(new Set(pointInfoByDay.map((task:any) => task.targetId)));
           const tasksByUserId:any = {};
-          if(userIds.length !== 0){
-            for(let i=0 ; i < userIds.length ; i++){
-              const userId = userIds[i];
-              tasksByUserId[userId] = tasks.filter((task:any)=> task.formattedDate === _dateC && task.user_id === userId);
+          if(targetIds.length !== 0){
+            for(let i=0 ; i < targetIds.length ; i++){
+              const targetId:any = targetIds[i];
+              tasksByUserId[targetId] = tasks.filter((task:any)=> task.formattedDate === _dateC && task.targetId === targetId);
             }
           }
+
+          // const userIds = Array.from(new Set(tasks.map((task:any) => task.user_id)));
+          // const tasksByUserId:any = {};
+          // if(userIds.length !== 0){
+          //   for(let i=0 ; i < userIds.length ; i++){
+          //     const userId = userIds[i];
+          //     tasksByUserId[userId] = tasks.filter((task:any)=> task.formattedDate === _dateC && task.user_id === userId);
+          //   }
+          // }
 
           return(
           <div key={`daysInMonth-${day}-${idx}`} 
@@ -156,7 +168,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
             </div>
             {tasksByUserId && Object.keys(tasksByUserId).map((userId, index)=>{
                   let total_point = 0;
-                  const user_name = getUserNameByUserId(userId);
+                  const user_name = tasksByUserId[]//getUserNameByUserId(userId);
                   const user_id = userId;
                   const tasks:[{[k:string]:any}] = tasksByUserId[userId];
                   tasks.forEach((task)=>{
