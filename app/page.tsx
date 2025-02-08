@@ -24,7 +24,7 @@ const Home: React.FC= () => {
   const today = new Date();
   const totalMonthCount = today.getMonth();// 1월 : 0, 2월 : 1
 
-  const {checklists, currentSlideIndex, editing, setChecklists, setIsEdit, setSlideIndex, selectedDate, tasks, setTasks} = useCheckListsStore();
+  const {checklists, currentSlideIndex, editing, setChecklists, setIsEdit, setSlideIndex, selectedDate, tasks, setTasks, setChecklist} = useCheckListsStore();
   
 
   useEffect(() => {
@@ -48,7 +48,8 @@ const Home: React.FC= () => {
     setIsEdit(false);
     fetchData(selectedDate)
     .then((res)=>{
-      setTasks(res.tasks)
+      setTasks(res.tasks);
+      setChecklist(res.checklist)
     });
   }, [currentSlideIndex, selectedDate]);
 

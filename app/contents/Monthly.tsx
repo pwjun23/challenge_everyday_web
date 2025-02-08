@@ -10,9 +10,10 @@ import { fetchHolidays } from '../commonService';
 
 const MonthlyView = (props : MonthlyViewProp) => {
   const {swiperRef, totalMonthCount} = props;
-  const { checklists, selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate, tasks } = useCheckListsStore();
+  const { checklists, selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate, tasks, checklist } = useCheckListsStore();
 
-  const today = new Date(selectedDate);
+  // const today = new Date(selectedDate);
+  const today = new Date('2025-01-01');
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');
@@ -29,7 +30,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
     daysInMonth.push(day);
   }
   
-  const {total_point, users_to_check, points_reward} = checklists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
+  const {users_to_check, points_reward} = checklists;// || {create_at : {[k:string]:[]}, creation_user_id : [], name : "", task_hist : []};
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
   // 공휴일인지 체크하는 함수
   const isHoliday = (date: Date): boolean => {
@@ -87,24 +88,25 @@ const MonthlyView = (props : MonthlyViewProp) => {
           </span>
         ))}
       </div>
-      {/* <div className="text-center text-lg font-bold text-stone-700 mt-2">총점: {total_point?.total}</div> */}
+      {/* <div className="text-center text-lg font-bold text-stone-700 mt-2">총점: {totalPoint?.total}</div> */}
       <div className="flex justify-center text-xl text-stone-700 mb-4" >
       { 
-        total_point.users && Object.keys(total_point.users).sort((a,b)=> a<b?-1:a>b?1:0).map((user_id, i)=>{
-        const {user_name, photo} = getUserInfoByUserId(user_id);
+        checklist.targets && checklist.targets.map((target:any, i:number)=>{
+        // const {user_name, photo} = getUserInfoByUserId(user_id);
+        const {userName, photo, userId} = target;
         return(
-          <div className='rounded-xl bg-white drop-shadow p-2 flex justify-center ml-2 mr-2' key={`total-${user_id}-${i}`}>
+          <div className='rounded-xl bg-white drop-shadow p-2 flex justify-center ml-2 mr-2' key={`total-${userId}-${i}`}>
             <div className='mr-2'>
               <Image
                 width={12}
                 height={12}
                 src={photo}
-                alt={user_name}
+                alt={userName}
                 className="text-center w-12 h-12 rounded-full"
               />
-            <div className='text-center text-sm'>{user_name}</div>
+            <div className='text-center text-sm'>{userName}</div>
             </div>
-            <div className='flex items-center font-extrabold text-xl'>{total_point.users[user_id]}</div>
+            <div className='flex items-center font-extrabold text-xl'>{checklist.totalPoint[userId]}</div>
           </div>
           )})
         }
@@ -142,7 +144,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
           if(targetIds.length !== 0){
             for(let i=0 ; i < targetIds.length ; i++){
               const targetId:any = targetIds[i];
-              tasksByUserId[targetId] = tasks.filter((task:any)=> task.formattedDate === _dateC && task.targetId === targetId);
+              tasksByUserId[targetId] = tasks.filter((task:any)=> task.formattedDate === _dateC && task.targetId === targetId)[0];
             }
           }
 
@@ -167,16 +169,16 @@ const MonthlyView = (props : MonthlyViewProp) => {
               {format(day,'d')}
             </div>
             {tasksByUserId && Object.keys(tasksByUserId).map((userId, index)=>{
-                  let total_point = 0;
-                  const user_name = tasksByUserId[]//getUserNameByUserId(userId);
+                  let totalPoint = 0;
+                  const user_name = tasksByUserId[userId].targetName;//getUserNameByUserId(userId);
                   const user_id = userId;
-                  const tasks:[{[k:string]:any}] = tasksByUserId[userId];
+                  const tasks:[{[k:string]:any}] = tasksByUserId[userId].tasks;
                   tasks.forEach((task)=>{
-                    if(task.used && task.completed){
-                      total_point += task.task_point;
+                    if(task.completed){
+                      totalPoint += task.taskPoint;
                     }
                   });
-                const tag_name_point = total_point!==0?<div className={`float-left text-sm text-stone-500`} key={`${day}-${user_id}-${index}`}>{user_name} <b className='text-blue-400'>{total_point}</b></div>:<div key={index}></div>; 
+                const tag_name_point = totalPoint!==0?<div className={`float-left text-sm text-stone-500`} key={`${day}-${user_id}-${index}`}>{user_name} <b className='text-blue-400'>{totalPoint}</b></div>:<div key={index}></div>; 
                 return(
                   <div className="text-xs mt-0" key={`points-${day}-${index}`}
                   // onClick={()=>onClickHandle(date)}

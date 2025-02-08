@@ -75,52 +75,57 @@ export async function fetchData(selectedDate:string) {
   const startTimestamp = Timestamp.fromDate(startDate);
   const endTimestamp = Timestamp.fromDate(endDate);
   
-  const q = query(
+  const q_task = query(
     // collection(db, "Checklists", documentId, "Tasks"),
     collection(db, "tasks"),
     where("date", ">=", startTimestamp),
     where("date", "<", endTimestamp)
   );
 
-  // const checklists_c = collection(db,"Checklists");
+  const q_checklist = query(
+    collection(db,"checklists"),
+    where("createUser","==",'admin')
+  );
   // const checklistsQ = await getDocs(collection(db,"tasks"));
-  // const tasks_collection = await getDocs(collection(db,"tasks"));
-  // let checklists:any;
-  // // checklistsQ.forEach((ch)=>{
-  // //   if(ch.id === documentId) checklists = ch.data();
-  // // });
-  // tasks_collection.forEach((task)=>{
-  //   // if(task.id === documentId) checklists = ch.data();
+  
+  
+  
+  const querySnapshot_task = await getDocs(q_task);
+  const querySnapshot_checklist = await getDocs(q_checklist);
 
-  // });
-
-
-  const querySnapshot = await getDocs(q);
-  let tasks:any = [];
-  querySnapshot.forEach((doc) => {
+  const tasks:any = [];
+  querySnapshot_task.forEach((doc) => {
     // tasks = doc.data().tasks;
     tasks.push(doc.data());
   });
-  // const users:{[k:string]:number} = {};
-  // const userIds = Array.from(new Set(tasks.map((task:any) => task.user_id)));
-  // userIds.forEach((user:any)=>{
-  //   if(!users[user]) users[user] = 0;
-  //   tasks.forEach((task:any)=>{
-  //     if(task.used && task.completed){
-  //       if(task.user_id === user){
-  //         users[user] += task.task_point;
-  //       }
-  //     }
-  //   })
-  // });
-  // checklists["total_point"] = {"users": users};
-  // checklists["tasks"] = tasks;
+  let checklist:any = {};
+  querySnapshot_checklist.forEach((doc) => {
+    // tasks = doc.data().tasks;
+    console.log("checklist : ", doc.data());
+    checklist =  doc.data();
+  });
+
+  const users:{[k:string]:number} = {};
+  checklist.targets.forEach((target:any)=>{
+    const {userId} = target;
+    if(!users[userId]) users[userId] = 0;
+    tasks.forEach((taskD:any)=>{
+      taskD.tasks.forEach((task:any)=>{
+        if(task.completed){
+          if(taskD.targetId === userId){
+            users[userId] += task.taskPoint;
+          }
+        }
+      })
+    })
+  });
+  checklist["totalPoint"] = users;
 
   // console.log({checklists});
   // return checklists;
     // console.log({tasks});
   console.log({tasks});
-  return {tasks};
+  return {tasks, checklist};
   // backupJson(checklists);//백업용.
   
 }
@@ -275,73 +280,130 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     // const documentId = getFormattedDate(); // 문서 ID를 날짜로 설정
-    const documentId = "C00000000";
 
     // const checklists = checklists_collection;
 
 
     /* tasks collection 마이그레이션
     */
-    const ch = data_250201;
-    try {
-      // await setDoc(doc(db, "Checklists", documentId), ch);
-      const newTaskDoc:any = {};
-      const batch = writeBatch(db);
-      let tasks = [];
-      // let check_formattedDate = "";
-      let documentId = '';//`${task.user_id}-${formattedDate}`;
-      let ch_formattedDate = '';
-      let newTask:any = {};
-
-      ch.tasks.forEach((task:any, index:number)=>{
-        const mil = task.date.seconds * 1000;
-        const today = new Date(mil);;
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const formattedDate = `${year}-${month}-${day}`;
-        const ch_documentId = `${task.user_id}-${formattedDate}`;
-
-        const taskInTasks:any = {};
-        taskInTasks['taskId']= task.taskId;
-        taskInTasks['taskName']= task.task_name;
-        taskInTasks['taskPoint']= task.task_point;
-        taskInTasks['completed']= task.completed;
-        // console.log({documentId, ch_documentId})
-        if(documentId !== ch_documentId){
-          if(documentId !==''){
-            batch.set(doc(db, "tasks", documentId), newTask);
-            newTask = {};
-            // console.log({newTask, documentId});
-          }
-          
-
-          documentId = ch_documentId;
-          ch_formattedDate = formattedDate;
-          newTask['userId'] = 'admin';
-          newTask['date']= Timestamp.fromDate(new Date(formattedDate));
-
-          newTask['targetId'] = task.user_id;
-          newTask['targetName'] = task.user_name;
-          
-          newTask['tasks'] = [];
-          newTask['tasks'].push(taskInTasks);
-        }else{
-          newTask['tasks'].push(taskInTasks);
+    // const ch = data_250201;
+    const documentId = "2025-01-01";
+  const checklist =  {
+    targets : [
+      { userId:"on", userName:"온겸", photo:"/on_w48.png"},
+      { userId:"so", userName:"소빈", photo:"/so_w48.png"}
+    ],
+    tasks:
+    [
+        {
+          "taskPoint": 3,
+          "taskId": "t000000",
+          "completed": false,
+          "taskName": "신발정리"
+        },
+        {
+          "taskPoint": 2,
+          "taskId": "t000001",
+          "completed": false,
+          "taskName": "이불정리",
+        },
+        {
+          "taskName": "독서(20분 이상)",
+          "taskId": "t000002",
+          "completed": false,
+          "taskPoint": 2
+        },
+        {
+          "taskPoint": 5,
+          "taskName": "단어필사",
+          "completed": false,
+          "taskId": "t000003"
+        },
+        {
+          "completed": false,
+          "taskId": "t000004",
+          "taskName": "반찬 안남기기",
+          "taskPoint": 2,
+        },
+        {
+          "taskName": "9시40분까지 잘 준비",
+          "taskPoint": 3,
+          "completed": false,
+          "taskId": "t000005"
+        },
+        {
+          "taskName": "저녁밥 먹고 스쿼트 30개",
+          "taskId": "t000007",
+          "completed": true,
+          "taskPoint": 3
         }
+      ],
+      "title": "두더지가족 매일매일 챌린지♡",
+      "createUser" : "admin",
+      "id" : "C00000000",
+      "date" : Timestamp.fromDate(new Date('2025-01-13'))
+    };
+    try {
+      await setDoc(doc(db, "checklists", documentId), checklist);
 
-        console.log({documentId,ch_formattedDate});
-        newTask['formattedDate']= ch_formattedDate;
-        newTaskDoc[documentId] = newTask;
-      });
-      console.log({newTaskDoc});
-      console.log(Object.keys(newTaskDoc).length);
+      // await setDoc(doc(db, "Checklists", documentId), ch);
+      // const newTaskDoc:any = {};
+      // const batch = writeBatch(db);
+      // let tasks:any = [];
+      // // let check_formattedDate = "";
+      // let documentId = '';//`${task.user_id}-${formattedDate}`;
+      // let ch_formattedDate = '';
+      // let newTask:any = {};
 
-      // 배치 커밋
-      batch.commit().then(() => {
-        console.log("Documents written with batch");
-        // console.log({newTaskDoc});
-      });
+      // ch.tasks.forEach((task:any, index:number)=>{
+      //   const mil = task.date.seconds * 1000;
+      //   const today = new Date(mil);;
+      //   const year = today.getFullYear();
+      //   const month = String(today.getMonth() + 1).padStart(2, '0');
+      //   const day = String(today.getDate()).padStart(2, '0');
+      //   const formattedDate = `${year}-${month}-${day}`;
+      //   const ch_documentId = `${task.user_id}-${formattedDate}`;
+
+      //   const taskInTasks:any = {};
+      //   taskInTasks['taskId']= task.taskId;
+      //   taskInTasks['taskName']= task.task_name;
+      //   taskInTasks['taskPoint']= task.task_point;
+      //   taskInTasks['completed']= task.completed;
+      //   // console.log({documentId, ch_documentId})
+      //   if(documentId !== ch_documentId){
+      //     if(documentId !==''){
+      //       batch.set(doc(db, "tasks", documentId), newTask);
+      //       newTask = {};
+      //       // console.log({newTask, documentId});
+      //     }
+          
+
+      //     documentId = ch_documentId;
+      //     ch_formattedDate = formattedDate;
+      //     newTask['userId'] = 'admin';
+      //     newTask['date']= Timestamp.fromDate(new Date(formattedDate));
+
+      //     newTask['targetId'] = task.user_id;
+      //     newTask['targetName'] = task.user_name;
+          
+      //     newTask['tasks'] = [];
+      //     newTask['tasks'].push(taskInTasks);
+      //   }else{
+      //     newTask['tasks'].push(taskInTasks);
+      //   }
+
+      //   console.log({documentId,ch_formattedDate});
+      //   newTask['formattedDate']= ch_formattedDate;
+      //   newTaskDoc[documentId] = newTask;
+      // });
+      // console.log({newTaskDoc});
+      // console.log(Object.keys(newTaskDoc).length);
+
+      // // 배치 커밋
+      // batch.commit().then(() => {
+      //   console.log("Documents written with batch");
+      //   // console.log({newTaskDoc});
+      // });
 
 
     

@@ -4,6 +4,7 @@ import { Checklists } from "../common_type";
 // Zustand 스토어 타입 정의
 interface ChecklistState {
   tasks: [];
+  checklist:{[k:string]:any};
   checklists:Checklists;
   currentSlideIndex: number;
   selectedDate: string;
@@ -12,6 +13,7 @@ interface ChecklistState {
   modalShow:boolean,
   editing:boolean,
   setTasks:(value:[]) => void;
+  setChecklist:(value:{[k:string]:any}) => void;
   setChecklists:(value:Checklists) => void;
   setSlideIndex: (index: number) => void;
   setSelectedDate: (yyyyMMdd: string) => void;
@@ -28,6 +30,7 @@ const _date = `${year}-${month}-${day}`;
 // Zustand 스토어 생성
 export const useCheckListsStore = create<ChecklistState>((set) => ({
   tasks:[],
+  checklist:{},
   checklists:{
     users_total_point:{},
     tasks:[],
@@ -50,6 +53,7 @@ export const useCheckListsStore = create<ChecklistState>((set) => ({
   },
   editing:false,
   setTasks: (value) => set({tasks:value}),
+  setChecklist: (value) => set({checklist:value}),
   setChecklists: (value) => set({checklists:value}),
   setSlideIndex: (index) => set({ currentSlideIndex: index }),
   setSelectedDate: (yyyyMMdd) => set({ selectedDate: yyyyMMdd }),
