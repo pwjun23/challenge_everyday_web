@@ -1,13 +1,42 @@
+export const users = {
+  "admin":{
+    "user_id" : "won",
+    "user_name" : "wj",
+    "password" : 123456,
+    "email" : "aa@gmail.com",
+    "role" : "admin",
+  }
+};
+
+export const checklists = {
+  "checklist1":{
+    "name"  : "1월 점수표",
+    "tasks" :{
+      "on" : "admin_1",
+      "so" : "admin_1"
+    }
+  }
+};
+
+export const lists = {
+  "admin_1":{
+    "list":[
+      
+    ]
+  }
+};
+
+
 export const user_won = 
 
-        {
-            "user_id" : "won",
-            "user_name" : "wj",
-	        "password" : 123456,
-	        "email" : "aa@gmail.com",
-            "auth" : "checker",
-	        "checklists" :	"checkList_0"
-        };
+{
+    "user_id" : "won",
+    "user_name" : "wj",
+  "password" : 123456,
+  "email" : "aa@gmail.com",
+    "auth" : "checker",
+  "checklists" :	"checkList_0"
+};
 export const user_on = 
         {
             "user_id" : "on",
