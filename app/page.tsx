@@ -24,7 +24,7 @@ const Home: React.FC= () => {
   const today = new Date();
   const totalMonthCount = today.getMonth();// 1월 : 0, 2월 : 1
 
-  const {checklists, currentSlideIndex, editing, setChecklists, setIsEdit, setSlideIndex, selectedDate} = useCheckListsStore();
+  const {checklists, currentSlideIndex, editing, setChecklists, setIsEdit, setSlideIndex, selectedDate, tasks, setTasks} = useCheckListsStore();
   
 
   useEffect(() => {
@@ -46,9 +46,10 @@ const Home: React.FC= () => {
   useEffect(() => {
     // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
     setIsEdit(false);
-      fetchData(selectedDate).then((res)=>{
-        setChecklists(res);
-      });
+    fetchData(selectedDate)
+    .then((res)=>{
+      setTasks(res.tasks)
+    });
   }, [currentSlideIndex, selectedDate]);
 
   useEffect(() => {
@@ -155,11 +156,7 @@ const Home: React.FC= () => {
         onSlideChange={(swiper) => onSlideChangese(swiper.activeIndex)}
       >
           <SwiperSlide>
-            {checklists && checklists.tasks && swiperRef &&<MonthlyView
-              // today={today}
-              // startDayOfWeek={startDayOfWeek}
-              // daysInMonth={daysInMonth}
-              // holidays={holidays}
+            {tasks && tasks.length !== 0 && swiperRef &&<MonthlyView
               totalMonthCount = {totalMonthCount}
               swiperRef={swiperRef}
              />}
