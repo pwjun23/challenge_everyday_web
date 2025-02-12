@@ -84,7 +84,8 @@ export async function fetchData(selectedDate:string) {
 
   const q_checklist = query(
     collection(db,"checklists"),
-    where("createUser","==",'admin')
+    where("createUser","==",'admin'),
+    where("id","==",'C00000001')
   );
   // const checklistsQ = await getDocs(collection(db,"tasks"));
   
@@ -287,7 +288,7 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     /* tasks collection 마이그레이션
     */
     // const ch = data_250201;
-    const documentId = "2025-01-01";
+  const documentId = "2025-02-01";
   const checklist =  {
     targets : [
       { userId:"on", userName:"온겸", photo:"/on_w48.png"},
@@ -296,52 +297,50 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     tasks:
     [
         {
-          "taskPoint": 3,
+          "taskName": "신발정리(화장실)",
           "taskId": "t000000",
-          "completed": false,
-          "taskName": "신발정리"
+          "taskPoint": 2,
         },
         {
-          "taskPoint": 2,
-          "taskId": "t000001",
-          "completed": false,
           "taskName": "이불정리",
+          "taskId": "t000001",
+          "taskPoint": 2
         },
         {
           "taskName": "독서(20분 이상)",
           "taskId": "t000002",
-          "completed": false,
-          "taskPoint": 2
+          "taskPoint": 3
         },
         {
-          "taskPoint": 5,
+          "taskPoint": 3,
           "taskName": "단어필사",
-          "completed": false,
           "taskId": "t000003"
         },
         {
-          "completed": false,
-          "taskId": "t000004",
           "taskName": "반찬 안남기기",
+          "taskId": "t000004",
           "taskPoint": 2,
         },
         {
-          "taskName": "9시40분까지 잘 준비",
-          "taskPoint": 3,
-          "completed": false,
-          "taskId": "t000005"
+          "taskName": "9시40분 이전에 누워서 잘 준비",
+          "taskId": "t000005",
+          "taskPoint": 3
         },
         {
-          "taskName": "저녁밥 먹고 스쿼트 30개",
+          "taskName": "저녁밥 먹고 스쿼트 20개",
           "taskId": "t000007",
-          "completed": true,
           "taskPoint": 3
+        },
+        {
+          "taskName": "스스로 씻기",
+          "taskId": "t000008",
+          "taskPoint": 2
         }
       ],
-      "title": "두더지가족 매일매일 챌린지♡",
+      "title": "두더지가족 매일매일 챌린지 2월♡",
       "createUser" : "admin",
-      "id" : "C00000000",
-      "date" : Timestamp.fromDate(new Date('2025-01-13'))
+      "id" : "C00000001",
+      "date" : Timestamp.fromDate(new Date('2025-02-12'))
     };
     try {
       await setDoc(doc(db, "checklists", documentId), checklist);
@@ -410,8 +409,8 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
   // try {
   //   const users = user_won;
 
-
-      // console.log("문서가 성공적으로 추가되었습니다!");
+      console.log({documentId, checklist});
+      console.log("문서가 성공적으로 추가되었습니다!");
     } catch (error) {
       console.error("문서 추가 중 오류 발생:", error);
     }
