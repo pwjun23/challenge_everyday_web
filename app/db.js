@@ -1,42 +1,13 @@
-export const users = {
-  "admin":{
-    "user_id" : "won",
-    "user_name" : "wj",
-    "password" : 123456,
-    "email" : "aa@gmail.com",
-    "role" : "admin",
-  }
-};
-
-export const checklists = {
-  "checklist1":{
-    "name"  : "1월 점수표",
-    "tasks" :{
-      "on" : "admin_1",
-      "so" : "admin_1"
-    }
-  }
-};
-
-export const lists = {
-  "admin_1":{
-    "list":[
-      
-    ]
-  }
-};
-
-
 export const user_won = 
 
-{
-    "user_id" : "won",
-    "user_name" : "wj",
-  "password" : 123456,
-  "email" : "aa@gmail.com",
-    "auth" : "checker",
-  "checklists" :	"checkList_0"
-};
+        {
+            "user_id" : "won",
+            "user_name" : "wj",
+	        "password" : 123456,
+	        "email" : "aa@gmail.com",
+            "auth" : "checker",
+	        "checklists" :	"checkList_0"
+        };
 export const user_on = 
         {
             "user_id" : "on",
@@ -47,15 +18,119 @@ export const user_on =
 	        "checklists" :	"checkList_0"
         };
 		
-		
+export const users = {
+  "admin":{
+    "userName" : "park",
+    "userId" : "pwjun23",
+    "role" : "admin"
+
+  }
+
+}
+export const checklist_doc =  {
+  targets : [
+    { userId:"on", userName:"온겸", photo:"/on_w48.png"},
+    { userId:"so", userName:"소빈", photo:"/so_w48.png"}
+  ],
+  tasks:
+  [
+      {
+        "taskName": "신발정리(화장실)",
+        "taskId": "t000000",
+        "taskPoint": 2,
+      },
+      {
+        "taskName": "이불정리",
+        "taskId": "t000001",
+        "taskPoint": 2
+      },
+      {
+        "taskName": "독서(20분 이상)",
+        "taskId": "t000002",
+        "taskPoint": 3
+      },
+      {
+        "taskPoint": 3,
+        "taskName": "단어필사",
+        "taskId": "t000003"
+      },
+      {
+        "taskName": "반찬 안남기기",
+        "taskId": "t000004",
+        "taskPoint": 2,
+      },
+      {
+        "taskName": "9시40분 이전에 누워서 잘 준비",
+        "taskId": "t000005",
+        "taskPoint": 3
+      },
+      {
+        "taskName": "저녁밥 먹고 스쿼트 20개",
+        "taskId": "t000007",
+        "taskPoint": 3
+      },
+      {
+        "taskName": "스스로 씻기",
+        "taskId": "t000008",
+        "taskPoint": 2
+      }
+    ],
+    "title": "두더지가족 매일매일 챌린지 2월♡",
+    "createUser" : "admin",
+    "id" : "C00000001",
+    "date" : Timestamp.fromDate(new Date('2025-02-12'))
+};
+
+export const rewards_doc = {
+    'id' : "R00000000",
+    'lists' : [
+    {
+      "awardDetail": "뷔페 이용권(4인)",
+      "pointRewardDetail": "520점이상",
+      "point_reward": 520,
+      "ranking": 1,
+      "rankingName": "1등"
+    },
+    {
+      "point_reward": 470,
+      "ranking": 2,
+      "pointRewardDetail": "470점이상",
+      "rankingName": "2등",
+      "awardDetail": "키즈까페 이용권(4인)"
+    },
+    {
+      "ranking": 3,
+      "pointRewardDetail": "430점이상",
+      "rankingName": "3등",
+      "awardDetail": "포시즌 1만원 이용권",
+      "point_reward": 430
+    },
+    {
+      "point_reward": 400,
+      "pointRewardDetail": "400점이상",
+      "awardDetail": "뽑기방 5천원 이용권",
+      "ranking": 4,
+      "rankingName": "4등"
+    },
+    {
+      "pointRewardDetail": "참가",
+      "ranking": 5,
+      "rankingName": "참가상",
+      "point_reward": 0,
+      "awardDetail": "2천원 용돈"
+    }
+  ]
+}
+
+
 /**
  * C00000000 문서코드 C+숫자8자리( C는 Checklist의 약자)   
  *  */ 
 export const checklists_collection = {
     "points_reward": [
       {
-        "award_detail": "뷔페 이용권(4인)",
-        "point_reward_detail": "520점이상",
+        "awardDetail": "뷔페 이용권(4인)",
+        "pointRewardDetail": "520점이상",
         "point_reward": 520,
         "ranking": 1,
         "rankingName": "1등"
@@ -63,30 +138,30 @@ export const checklists_collection = {
       {
         "point_reward": 470,
         "ranking": 2,
-        "point_reward_detail": "470점이상",
+        "pointRewardDetail": "470점이상",
         "rankingName": "2등",
-        "award_detail": "키즈까페 이용권(4인)"
+        "awardDetail": "키즈까페 이용권(4인)"
       },
       {
         "ranking": 3,
-        "point_reward_detail": "430점이상",
+        "pointRewardDetail": "430점이상",
         "rankingName": "3등",
-        "award_detail": "포시즌 1만원 이용권",
+        "awardDetail": "포시즌 1만원 이용권",
         "point_reward": 430
       },
       {
         "point_reward": 400,
-        "point_reward_detail": "400점이상",
-        "award_detail": "뽑기방 5천원 이용권",
+        "pointRewardDetail": "400점이상",
+        "awardDetail": "뽑기방 5천원 이용권",
         "ranking": 4,
         "rankingName": "4등"
       },
       {
-        "point_reward_detail": "참가",
+        "pointRewardDetail": "참가",
         "ranking": 5,
         "rankingName": "참가상",
         "point_reward": 0,
-        "award_detail": "2천원 용돈"
+        "awardDetail": "2천원 용돈"
       }
     ],
     "users_total_point": {
@@ -4600,36 +4675,36 @@ export const data_250201 = {
     "points_reward": [
       {
         "ranking": 1,
-        "award_detail": "뷔페 이용권(4인)",
-        "point_reward_detail": "520점이상",
+        "awardDetail": "뷔페 이용권(4인)",
+        "pointRewardDetail": "520점이상",
         "point_reward": 520,
         "rankingName": "1등"
       },
       {
-        "point_reward_detail": "470점이상",
+        "pointRewardDetail": "470점이상",
         "point_reward": 470,
-        "award_detail": "키즈까페 이용권(4인)",
+        "awardDetail": "키즈까페 이용권(4인)",
         "rankingName": "2등",
         "ranking": 2
       },
       {
         "ranking": 3,
         "rankingName": "3등",
-        "point_reward_detail": "430점이상",
-        "award_detail": "포시즌 1만원 이용권",
+        "pointRewardDetail": "430점이상",
+        "awardDetail": "포시즌 1만원 이용권",
         "point_reward": 430
       },
       {
         "point_reward": 400,
-        "point_reward_detail": "400점이상",
+        "pointRewardDetail": "400점이상",
         "ranking": 4,
-        "award_detail": "뽑기방 5천원 이용권",
+        "awardDetail": "뽑기방 5천원 이용권",
         "rankingName": "4등"
       },
       {
         "point_reward": 0,
-        "point_reward_detail": "참가",
-        "award_detail": "2천원 용돈",
+        "pointRewardDetail": "참가",
+        "awardDetail": "2천원 용돈",
         "ranking": 5,
         "rankingName": "참가상"
       }
@@ -4650,20 +4725,18 @@ export const data_250201 = {
     },
     "tasks": [
       {
-        "completed": false,
         "date": {
           "seconds": 1735689600,
           "nanoseconds": 0
         },
+        "user_id": "on",
+        "user_name": "온겸",
+        "taskId": "t000000",
         "task_name": "신발정리",
         "task_point": 3,
-        "user_name": "온겸",
-        "create_user": "won",
-        "taskId": "t000000",
-        "formattedDate": "2025_01_01",
-        "user_id_to_check": "on",
-        "user_id": "on",
-        "used": true
+        "completed": false,
+        
+        
       },
       {
         "user_id_to_check": "on",

@@ -1,7 +1,7 @@
 import { getFirestore, collection, query, where, getDocs, updateDoc, Timestamp, addDoc, setDoc, doc, getDoc, writeBatch} from 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 import _ from 'lodash';
-import {checklists_collection, data_250201, user_won} from "./db";
+import {checklist_doc, checklists_collection, data_250201, rewards_doc, user_won} from "./db";
 import { HolidayItem } from "./common_type";
 import { format } from 'date-fns';
 import FileSaver from 'file-saver';
@@ -92,7 +92,7 @@ export async function fetchData(selectedDate:string) {
   
   
   const querySnapshot_task = await getDocs(q_task);
-  const querySnapshot_checklist = await getDocs(q_checklist);
+  const querySnapshot_checklist = await getDocs(q_checklist);//점수판
 
   const tasks:any = [];
   querySnapshot_task.forEach((doc) => {
@@ -101,8 +101,6 @@ export async function fetchData(selectedDate:string) {
   });
   let checklist:any = {};
   querySnapshot_checklist.forEach((doc) => {
-    // tasks = doc.data().tasks;
-    console.log("checklist : ", doc.data());
     checklist =  doc.data();
   });
 
@@ -125,7 +123,7 @@ export async function fetchData(selectedDate:string) {
   // console.log({checklists});
   // return checklists;
     // console.log({tasks});
-  console.log({tasks});
+  console.log({tasks, checklist});
   return {tasks, checklist};
   // backupJson(checklists);//백업용.
   
@@ -288,62 +286,13 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     /* tasks collection 마이그레이션
     */
     // const ch = data_250201;
-  const documentId = "2025-02-01";
-  const checklist =  {
-    targets : [
-      { userId:"on", userName:"온겸", photo:"/on_w48.png"},
-      { userId:"so", userName:"소빈", photo:"/so_w48.png"}
-    ],
-    tasks:
-    [
-        {
-          "taskName": "신발정리(화장실)",
-          "taskId": "t000000",
-          "taskPoint": 2,
-        },
-        {
-          "taskName": "이불정리",
-          "taskId": "t000001",
-          "taskPoint": 2
-        },
-        {
-          "taskName": "독서(20분 이상)",
-          "taskId": "t000002",
-          "taskPoint": 3
-        },
-        {
-          "taskPoint": 3,
-          "taskName": "단어필사",
-          "taskId": "t000003"
-        },
-        {
-          "taskName": "반찬 안남기기",
-          "taskId": "t000004",
-          "taskPoint": 2,
-        },
-        {
-          "taskName": "9시40분 이전에 누워서 잘 준비",
-          "taskId": "t000005",
-          "taskPoint": 3
-        },
-        {
-          "taskName": "저녁밥 먹고 스쿼트 20개",
-          "taskId": "t000007",
-          "taskPoint": 3
-        },
-        {
-          "taskName": "스스로 씻기",
-          "taskId": "t000008",
-          "taskPoint": 2
-        }
-      ],
-      "title": "두더지가족 매일매일 챌린지 2월♡",
-      "createUser" : "admin",
-      "id" : "C00000001",
-      "date" : Timestamp.fromDate(new Date('2025-02-12'))
-    };
+  const documentId = "2025-01";
+  const reward = rewards_doc
+  // const checklist:any = checklist_doc;
     try {
-      await setDoc(doc(db, "checklists", documentId), checklist);
+      // await setDoc(doc(db, "checklists", documentId), checklist);
+
+      await setDoc(doc(db, "rewards", documentId), reward);
 
       // await setDoc(doc(db, "Checklists", documentId), ch);
       // const newTaskDoc:any = {};
@@ -409,7 +358,7 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
   // try {
   //   const users = user_won;
 
-      console.log({documentId, checklist});
+      // console.log({documentId, checklist});
       console.log("문서가 성공적으로 추가되었습니다!");
     } catch (error) {
       console.error("문서 추가 중 오류 발생:", error);
