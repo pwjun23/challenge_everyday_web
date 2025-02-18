@@ -10,7 +10,7 @@ import { fetchHolidays } from '../commonService';
 
 const MonthlyView = (props : MonthlyViewProp) => {
   const {swiperRef, totalMonthCount} = props;
-  const { checklists, selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate, tasks, checklist } = useCheckListsStore();
+  const { checklists, selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate, tasks, checklist, reward} = useCheckListsStore();
 
   // const today = new Date(selectedDate);
   const today = new Date('2025-01-01');
@@ -199,10 +199,10 @@ const MonthlyView = (props : MonthlyViewProp) => {
             </tr>
           </thead>
           <tbody>
-            {points_reward && points_reward.map((reward,idx)=>
+            {reward && reward.list && reward.list.map((reward:any,idx:number)=>
               (<tr key={`reward-${idx}`}>
-                <th className={`mt-4 text-sm text-stone-700 font-bold text-center px-4 py-2`}>{reward.rankingName}({reward.point_reward_detail})</th>
-                <td className={`mt-4 text-sm text-stone-500 text-left  px-4 py-2`}>{reward.award_detail}</td>
+                <th className={`mt-4 text-sm text-stone-700 font-bold text-center px-4 py-2`}>{reward.rankingName}({reward.pointRewardDetail})</th>
+                <td className={`mt-4 text-sm text-stone-500 text-left  px-4 py-2`}>{reward.awardDetail}</td>
               </tr>)
             )}
           </tbody>

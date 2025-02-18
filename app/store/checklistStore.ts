@@ -5,6 +5,7 @@ import { Checklists } from "../common_type";
 interface ChecklistState {
   tasks: [];
   checklist:{[k:string]:any};
+  reward:{[k:string]:any};
   checklists:Checklists;
   currentSlideIndex: number;
   selectedDate: string;
@@ -14,6 +15,7 @@ interface ChecklistState {
   editing:boolean,
   setTasks:(value:[]) => void;
   setChecklist:(value:{[k:string]:any}) => void;
+  setReward:(value:{[k:string]:any})=> void;
   setChecklists:(value:Checklists) => void;
   setSlideIndex: (index: number) => void;
   setSelectedDate: (yyyyMMdd: string) => void;
@@ -31,6 +33,7 @@ const _date = `${year}-${month}-${day}`;
 export const useCheckListsStore = create<ChecklistState>((set) => ({
   tasks:[],
   checklist:{},
+  reward:{},
   checklists:{
     users_total_point:{},
     tasks:[],
@@ -54,6 +57,7 @@ export const useCheckListsStore = create<ChecklistState>((set) => ({
   editing:false,
   setTasks: (value) => set({tasks:value}),
   setChecklist: (value) => set({checklist:value}),
+  setReward: (value) => set({reward:value}),
   setChecklists: (value) => set({checklists:value}),
   setSlideIndex: (index) => set({ currentSlideIndex: index }),
   setSelectedDate: (yyyyMMdd) => set({ selectedDate: yyyyMMdd }),

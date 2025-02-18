@@ -24,7 +24,7 @@ const Home: React.FC= () => {
   const today = new Date();
   const totalMonthCount = today.getMonth();// 1월 : 0, 2월 : 1
 
-  const {checklists, currentSlideIndex, editing, setChecklists, setIsEdit, setSlideIndex, selectedDate, tasks, setTasks, setChecklist} = useCheckListsStore();
+  const {checklists, currentSlideIndex, editing, setReward, setChecklists, setIsEdit, setSlideIndex, selectedDate, tasks, setTasks, setChecklist} = useCheckListsStore();
   
 
   useEffect(() => {
@@ -36,8 +36,13 @@ const Home: React.FC= () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    addDocumentWithId();//데이터 밀어넣기 or 배치
-
+    // addDocumentWithId();//데이터 밀어넣기 or 배치
+    fetchData(selectedDate)
+    .then((res)=>{
+      setTasks(res.tasks);
+      setChecklist(res.checklist)
+      setReward(res.reward)
+    });
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
@@ -46,11 +51,7 @@ const Home: React.FC= () => {
   useEffect(() => {
     // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
     setIsEdit(false);
-    // fetchData(selectedDate)
-    // .then((res)=>{
-    //   setTasks(res.tasks);
-    //   setChecklist(res.checklist)
-    // });
+    
   }, [currentSlideIndex, selectedDate]);
 
   useEffect(() => {

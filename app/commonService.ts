@@ -1,7 +1,7 @@
 import { getFirestore, collection, query, where, getDocs, updateDoc, Timestamp, addDoc, setDoc, doc, getDoc, writeBatch} from 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 import _ from 'lodash';
-import {checklist_doc, checklists_collection, data_250201, rewards_doc, user_won} from "./db";
+import { checklists_collection, data_250201, rewards_doc, user_won} from "./db";
 import { HolidayItem } from "./common_type";
 import { format } from 'date-fns';
 import FileSaver from 'file-saver';
@@ -89,10 +89,16 @@ export async function fetchData(selectedDate:string) {
   );
   // const checklistsQ = await getDocs(collection(db,"tasks"));
   
+  const q_reward = query(
+    collection(db,"rewards"),
+    where("createUser","==",'admin'),
+    where("id","==",'R00000001')
+  );
   
   
   const querySnapshot_task = await getDocs(q_task);
   const querySnapshot_checklist = await getDocs(q_checklist);//점수판
+  const querySnapshot_reward = await getDocs(q_reward);//점수판
 
   const tasks:any = [];
   querySnapshot_task.forEach((doc) => {
@@ -102,6 +108,10 @@ export async function fetchData(selectedDate:string) {
   let checklist:any = {};
   querySnapshot_checklist.forEach((doc) => {
     checklist =  doc.data();
+  });
+  let reward:any = {};
+  querySnapshot_reward.forEach((doc) => {
+    reward =  doc.data();
   });
 
   const users:{[k:string]:number} = {};
@@ -120,11 +130,8 @@ export async function fetchData(selectedDate:string) {
   });
   checklist["totalPoint"] = users;
 
-  // console.log({checklists});
-  // return checklists;
-    // console.log({tasks});
-  console.log({tasks, checklist});
-  return {tasks, checklist};
+  console.log({tasks, checklist, reward});
+  return {tasks, checklist, reward};
   // backupJson(checklists);//백업용.
   
 }
@@ -286,7 +293,7 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     /* tasks collection 마이그레이션
     */
     // const ch = data_250201;
-  const documentId = "2025-01";
+  const documentId = "2025-02";
   const reward = rewards_doc
   // const checklist:any = checklist_doc;
     try {
