@@ -8,19 +8,19 @@ import { useCheckListsStore } from '../store/checklistStore';
 import { Timestamp } from 'firebase/firestore';
 
 const DailyChecklist = (props : DailyChecklistProp) => {
-  const {checklists, selectedDate, setSelectedDate} = useCheckListsStore();
-  const {users_to_check, tasks, tasks_template} = checklists || {};
+  const {checklist, tasks, checklists, selectedDate, setSelectedDate} = useCheckListsStore();
+  const {users_to_check, tasks_template} = checklists || {};
   const [inputSelectedDate, setInputSelectedDate] = useState('');
   const [tasks_by_date, setTask_by_date] = useState<{[k:string]:any}>({});
   
-
+//checklist.tasks.filter((task:any)=> task.formattedDate === selectedDate && task.targetId === child.userId)
   const getBlankTasks = (value:string)=>{
-    if(Object.keys(tasks_template).length ===0)return{};
-    const template = Object.keys(tasks_template).map((dt, i)=>{
-      if(i===0){ // TODO : 우선은 가장 최근한 탬플릿으로.
-        return tasks_template[dt]
-      }
-    })[0];
+    // if(Object.keys(tasks_template).length ===0)return{};
+    // const template = Object.keys(tasks_template).map((dt, i)=>{
+    //   if(i===0){ // TODO : 우선은 가장 최근한 탬플릿으로.
+    //     return tasks_template[dt]
+    //   }
+    // })[0];
     
     const newTasks:{[k:string]:any} =  _.cloneDeep(template);
     Object.keys(newTasks).map((user_id)=>{
@@ -63,7 +63,7 @@ const DailyChecklist = (props : DailyChecklistProp) => {
       setInputSelectedDate(selectedDate);
       setTask_by_date(getBlankTasks(selectedDate));
     }
-  },[selectedDate, tasks_template])
+  },[selectedDate])//tasks_template
 
   return (
     <div className="p-4">
@@ -77,13 +77,13 @@ const DailyChecklist = (props : DailyChecklistProp) => {
           onChange={(e) => onChangeHandler(e.target.value)}
         />
       </div>
-      {selectedDate && users_to_check && users_to_check.map((child, idx) => (
+      {selectedDate && checklist && checklist.targets && checklist.targets.map((child:any, idx:number) => (
         <Checklist
           user_to_check ={child}
-          tasks = {tasks_by_date?.[child.user_id] || []}
+          tasks = {tasks_by_date}
           key = {idx}
           selectedDate = {selectedDate}
-          user_id_to_check ={child.user_id}
+          user_id_to_check ={child.userId}
         />
       ))}
     </div>

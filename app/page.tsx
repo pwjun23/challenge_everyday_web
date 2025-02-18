@@ -19,7 +19,7 @@ const Home: React.FC= () => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
 
-  const [activeTab, setActiveTab] = useState<string>('monthly');//'monthly' | 'daily' | 'checkadm'| 'score_sheet';
+  const [activeTab, setActiveTab] = useState<string>('daily');//'monthly' | 'daily' | 'checkadm'| 'score_sheet';
   
   const today = new Date();
   const totalMonthCount = today.getMonth();// 1월 : 0, 2월 : 1

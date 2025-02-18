@@ -99,11 +99,11 @@ const Checklist = (props : ChecklistProp) => {
             <Image
               width={12}
               height={12}
-              src={user_to_check.user_name===''?'/profile_default.svg':user_to_check.photo}
-              alt={user_to_check.user_name}
+              src={user_to_check.userName===''?'/profile_default.svg':user_to_check.photo}
+              alt={user_to_check.userName}
               className="w-12 h-12 rounded-full mr-4"
             />
-            <div className="font-bold text-md text-stone-700 mr-4">{user_to_check.user_name} ({score}점)</div>
+            <div className="font-bold text-md text-stone-700 mr-4">{user_to_check.userName} ({score}점)</div>
               <label htmlFor={`all-checkbox-${selectedDate}-${user_id_to_check}`}
                     className="ms-2 text-sm font-medium text-gray-900 dark:text-stone-700 mr-2">모두 체크</label>
               <input id={`all-checkbox-${selectedDate}-${user_id_to_check}`}
