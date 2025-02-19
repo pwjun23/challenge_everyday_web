@@ -7,7 +7,7 @@ import { useCheckListsStore } from '../store/checklistStore';
 import { mergeObjects, updateItem } from '../commonService';
 
 const Checklist = (props : ChecklistProp) => {
-  const {user_to_check, tasks, user_id_to_check} = props;
+  const {tasks, user_to_check, user_id_to_check} = props;
   const [score, setScore] = useState<number>(0);
   const [checklists, setCheckLists] = useState<{[k:string]:any}[] >([{}]);
   const checkbox_all = useRef<any>(null);
