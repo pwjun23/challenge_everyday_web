@@ -15,9 +15,9 @@ const Checklist = (props : ChecklistProp) => {
   
   const countPoints = (updatedChecklist:{[k:string]:any}) =>{
     let totalPoint = 0;
-    updatedChecklist.forEach((element: { completed: any; task_point: number; user_id_to_check:string }) => {
+    updatedChecklist.forEach((element: { completed: any; taskPoint: number; user_id_to_check:string }) => {
       if(element.completed){
-        totalPoint = totalPoint + element.task_point;
+        totalPoint = totalPoint + element.taskPoint;
       }
     });
     setScore(totalPoint);
@@ -25,8 +25,8 @@ const Checklist = (props : ChecklistProp) => {
 
   const isCheckAll = (tasks:any)=>{
     let isAllComplete = true;
-    tasks.forEach((task:any)=>{
-      if(task.completed === false){
+    tasks && tasks.forEach((task:any)=>{
+      if(!task.completed || task.completed === false){
         isAllComplete = false;
         return false;
       }
@@ -121,7 +121,6 @@ const Checklist = (props : ChecklistProp) => {
           <div className="mt-4">
             {
               checklists && checklists.map((task, i)=>{
-                  if(task.used){
                     return(
                       <div key={i} className="flex justify-start items-center mb-2">
                         <input
@@ -133,7 +132,7 @@ const Checklist = (props : ChecklistProp) => {
                         />
                         <label 
                         className="text-sm text-gray-900 dark:text-stone-700"
-                        htmlFor={`checkbox-${task.user_id_to_check}-${i}`}>{task.task_name} ({task.task_point}점)</label>
+                        htmlFor={`checkbox-${task.user_id_to_check}-${i}`}>{task.taskName} ({task.taskPoint}점)</label>
                         <div className="add-delete-point-btn ml-4 inline-flex rounded-md shadow-sm" role="group">
                           <button type="button" onClick={(e)=>pointHandler(task,+1)} className="px-3 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             +1
@@ -144,7 +143,6 @@ const Checklist = (props : ChecklistProp) => {
                         </div>
                       </div>
                     )
-                  }
                 })
             }
           </div>
