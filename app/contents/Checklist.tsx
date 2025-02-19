@@ -57,9 +57,9 @@ const Checklist = (props : ChecklistProp) => {
   };
   const pointHandler = (task:any, point:number) =>{
     const updatedChecklist:{[k:string]:any}[] = checklists.map((item) =>
-      item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, task_point: item.task_point+point } : item
+      item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, taskPoint: item.taskPoint+point } : item
     );
-    // updateChecklist(updatedChecklist);
+    updateChecklist(updatedChecklist);
   }
 
   const updateChecklist =(updatedChecklist:any)=>{
