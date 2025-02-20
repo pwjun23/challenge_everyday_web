@@ -287,7 +287,7 @@ useEffect(()=>{
           </tbody>
         </table>}
         {isEditReward && 
-        <table className={`text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 shadow-xl sm:rounded-lg`}>
+        <table className={`text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 shadow-xl sm:rounded-lg mb-10`}>
           
           <thead>
             <tr>
@@ -300,7 +300,7 @@ useEffect(()=>{
                     className='text-stone-600 font-normal bg-transparent border-1 float-right p-2'>저장</button></th>
             </tr>
             <tr>
-              <th className='size-30 pl-5'>등수명<br/>점수 설명</th><th>상품 설명<br/>점수기준</th>
+              <th className='size-30 pl-5'>상품 설명<br/>점수 설명</th><th>등수명<br/>점수기준</th>
               
             </tr>
           </thead>
@@ -310,15 +310,15 @@ useEffect(()=>{
                 <tr >
                 <td className={`mt-4 text-sm text-stone-700 font-bold px-4 py-2`}>
                   <input
-                    name={'rankingName'}
-                    className='placeholder:text-gray-500 placeholder:italic border border-gray-300 ' type='text' 
-                    placeholder={reward.rankingName} onChange={(e)=>onChangeTask(reward.ranking-1,e)} value={reward.rankingName}/>  
-                </td>
-                <td className={`mt-4 text-sm text-stone-700 font-bold px-4 py-2`}>
-                  <input
                     name={'pointRewardDetail'}
                     className='placeholder:text-gray-500 placeholder:italic border border-gray-300' type='text' 
                     placeholder={reward.pointRewardDetail} onChange={(e)=>onChangeTask(reward.ranking-1,e)} value={reward.pointRewardDetail}/>  
+                </td>
+                <td className={`mt-4 text-sm text-stone-700 font-bold px-4 py-2`}>
+                  <input
+                    name={'rankingName'}
+                    className='placeholder:text-gray-500 placeholder:italic border border-gray-300 w-[60px]' type='text' 
+                    placeholder={reward.rankingName} onChange={(e)=>onChangeTask(reward.ranking-1,e)} value={reward.rankingName}/>  
                 </td>
                 </tr>
                 <tr className='border-b-4 '>
