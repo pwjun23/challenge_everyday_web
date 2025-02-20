@@ -6,9 +6,9 @@ import _ from 'lodash';
 import { useCheckListsStore } from '../store/checklistStore';
 
 const ScoreSheet = (props : ScoreSheetProp) => {
-  const {tasks, user_id, user_name, index, total_index} = props;
+  const {tasks, user_id, user_name , total_index, index} = props;
+  const {isEdit, setIsEdit} = useCheckListsStore();
   const [tempTasks, setTempTasks] = useState<{[key:string]:any}[]>([{}]);
-  const {isEdit, setIsEdit } = useCheckListsStore();
 
   const onChangeTask =(index:number, e:any)=>{
 
@@ -28,14 +28,14 @@ const ScoreSheet = (props : ScoreSheetProp) => {
     setIsEdit(false);
   }
   const onExit = ()=>{
-    setTempTasks(tasks);
+    // setTempTasks(checklists.tasks);
     setIsEdit(false);
   }
-  useEffect(()=>{
-    if(tasks){
-        setTempTasks(tasks);
-    }
-  },[tasks])
+//   useEffect(()=>{
+//     if(checklists){
+//         setTempTasks(checklists.tasks);
+//     }
+//   },[checklists])
 
   return (
             <div key={`score_sheet-${user_id}`}>
@@ -77,10 +77,10 @@ const ScoreSheet = (props : ScoreSheetProp) => {
                                 </tr>
                             </thead>
                             <tbody>
-                {tempTasks.map((task:any, k:any)=>{
+                {tasks && tasks.map((task:any, k:any)=>{
                     return(<tr key={`task-${user_id}-${k}`} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                    <td className="px-4 py-2">{task.task_name}</td>
-                                    <td className="px-4 py-2">{task.task_point}</td>
+                                    <td className="px-4 py-2">{task.taskName}</td>
+                                    <td className="px-4 py-2">{task.taskPoint}</td>
                                     <td className="px-4 py-2">
                                     </td>
                                 </tr>)
@@ -96,17 +96,17 @@ const ScoreSheet = (props : ScoreSheetProp) => {
                                 </tr>
                             </thead>
                             <tbody>
-                {tempTasks.map((task:any, k:any)=>{
+                {tasks && tasks.map((task:any, k:any)=>{
                     return(<tr key={`task-${user_id}-${k}`} className="bg-white dark:bg-gray-800 dark:border-gray-700">
                                     <td className="px-4 py-2">
                                         <input
                                             name={'task_name'}
-                                            className='placeholder:text-gray-500 placeholder:italic border border-gray-300 w-full' type='text' placeholder={task.task_name} onChange={(e)=>onChangeTask(k,e)} value={task.task_name}/>
+                                            className='placeholder:text-gray-500 placeholder:italic border border-gray-300 w-full' type='text' placeholder={task.taskName} onChange={(e)=>onChangeTask(k,e)} value={task.taskName}/>
                                     </td>
                                     <td className="px-4 py-2">
                                     <input
                                             name={'task_point'}
-                                            className='placeholder:text-gray-500 placeholder:italic border border-gray-300 w-10 text-right' type='number' placeholder={task.task_point} onChange={(e)=>onChangeTask(k,e)} value={task.task_point}/>
+                                            className='placeholder:text-gray-500 placeholder:italic border border-gray-300 w-10 text-right' type='number' placeholder={task.taskPoint} onChange={(e)=>onChangeTask(k,e)} value={task.taskPoint}/>
                                     </td>
                                     <td className="px-4 py-2" >
                                     </td>

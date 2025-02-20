@@ -81,9 +81,6 @@ const Checklist = (props : ChecklistProp) => {
       setTasks(temp_tasks);
       alert('저장되었습니다.')
     });
-    // updateItem("C00000000", "Tasks", documentId2,"tasks", checklists).then((res)=>{
-    //   alert('저장되었습니다.')
-    // });
   }
 
   useEffect(()=>{
