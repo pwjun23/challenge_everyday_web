@@ -9,7 +9,7 @@ import _ from 'lodash';
 
 
 const Checklist = (props : ChecklistProp) => {
-  const {user_to_check, user_id_to_check} = props;
+  const {target} = props;
   const [score, setScore] = useState<number>(0);
   const [checklists, setCheckLists] = useState<{[k:string]:any}[] >([{}]);
   const checkbox_all = useRef<any>(false);
@@ -27,12 +27,13 @@ const Checklist = (props : ChecklistProp) => {
 
   const isCheckAll = (tasks:any)=>{
     let isAllComplete = true;
-    tasks && tasks.forEach((task:any)=>{
+    for(let i = 0 ; i < tasks.length ; i++){
+      const task = tasks[i];
       if(!task.completed || task.completed === false){
         isAllComplete = false;
-        return false;
+        break;
       }
-    });
+    }
     if(checkbox_all && checkbox_all.current){
       const ch = checkbox_all.current;
       if(isAllComplete){
@@ -76,7 +77,7 @@ const Checklist = (props : ChecklistProp) => {
     const root = 'tasks';
     updateItem(collectionName, documentId, root, checklists).then((res)=>{
       const temp_tasks:any = _.cloneDeep(tasks);
-      const idx:number = temp_tasks.findIndex((task:any)=> task.formattedDate === selectedDate && task.targetId === user_id_to_check);
+      const idx:number = temp_tasks.findIndex((task:any)=> task.formattedDate === selectedDate && task.targetId === target.userId);
       temp_tasks[idx]["tasks"] = checklists;
       setTasks(temp_tasks);
       alert('저장되었습니다.')
@@ -94,25 +95,25 @@ const Checklist = (props : ChecklistProp) => {
   }, [props.tasks])
   return (
         <div className="mb-4 border border-gray-300 rounded-lg bg-white p-2">
-          {user_to_check.photo &&
+          {target.photo &&
           <div className="flex items-center">
             <Image
               width={12}
               height={12}
-              src={user_to_check.userName===''?'/profile_default.svg':user_to_check.photo}
-              alt={user_to_check.userName}
+              src={target.userName===''?'/profile_default.svg':target.photo}
+              alt={target.userName}
               className="w-12 h-12 rounded-full mr-4"
             />
-            <div className="font-bold text-md text-stone-700 mr-4">{user_to_check.userName} ({score}점)</div>
-              <label htmlFor={`all-checkbox-${selectedDate}-${user_id_to_check}`}
+            <div className="font-bold text-md text-stone-700 mr-4">{target.userName} ({score}점)</div>
+              <label htmlFor={`all-checkbox-${selectedDate}-${target.userId}`}
                     className="ms-2 text-sm font-medium text-gray-900 dark:text-stone-700 mr-2">모두 체크</label>
-              <input id={`all-checkbox-${selectedDate}-${user_id_to_check}`}
+              <input id={`all-checkbox-${selectedDate}-${target.userId}`}
                      type="checkbox"
                      onChange={(e) => handleAllCheck(e)}
                      ref={checkbox_all}
                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
               <button type="button" 
-                    onClick={()=> saveChecklists(user_id_to_check)}
+                    onClick={()=> saveChecklists(target.userId)}
                     className="absolute right-4 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-sm text-sm px-2 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2">
                     <span className=''>저장</span>
               </button>

@@ -31,10 +31,8 @@ export const users = {
 }
 export const checklist_doc =  {
     targets : [
-      { userId:"on", userName:"온겸", photo:"/on_w48.png"},
-      { userId:"so", userName:"소빈", photo:"/so_w48.png"}
-    ],
-    tasks:
+      { userId:"on", userName:"온겸", photo:"/on_w48.png",
+        tasks:
     [
         {
           "taskName": "신발정리(화장실)",
@@ -76,7 +74,54 @@ export const checklist_doc =  {
           "taskId": "t000008",
           "taskPoint": 2
         }
-      ],
+      ]
+      },
+      { userId:"so", userName:"소빈", photo:"/so_w48.png",
+        tasks:
+    [
+        {
+          "taskName": "신발정리(화장실)",
+          "taskId": "t000000",
+          "taskPoint": 2,
+        },
+        {
+          "taskName": "이불정리",
+          "taskId": "t000001",
+          "taskPoint": 2
+        },
+        {
+          "taskName": "독서(20분 이상)",
+          "taskId": "t000002",
+          "taskPoint": 3
+        },
+        {
+          "taskPoint": 3,
+          "taskName": "단어필사",
+          "taskId": "t000003"
+        },
+        {
+          "taskName": "반찬 안남기기",
+          "taskId": "t000004",
+          "taskPoint": 2,
+        },
+        {
+          "taskName": "9시40분 이전에 누워서 잘 준비",
+          "taskId": "t000005",
+          "taskPoint": 3
+        },
+        {
+          "taskName": "저녁밥 먹고 스쿼트 20개",
+          "taskId": "t000007",
+          "taskPoint": 3
+        },
+        {
+          "taskName": "스스로 씻기",
+          "taskId": "t000008",
+          "taskPoint": 2
+        }
+      ]
+      }
+    ],
       "title": "두더지가족 매일매일 챌린지 2월♡",
       "createUser" : "admin",
       "id" : "C00000001",

@@ -26,6 +26,15 @@ const Home: React.FC= () => {
 
   const {checklists, currentSlideIndex, editing, setReward, setChecklists, setIsEdit, setSlideIndex, selectedDate, tasks, setTasks, setChecklist} = useCheckListsStore();
   
+const searchMonth = (selectedDate:string)=>{
+  fetchData(selectedDate)
+    .then((res)=>{
+      setTasks(res.tasks);
+      setChecklist(res.checklist)
+      setReward(res.reward)
+    });
+}
+  const currentMonth = useRef<string>(String(new Date().getMonth()+1).padStart(2,'0'));
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -37,12 +46,7 @@ const Home: React.FC= () => {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     // addDocumentWithId();//데이터 밀어넣기 or 배치
-    fetchData(selectedDate)
-    .then((res)=>{
-      setTasks(res.tasks);
-      setChecklist(res.checklist)
-      setReward(res.reward)
-    });
+    
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
@@ -51,8 +55,15 @@ const Home: React.FC= () => {
   useEffect(() => {
     // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
     setIsEdit(false);
-    
-  }, [currentSlideIndex, selectedDate]);
+  }, [currentSlideIndex]);
+
+  useEffect(() => {
+    const selectedMonth:string = selectedDate.split('-')[1];
+    if(currentMonth.current != selectedMonth){
+      searchMonth(selectedDate);
+      currentMonth.current = selectedMonth;
+    }
+  }, [selectedDate]);
 
   useEffect(() => {
     if (swiperRef.current) {
@@ -98,7 +109,6 @@ const Home: React.FC= () => {
   const tabs:{[k:string]:any}[] = [{tab_id :'monthly', label : '월별'} ,{tab_id :'missionCheck' , label : '미션체크'} , {tab_id :'score_sheet' , label : '점수표'}];
   
   const onClickTab = (tab_id:string)=>{
-    // fetchData();
     setActiveTab(tab_id);
     const index = tabs.findIndex((v)=> v.tab_id === tab_id);
     if (swiperRef.current && swiperRef.current) {

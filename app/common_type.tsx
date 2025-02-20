@@ -20,12 +20,9 @@ export type Checklists = {
   // export type DailyChecklistProp ={}
 
   export type ChecklistProp ={
+    target: {[k:string]:any}
     tasks: {[k:string]:any}[]
-    user_to_check:{[k:string]:string}
-    selectedDate:string
-    user_id_to_check:string
   }
-
   // export type ScoreSheetsProp ={
   //   // checkLists:Checklists
   // }

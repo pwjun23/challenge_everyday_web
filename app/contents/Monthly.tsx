@@ -12,8 +12,8 @@ const MonthlyView = (props : MonthlyViewProp) => {
   const {swiperRef, totalMonthCount} = props;
   const { checklists, selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate, tasks, checklist, reward} = useCheckListsStore();
 
-  // const today = new Date(selectedDate);
-  const today = new Date('2025-01-01');
+  const today = new Date(selectedDate);
+  // const today = new Date('2025-01-01');
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');

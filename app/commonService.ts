@@ -1,7 +1,7 @@
 import { getFirestore, collection, query, where, getDocs, updateDoc, Timestamp, addDoc, setDoc, doc, getDoc, writeBatch} from 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 import _ from 'lodash';
-import { checklists_collection, data_250201, rewards_doc, user_won} from "./db";
+import { checklist_doc, checklists_collection, data_250201, rewards_doc, user_won} from "./db";
 import { HolidayItem } from "./common_type";
 import { format } from 'date-fns';
 import FileSaver from 'file-saver';
@@ -68,8 +68,8 @@ export async function fetchData(selectedDate:string) {
   // 쿼리 시작 및 종료 날짜 설정 (해당 달의 1일 00:00:00 ~ 말일 23:59:59)
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  // const startDate = new Date(year, month - 1, 1);
-  const startDate = new Date(year, month - 2, 1);//1월달 부터 나오게 하기 위해
+  const startDate = new Date(year, month - 1, 1);
+  // const startDate = new Date(year, month - 2, 1);//1월달 부터 나오게 하기 위해
   const endDate = new Date(year, month, 1);
   
   const startTimestamp = Timestamp.fromDate(startDate);
@@ -291,13 +291,13 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     /* tasks collection 마이그레이션
     */
     // const ch = data_250201;
-  const documentId = "2025-02";
-  const reward = rewards_doc
-  // const checklist:any = checklist_doc;
+  const documentId = "2025-02-01";
+  // const reward = rewards_doc
+  const checklist:any = checklist_doc;
     try {
-      // await setDoc(doc(db, "checklists", documentId), checklist);
+      await setDoc(doc(db, "checklists", documentId), checklist);
 
-      await setDoc(doc(db, "rewards", documentId), reward);
+      // await setDoc(doc(db, "rewards", documentId), reward);
 
       // await setDoc(doc(db, "Checklists", documentId), ch);
       // const newTaskDoc:any = {};

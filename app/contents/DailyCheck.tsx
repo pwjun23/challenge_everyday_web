@@ -22,7 +22,7 @@ const DailyChecklist = () => {//DailyChecklistProp
         const taskTarget:any = tasks.filter((task:any)=> task.formattedDate === selectedDate && task.targetId === targetUserId)[0]['tasks'];
         taskTargets[targetUserId] = taskTarget;
       }else{
-        taskTargets[targetUserId] = checklist.tasks;
+        taskTargets[targetUserId] = target.tasks;
       }
     });
      /* 여기서 날짜를 변경하면
@@ -60,15 +60,13 @@ const DailyChecklist = () => {//DailyChecklistProp
           onChange={(e) => onChangeHandler(e.target.value)}
         />
       </div>
-      {selectedDate && checklist && checklist.tasks && checklist.targets 
+      {selectedDate && checklist && checklist.targets 
       && tasks_by_date && Object.keys(tasks_by_date).length > 0
-      && checklist.targets.map((child:any, idx:number) => (
+      && checklist.targets.map((target:any, idx:number) => (
         <Checklist
-          user_to_check ={child}
-          tasks = {tasks_by_date[child.userId]}
+          target = {target}
+          tasks = {tasks_by_date[target.userId]}
           key = {idx}
-          selectedDate = {selectedDate}
-          user_id_to_check ={child.userId}
         />
       ))}
     </div>
