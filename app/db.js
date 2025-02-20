@@ -124,8 +124,8 @@ export const checklist_doc =  {
     ],
       "title": "두더지가족 매일매일 챌린지 2월♡",
       "createUser" : "admin",
-      "id" : "C00000001",
-      "date" : Timestamp.fromDate(new Date('2025-02-12'))
+      "id" : "C00000000",
+      "date" : Timestamp.fromDate(new Date('2025-01-12'))
 };
 
 export const rewards_doc = {

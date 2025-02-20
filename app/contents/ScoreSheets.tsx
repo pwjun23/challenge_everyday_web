@@ -7,8 +7,6 @@ import { useCheckListsStore } from '../store/checklistStore';
 
 const ScoreSheets = () => {//props : ScoreSheetsProp
   const {checklist}= useCheckListsStore();
-  const [ tasks_template , set_tasks_template ] = useState<{}>({})
-  const [initDate, setInitDate] = useState<string>('');
   
   useEffect(()=>{
     
@@ -24,9 +22,7 @@ const ScoreSheets = () => {//props : ScoreSheetsProp
           const idx = index;
           const total_index = Object.keys(checklist.targets).length-1;
           return<ScoreSheet 
-              tasks ={checklist.tasks}
-              user_id = {target.userId}
-              user_name = {target.userName}
+              target = {target}
               key = {idx}
               index = {idx}
               total_index = {total_index}

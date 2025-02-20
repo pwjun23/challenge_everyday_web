@@ -4,68 +4,74 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import {ScoreSheetProp } from '../common_type';
 import _ from 'lodash';
 import { useCheckListsStore } from '../store/checklistStore';
+import { Timestamp } from 'firebase/firestore';
+import { saveChecklist } from '../commonService';
 
 const ScoreSheet = (props : ScoreSheetProp) => {
-  const {tasks, user_id, user_name , total_index, index} = props;
-  const {isEdit, setIsEdit} = useCheckListsStore();
-  const [tempTasks, setTempTasks] = useState<{[key:string]:any}[]>([{}]);
+  const {target, total_index, index} = props;
+  const {isEdit, setIsEdit, selectedDate, checklist, setChecklist} = useCheckListsStore();
+  const [tempTasks, setTempTasks] = useState<{[key:string]:any}[]>(target.tasks);
 
   const onChangeTask =(index:number, e:any)=>{
 
     const { name, value } = e.target;
     const newInputs = [...tempTasks];
     newInputs[index] = {...newInputs[index], [name] : value};
-    // setInputs(newInputs);
     setTempTasks(newInputs);
-    // const { name, value } = e.target;
-    // setTempTasks({...tempTasks,[name] : value});
   }
 
   const onSave = ()=>{
     /**
      * 여기다가 저장 로직을 넣는다.... 
      */
+    const collectionName = "checklists";
+    const documentId = "C00000001";
+    const root = "targets";
+    const date = Timestamp.fromDate(new Date(selectedDate))
+    // const checklist = {'date': date, "formattedDate" : selectedDate, targetId: target.userId, targetName : target.userName , tasks : target.tasks }
+    const idx:number = checklist.targets.findIndex((t:any)=> t.userId === target.userId);
+    const targets:any = _.cloneDeep(checklist).targets;
+    targets[idx].tasks = tempTasks;
+    saveChecklist(collectionName,documentId,root,targets).then((res:any)=>{
+        if(res){
+            const ch = _.cloneDeep(checklist);
+            ch.targets = targets;
+            setChecklist(ch);
+        }
+    });
     setIsEdit(false);
   }
   const onExit = ()=>{
     // setTempTasks(checklists.tasks);
     setIsEdit(false);
   }
-//   useEffect(()=>{
-//     if(checklists){
-//         setTempTasks(checklists.tasks);
-//     }
-//   },[checklists])
 
+//   useEffect(()=>{
+//     if(target){
+//         setTempTasks(target.tasks);
+//     }
+//   },[target])
+  
   return (
-            <div key={`score_sheet-${user_id}`}>
+            <div key={`score_sheet-${target.user_id}`}>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-4">
-                <h3 className={`pl-2 pb-2 text-stone-700`} >{user_name}<span className={`text-xs`}> 의 점수표</span>
+                <h3 className={`pl-2 pb-2 text-stone-700`} >{target.userName}<span className={`text-xs`}> 의 점수표</span>
                     {!isEdit && <button type="button" 
                     onClick={()=> setIsEdit(true)}
                     className="float-right text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-sm text-sm py-1 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2">
-                                        <svg className="w-4 h-4 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1v3m5-3v3m5-3v3M1 7h7m1.506 3.429 2.065 2.065M19 7h-2M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm6 13H6v-2l5.227-5.292a1.46 1.46 0 0 1 2.065 2.065L8 16Z"></path>
-                                        </svg>
-                                        <span className='sr-only'>수정</span>
+                                        수정
                                     </button>
                     }
-                    {/* {isEdit && <button type="button"
+                    {isEdit && <button type="button"
                     onClick={()=> onSave()}
                     className="float-right text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-sm text-sm py-1 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2">
-                    <svg className="w-4 h-4 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h11m0 0-4-4m4 4-4 4m-5 3H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3"></path>
-                    </svg>
+                    저장
                         <span className='sr-only'>저장</span>
-                    </button>} */}
+                    </button>}
                     {isEdit && <button type="button"
                     onClick={()=> onExit()}
-                    className="float-right text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-sm text-sm py-1 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2">
-                    <svg className="w-4 h-4 text-gray-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h11m0 0-4-4m4 4-4 4m-5 3H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3"></path>
-                    </svg>
-                        <span className='sr-only'>나가기</span>
-                    </button>}
+                    className="ml-4 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-sm text-sm py-1 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2">
+                    X                    </button>}
                 </h3>
                 
                 {!isEdit&&<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -77,8 +83,8 @@ const ScoreSheet = (props : ScoreSheetProp) => {
                                 </tr>
                             </thead>
                             <tbody>
-                {tasks && tasks.map((task:any, k:any)=>{
-                    return(<tr key={`task-${user_id}-${k}`} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                {tempTasks && tempTasks.map((task:any, k:any)=>{
+                    return(<tr key={`task-${target.userId}-${k}`} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                     <td className="px-4 py-2">{task.taskName}</td>
                                     <td className="px-4 py-2">{task.taskPoint}</td>
                                     <td className="px-4 py-2">
@@ -96,16 +102,16 @@ const ScoreSheet = (props : ScoreSheetProp) => {
                                 </tr>
                             </thead>
                             <tbody>
-                {tasks && tasks.map((task:any, k:any)=>{
-                    return(<tr key={`task-${user_id}-${k}`} className="bg-white dark:bg-gray-800 dark:border-gray-700">
+                {tempTasks && tempTasks.map((task:any, k:any)=>{
+                    return(<tr key={`task-${target.userId}-${k}`} className="bg-white dark:bg-gray-800 dark:border-gray-700">
                                     <td className="px-4 py-2">
                                         <input
-                                            name={'task_name'}
+                                            name={'taskName'}
                                             className='placeholder:text-gray-500 placeholder:italic border border-gray-300 w-full' type='text' placeholder={task.taskName} onChange={(e)=>onChangeTask(k,e)} value={task.taskName}/>
                                     </td>
                                     <td className="px-4 py-2">
                                     <input
-                                            name={'task_point'}
+                                            name={'taskPoint'}
                                             className='placeholder:text-gray-500 placeholder:italic border border-gray-300 w-10 text-right' type='number' placeholder={task.taskPoint} onChange={(e)=>onChangeTask(k,e)} value={task.taskPoint}/>
                                     </td>
                                     <td className="px-4 py-2" >

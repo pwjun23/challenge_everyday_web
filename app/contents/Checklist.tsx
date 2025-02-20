@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChecklistProp } from '../common_type';
 import Image from 'next/image';
 import { useCheckListsStore } from '../store/checklistStore';
-import { updateItem } from '../commonService';
+import { saveTasks } from '../commonService';
 import _ from 'lodash';
 import { Timestamp } from 'firebase/firestore';
 
@@ -76,7 +76,7 @@ const Checklist = (props : ChecklistProp) => {
     const collectionName = 'tasks';
     const documentId = `${userId}-${selectedDate}`;
     const root = 'tasks';
-    updateItem(collectionName, documentId, root, checklists, selectedDate, target).then((res)=>{
+    saveTasks(collectionName, documentId, root, checklists, selectedDate, target).then((res)=>{
       let temp_tasks:any;
       const date = Timestamp.fromDate(new Date(selectedDate))
       const newChecklists = {'date': date, "formattedDate" : selectedDate, targetId: target.userId, targetName : target.userName , tasks : checklists }

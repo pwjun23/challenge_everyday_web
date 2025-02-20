@@ -136,7 +136,7 @@ export async function fetchData(selectedDate:string) {
   
 }
 
-export async function updateItem(collectionName:string, documentId:string, root:string, updatedData:any, selectedDate:string, target:any) {
+export async function saveTasks(collectionName:string, documentId:string, root:string, updatedData:any, selectedDate:string, target:any) {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
     try {
@@ -161,60 +161,30 @@ export async function updateItem(collectionName:string, documentId:string, root:
     }
   }
 
-
-  export async function mergeObjects(documentId:string, collectionName:string, documentId2:string, arrayField:string, newObjects:any) {
+  export async function saveChecklist(collectionName:string, documentId:string, root:string, updatedData:any) {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const docRef = doc(db, "Checklists", documentId, collectionName, documentId2);
-    const docSnap = await getDoc(docRef);
-  
-    if (docSnap.exists()) {
-      const existingData = docSnap.data();
-
-
-      const existingArray = existingData[arrayField] || [];// 기존에 있던 배열
-      const addData:any = [];
-      existingArray.map((obj:any)=>{
-        const exKey = obj.user_id+obj.taskId+obj.formattedDate;
-        newObjects.forEach((nObj:any, index:number)=>{
-          const key = nObj.user_id+nObj.taskId+nObj.formattedDate;
-          if(exKey === key){
-            obj.completed = nObj.completed;
-            obj.task_point = nObj.task_point;
-          }
-          const findIndex = existingArray.findIndex((o:any)=> o.taskId + o.user_id_to_check + o.formattedDate === nObj.taskId + nObj.user_id_to_check + nObj.formattedDate);
-          if(findIndex == -1){
-            const newObj = newObjects.filter((o:any)=>o.taskId + o.user_id_to_check + o.formattedDate=== nObj.taskId + nObj.user_id_to_check + nObj.formattedDate)[0];
-            const keyNew = newObj.taskId + newObj.user_id_to_check + newObj.formattedDate;
-            const checkIdx = addData.findIndex((add:any)=> add.taskId + add.user_id_to_check + add.formattedDate === keyNew);
-            if(checkIdx === -1){
-              addData.push(newObj);
-            }
-          }
-        });
-      });
-
-      const uniqueArray = existingArray.concat(addData);
-      // 새로운 객체 배열과 기존 배열을 병합
-      // const mergedArray = [...existingArray, ...newObjects];
-  
-      // // 중복 제거 (원하는 기준으로)
-      // const uniqueArray = mergedArray.filter((obj, index, self) =>
-      //   self.findIndex((o) => o.taskId + o.user_id_to_check === obj.taskId + obj.user_id_to_check) === index // 키값을 기준으로 중복 제거
-      // );
-      console.log({uniqueArray});
-      await updateDoc(docRef, { [arrayField]: uniqueArray });
-    }else{
-      // await updateDoc(docRef, { [arrayField]: newObjects });
-      const newTaskDoc:any = {};
-      const yyyymm = newObjects[0].formattedDate.slice(0, 7).replaceAll("-","");
-      const timestampByMonth = convertYYYYMMToTimestamp(yyyymm);
-      newTaskDoc["formattedDate"] = newObjects[0].formattedDate.slice(0, 7);
-      newTaskDoc["date"] = timestampByMonth;
-      newTaskDoc["tasks"] = newObjects;
-      await setDocByDocumentId(db,"Checklists", documentId, "Tasks", documentId2, newTaskDoc);
+      try {
+        const docRef = doc(db, collectionName, documentId);
+        const docSnap = await getDoc(docRef);
+    
+        if (docSnap.exists()) {
+          console.log("문서 데이터:", docSnap.data());
+          // Firestore에서 해당 아이템 업데이트
+          await updateDoc(docRef, { [root]: updatedData});
+          console.log("특정 객체가 성공적으로 업데이트되었습니다.");
+          return true
+        }else{
+          console.log("해당 문서는 존재하지 않습니다.");
+        }
+      
+        
+      } catch (error) {
+        console.error("업데이트 중 오류 발생:", error);
+        return false
+      }
     }
-  }
+
 
   async function fetchDocumentById(collectionName:string, documentId:string) {
     const app = initializeApp(firebaseConfig);
@@ -296,7 +266,7 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     /* tasks collection 마이그레이션
     */
     // const ch = data_250201;
-  const documentId = "2025-02-01";
+  const documentId = "C00000000";
   // const reward = rewards_doc
   const checklist:any = checklist_doc;
     try {
