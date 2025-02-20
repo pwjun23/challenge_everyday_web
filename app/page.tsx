@@ -46,7 +46,7 @@ const searchMonth = (selectedDate:string)=>{
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     // addDocumentWithId();//데이터 밀어넣기 or 배치
-    
+    searchMonth(selectedDate);
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
