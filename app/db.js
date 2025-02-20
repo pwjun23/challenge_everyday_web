@@ -130,7 +130,7 @@ export const checklist_doc =  {
 
 export const rewards_doc = {
     'createUser':'admin',
-    'id' : "R00000000",
+    'id' : "R00000001",
     'list' : [
     {
       "awardDetail": "뷔페 이용권(4인)",

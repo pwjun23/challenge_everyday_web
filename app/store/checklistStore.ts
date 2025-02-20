@@ -13,6 +13,7 @@ interface ChecklistState {
   isEdit: boolean;
   modalShow:boolean,
   editing:boolean,
+  isEditReward:boolean,
   setTasks:(value:[]) => void;
   setChecklist:(value:{[k:string]:any}) => void;
   setReward:(value:{[k:string]:any})=> void;
@@ -22,6 +23,7 @@ interface ChecklistState {
   setIsEdit: (value:boolean) => void;
   setModalShow: (value:boolean) => void;
   setEditing: (value:boolean)=> void;
+  setIsEditReward: (value:boolean)=> void;
 }
 const date = new Date();
 const year = date.getFullYear();
@@ -55,6 +57,7 @@ export const useCheckListsStore = create<ChecklistState>((set) => ({
     2: '슬라이드 3의 데이터',
   },
   editing:false,
+  isEditReward:false,
   setTasks: (value) => set({tasks:value}),
   setChecklist: (value) => set({checklist:value}),
   setReward: (value) => set({reward:value}),
@@ -63,5 +66,6 @@ export const useCheckListsStore = create<ChecklistState>((set) => ({
   setSelectedDate: (yyyyMMdd) => set({ selectedDate: yyyyMMdd }),
   setIsEdit: (value) => set({isEdit: value}),
   setModalShow: (value) => set({modalShow: value}),
-  setEditing: (value) => set({editing:value})
+  setEditing: (value) => set({editing:value}),
+  setIsEditReward: (value) => set({isEditReward:value})
 }));

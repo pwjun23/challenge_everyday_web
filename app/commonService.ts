@@ -266,13 +266,14 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
     /* tasks collection 마이그레이션
     */
     // const ch = data_250201;
-  const documentId = "C00000000";
-  // const reward = rewards_doc
-  const checklist:any = checklist_doc;
+  // const documentId = "C00000000";
+  const documentId = "R00000001";
+  const reward = rewards_doc
+  // const checklist:any = checklist_doc;
     try {
-      await setDoc(doc(db, "checklists", documentId), checklist);
+      // await setDoc(doc(db, "checklists", documentId), checklist);
 
-      // await setDoc(doc(db, "rewards", documentId), reward);
+      await setDoc(doc(db, "rewards", documentId), reward);
 
       // await setDoc(doc(db, "Checklists", documentId), ch);
       // const newTaskDoc:any = {};
