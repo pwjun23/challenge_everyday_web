@@ -10,7 +10,7 @@ const Checklist = (props : ChecklistProp) => {
   const {tasks, user_to_check, user_id_to_check} = props;
   const [score, setScore] = useState<number>(0);
   const [checklists, setCheckLists] = useState<{[k:string]:any}[] >([{}]);
-  const checkbox_all = useRef<any>(null);
+  const checkbox_all = useRef<any>(false);
   const { selectedDate, setEditing } = useCheckListsStore();
   
   const countPoints = (updatedChecklist:{[k:string]:any}) =>{
@@ -68,16 +68,13 @@ const Checklist = (props : ChecklistProp) => {
     countPoints(updatedChecklist);
   }
 
-  const saveChecklists = ()=>{
-    const date = selectedDate.slice(0, 7);
-    const documentId2 = `${date}`;
-    // const root = `${date}`;
-//     console.log(root);
-// debugger;
-    mergeObjects("C00000000", "Tasks", documentId2,"tasks", checklists).then((res)=>{
+  const saveChecklists = (userId:string)=>{
+    const collectionName = 'tasks';
+    const documentId = `${userId}-${selectedDate}`;
+    const root = 'tasks';
+    updateItem(collectionName, documentId, root, checklists).then((res)=>{
       alert('저장되었습니다.')
     });
-
     // updateItem("C00000000", "Tasks", documentId2,"tasks", checklists).then((res)=>{
     //   alert('저장되었습니다.')
     // });
@@ -112,7 +109,7 @@ const Checklist = (props : ChecklistProp) => {
                      ref={checkbox_all}
                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
               <button type="button" 
-                    onClick={()=> saveChecklists()}
+                    onClick={()=> saveChecklists(user_id_to_check)}
                     className="absolute right-4 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-sm text-sm px-2 py-2 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2">
                     <span className=''>저장</span>
               </button>
@@ -120,7 +117,7 @@ const Checklist = (props : ChecklistProp) => {
           }
           <div className="mt-4">
             {
-              checklists && checklists.map((task, i)=>{
+              checklists && checklists.length > 0 && checklists.map((task, i)=>{
                     return(
                       <div key={i} className="flex justify-start items-center mb-2">
                         <input
@@ -128,7 +125,8 @@ const Checklist = (props : ChecklistProp) => {
                           id={`checkbox-${task.user_id_to_check}-${i}`}
                           onChange={(e) => handleCheck(task)}
                           className="mr-2"
-                          checked={task.completed}
+                          checked={task?.completed || false}
+                          value={task?.completed || false}
                         />
                         <label 
                         className="text-sm text-gray-900 dark:text-stone-700"

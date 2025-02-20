@@ -158,22 +158,13 @@ const Home: React.FC= () => {
         onSlideChange={(swiper) => onSlideChangese(swiper.activeIndex)}
       >
           <SwiperSlide>
-            {tasks && tasks.length !== 0 && swiperRef &&<MonthlyView
+            {swiperRef &&<MonthlyView
               totalMonthCount = {totalMonthCount}
               swiperRef={swiperRef}
              />}
           </SwiperSlide>
-          <SwiperSlide>
-          {checklists &&
-            <DailyChecklist
-              key={'daily'}
-              user_id=''
-            />}
-          </SwiperSlide>
-          <SwiperSlide>
-          {checklists &&<ScoreSheets
-             />}
-          </SwiperSlide>
+          <SwiperSlide><DailyChecklist/></SwiperSlide>
+          <SwiperSlide><ScoreSheets/></SwiperSlide>
           </Swiper>
         <Tab.Group className={`nav-tab`}>
           
