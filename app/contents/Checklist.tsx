@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useCheckListsStore } from '../store/checklistStore';
 import { updateItem } from '../commonService';
 import _ from 'lodash';
+import { Timestamp } from 'firebase/firestore';
 
 
 const Checklist = (props : ChecklistProp) => {
@@ -17,7 +18,7 @@ const Checklist = (props : ChecklistProp) => {
   
   const countPoints = (updatedChecklist:{[k:string]:any}) =>{
     let totalPoint = 0;
-    updatedChecklist.forEach((element: { completed: any; taskPoint: number; user_id_to_check:string }) => {
+    updatedChecklist.forEach((element: { completed: any; taskPoint: number; userId:string }) => {
       if(element.completed){
         totalPoint = totalPoint + element.taskPoint;
       }
@@ -46,7 +47,7 @@ const Checklist = (props : ChecklistProp) => {
 
   const handleCheck = (task:any): void => {
     const updatedChecklist:{[k:string]:any}[] = checklists.map((item) =>
-      item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, completed: !item.completed } : item
+      item.taskId === task.taskId ? { ...item, completed: !item.completed } : item
     );
     updateChecklist(updatedChecklist);
     isCheckAll(updatedChecklist);
@@ -60,7 +61,7 @@ const Checklist = (props : ChecklistProp) => {
   };
   const pointHandler = (task:any, point:number) =>{
     const updatedChecklist:{[k:string]:any}[] = checklists.map((item) =>
-      item.taskId === task.taskId && item.user_id_to_check === task.user_id_to_check ? { ...item, taskPoint: item.taskPoint+point } : item
+      item.taskId === task.taskId? { ...item, taskPoint: item.taskPoint+point } : item
     );
     updateChecklist(updatedChecklist);
   }
@@ -75,10 +76,22 @@ const Checklist = (props : ChecklistProp) => {
     const collectionName = 'tasks';
     const documentId = `${userId}-${selectedDate}`;
     const root = 'tasks';
-    updateItem(collectionName, documentId, root, checklists).then((res)=>{
-      const temp_tasks:any = _.cloneDeep(tasks);
-      const idx:number = temp_tasks.findIndex((task:any)=> task.formattedDate === selectedDate && task.targetId === target.userId);
-      temp_tasks[idx]["tasks"] = checklists;
+    updateItem(collectionName, documentId, root, checklists, selectedDate, target).then((res)=>{
+      let temp_tasks:any;
+      const date = Timestamp.fromDate(new Date(selectedDate))
+      const newChecklists = {'date': date, "formattedDate" : selectedDate, targetId: target.userId, targetName : target.userName , tasks : checklists }
+      if(tasks.length === 0){
+        temp_tasks = [];
+        temp_tasks.push(newChecklists);
+      }else{
+        temp_tasks = _.cloneDeep(tasks);
+        const idx:number = temp_tasks.findIndex((task:any)=> task.formattedDate === selectedDate && task.targetId === target.userId);
+        if(idx !== -1){
+          temp_tasks[idx]["tasks"] = checklists;
+        }else{
+          temp_tasks.push(newChecklists);
+        }
+      }
       setTasks(temp_tasks);
       alert('저장되었습니다.')
     });
@@ -126,7 +139,7 @@ const Checklist = (props : ChecklistProp) => {
                       <div key={i} className="flex justify-start items-center mb-2">
                         <input
                           type="checkbox"
-                          id={`checkbox-${task.user_id_to_check}-${i}`}
+                          id={`checkbox-${target.userId}-${i}`}
                           onChange={(e) => handleCheck(task)}
                           className="mr-2"
                           checked={task?.completed || false}
@@ -134,7 +147,7 @@ const Checklist = (props : ChecklistProp) => {
                         />
                         <label 
                         className="text-sm text-gray-900 dark:text-stone-700"
-                        htmlFor={`checkbox-${task.user_id_to_check}-${i}`}>{task.taskName} ({task.taskPoint}점)</label>
+                        htmlFor={`checkbox-${task.targetId}-${i}`}>{task.taskName} ({task.taskPoint}점)</label>
                         <div className="add-delete-point-btn ml-4 inline-flex rounded-md shadow-sm" role="group">
                           <button type="button" onClick={(e)=>pointHandler(task,+1)} className="px-3 py-2 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             +1

@@ -25,6 +25,8 @@ const MonthlyView = (props : MonthlyViewProp) => {
   const [holidays, setHolidays] = useState<Date[]>([]);
   const daysInMonth: Date[] = [];
   
+  // const [tasksData, setTasksData ] = useState(tasks);
+
   // 달력의 각 날짜를 계산하여 daysInMonth 배열에 넣기
   for (let day = monthStart; day <= monthEnd; day = addDays(day, 1)) {
     daysInMonth.push(day);
@@ -42,16 +44,7 @@ const MonthlyView = (props : MonthlyViewProp) => {
         date.getDay() === 0 //일요일
     ): date.getDay() === 0 //일요일
   };
-  const getUserNameByUserId = (user_id:string)=>{
-    const idx = users_to_check.findIndex((user)=> user.user_id === user_id);
-    const user_name = users_to_check[idx].user_name;
-    return user_name;
-  }
-  const getUserInfoByUserId = (user_id:string)=>{
-    const idx = users_to_check.findIndex((user)=> user.user_id === user_id);
-    const user_name = users_to_check[idx].user_name;
-    return users_to_check[idx];
-  }
+
   const onClickHandle =(createAt:any)=>{
     // fetchData();
     setSlideIndex(1);
@@ -76,6 +69,29 @@ const MonthlyView = (props : MonthlyViewProp) => {
     fetchHolidays(new Date(selectedDate)).then((res)=> setHolidays(res));
   }, [selectedDate]);
 
+  useEffect(() =>{
+    // setTasksData(tasks);
+
+    const users:{[k:string]:number} = {};
+    if(checklist && checklist.targets){
+     checklist.targets.forEach((target:any)=>{
+      const {userId} = target;
+      if(!users[userId]) users[userId] = 0;
+      tasks.forEach((taskD:any)=>{
+        taskD.tasks.forEach((task:any)=>{
+          if(task.completed){
+            if(taskD.targetId === userId){
+              users[userId] += task.taskPoint;
+            }
+          }
+        })
+      })
+    });
+    checklist["totalPoint"] = users;
+    }
+
+
+  },[tasks, checklist])
 
   return (
     <div className="p-4">
@@ -147,15 +163,6 @@ const MonthlyView = (props : MonthlyViewProp) => {
               tasksByUserId[targetId] = tasks.filter((task:any)=> task.formattedDate === _dateC && task.targetId === targetId)[0];
             }
           }
-
-          // const userIds = Array.from(new Set(tasks.map((task:any) => task.user_id)));
-          // const tasksByUserId:any = {};
-          // if(userIds.length !== 0){
-          //   for(let i=0 ; i < userIds.length ; i++){
-          //     const userId = userIds[i];
-          //     tasksByUserId[userId] = tasks.filter((task:any)=> task.formattedDate === _dateC && task.user_id === userId);
-          //   }
-          // }
 
           return(
           <div key={`daysInMonth-${day}-${idx}`} 
