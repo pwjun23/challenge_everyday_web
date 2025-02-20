@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { DailyChecklistProp } from '../common_type';
+// import { DailyChecklistProp } from '../common_type';
 import Checklist from './Checklist';
 import _ from 'lodash';
 import { useCheckListsStore } from '../store/checklistStore';
 import { Timestamp } from 'firebase/firestore';
 
-const DailyChecklist = (props : DailyChecklistProp) => {
+const DailyChecklist = () => {//DailyChecklistProp
   const {checklist, tasks, checklists, selectedDate, setSelectedDate} = useCheckListsStore();
   const {targets} = checklist || {};
   const {users_to_check, tasks_template} = checklists || {};
@@ -15,7 +15,7 @@ const DailyChecklist = (props : DailyChecklistProp) => {
   const [tasks_by_date, setTask_by_date] = useState<any>({});
   
   const getTask = (selectedDate:string)=>{
-    let taskTargets:any = {};
+    const taskTargets:any = {};
     targets.forEach((target:any)=>{
       const targetUserId:string = target.userId;
       if(tasks.findIndex((task:any)=> task.formattedDate === selectedDate && task.targetId === targetUserId) !== -1){

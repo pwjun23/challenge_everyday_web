@@ -17,8 +17,7 @@ export type Checklists = {
     totalMonthCount:number
   }
 
-  export type DailyChecklistProp ={
-  }
+  // export type DailyChecklistProp ={}
 
   export type ChecklistProp ={
     tasks: {[k:string]:any}[]
