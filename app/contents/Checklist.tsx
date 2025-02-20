@@ -4,14 +4,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChecklistProp } from '../common_type';
 import Image from 'next/image';
 import { useCheckListsStore } from '../store/checklistStore';
-import { mergeObjects, updateItem } from '../commonService';
+import { updateItem } from '../commonService';
+import _ from 'lodash';
+
 
 const Checklist = (props : ChecklistProp) => {
-  const {tasks, user_to_check, user_id_to_check} = props;
+  const {user_to_check, user_id_to_check} = props;
   const [score, setScore] = useState<number>(0);
   const [checklists, setCheckLists] = useState<{[k:string]:any}[] >([{}]);
   const checkbox_all = useRef<any>(false);
-  const { selectedDate, setEditing } = useCheckListsStore();
+  const { selectedDate, setEditing, tasks, setTasks} = useCheckListsStore();
   
   const countPoints = (updatedChecklist:{[k:string]:any}) =>{
     let totalPoint = 0;
@@ -73,6 +75,10 @@ const Checklist = (props : ChecklistProp) => {
     const documentId = `${userId}-${selectedDate}`;
     const root = 'tasks';
     updateItem(collectionName, documentId, root, checklists).then((res)=>{
+      const temp_tasks:any = _.cloneDeep(tasks);
+      const idx:number = temp_tasks.findIndex((task:any)=> task.formattedDate === selectedDate && task.targetId === user_id_to_check);
+      temp_tasks[idx]["tasks"] = checklists;
+      setTasks(temp_tasks);
       alert('저장되었습니다.')
     });
     // updateItem("C00000000", "Tasks", documentId2,"tasks", checklists).then((res)=>{
@@ -81,14 +87,14 @@ const Checklist = (props : ChecklistProp) => {
   }
 
   useEffect(()=>{
-    if(tasks){
-      if(tasks.length !==0){
-        setCheckLists(tasks);
-        isCheckAll(tasks);
+    if(props.tasks){
+      if(props.tasks.length !==0){
+        setCheckLists(props.tasks);
+        isCheckAll(props.tasks);
       }
-      countPoints(tasks);
+      countPoints(props.tasks);
     }
-  }, [tasks])
+  }, [props.tasks])
   return (
         <div className="mb-4 border border-gray-300 rounded-lg bg-white p-2">
           {user_to_check.photo &&

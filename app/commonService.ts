@@ -136,11 +136,11 @@ export async function fetchData(selectedDate:string) {
   
 }
 
-export async function updateItem(documentId:string, collectionName:string, documentId2:string, root:string, updatedData:any) {
+export async function updateItem(collectionName:string, documentId:string, root:string, updatedData:any) {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
     try {
-      const docRef = doc(db, "Checklists", documentId, collectionName, documentId2);
+      const docRef = doc(db, collectionName, documentId);
       const docSnap = await getDoc(docRef);
   
       if (docSnap.exists()) {
@@ -150,15 +150,13 @@ export async function updateItem(documentId:string, collectionName:string, docum
       }
     
       // Firestore에서 해당 아이템 업데이트
-      await updateDoc(docRef, {[root] : updatedData});
-
-
-  
+      await updateDoc(docRef, { [root]: updatedData});
       console.log("특정 객체가 성공적으로 업데이트되었습니다.");
     } catch (error) {
       console.error("업데이트 중 오류 발생:", error);
     }
   }
+
   export async function mergeObjects(documentId:string, collectionName:string, documentId2:string, arrayField:string, newObjects:any) {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
