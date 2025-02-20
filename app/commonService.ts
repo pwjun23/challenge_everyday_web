@@ -1,4 +1,4 @@
-import { getFirestore, collection, query, where, getDocs, updateDoc, Timestamp, addDoc, setDoc, doc, getDoc, writeBatch} from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, updateDoc, Timestamp, addDoc, setDoc, doc, getDoc, writeBatch, deleteDoc} from 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 import _ from 'lodash';
 import { checklist_doc, checklists_collection, data_250201, rewards_doc, user_won} from "./db";
@@ -184,7 +184,29 @@ export async function saveTasks(collectionName:string, documentId:string, root:s
         return false
       }
     }
-
+  export async function removeChecklist(collectionName:string, documentId:string) {
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+        try {
+          const docRef = doc(db, collectionName, documentId);
+          // const docSnap = await getDoc(docRef);
+      
+          // if (docSnap.exists()) {
+            // console.log("문서 데이터:", docSnap.data());
+            // Firestore에서 해당 아이템 업데이트
+            await deleteDoc(docRef);
+            console.log("특정 객체가 성공적으로 업데이트되었습니다.");
+            return true
+          // }else{
+          //   console.log("해당 문서는 존재하지 않습니다.");
+          // }
+        
+          
+        } catch (error) {
+          console.error("업데이트 중 오류 발생:", error);
+          return false
+      }
+    }
 
   async function fetchDocumentById(collectionName:string, documentId:string) {
     const app = initializeApp(firebaseConfig);

@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChecklistProp } from '../common_type';
 import Image from 'next/image';
 import { useCheckListsStore } from '../store/checklistStore';
-import { saveTasks } from '../commonService';
+import { removeChecklist, saveTasks } from '../commonService';
 import _ from 'lodash';
 import { Timestamp } from 'firebase/firestore';
 
@@ -96,7 +96,18 @@ const Checklist = (props : ChecklistProp) => {
       alert('저장되었습니다.')
     });
   }
-
+  const removeCheck = ()=>{
+    const collectionName = 'tasks';
+    const documentId = `${target.userId}-${selectedDate}`;
+    removeChecklist(collectionName,documentId).then((res)=>{
+      if(res){
+        let temp_tasks:any = _.cloneDeep(tasks);
+        temp_tasks = temp_tasks.filter((t:any)=> t.formattedDate !== selectedDate && t.userId !== target.userId);
+        setTasks(temp_tasks);
+        setCheckLists(target.tasks);
+      }
+    });
+  }
   useEffect(()=>{
     if(props.tasks){
       if(props.tasks.length !==0){
@@ -160,6 +171,11 @@ const Checklist = (props : ChecklistProp) => {
                     )
                 })
             }
+          </div>
+          <div className='text-center text-stone-600'>
+          <button className='border rounded-md px-3 py-1'
+                        onClick={()=> removeCheck()}
+            >체크리스트 삭제</button>
           </div>
         </div>
   );
