@@ -20,7 +20,7 @@ const Checklist = (props : ChecklistProp) => {
     let totalPoint = 0;
     updatedChecklist.forEach((element: { completed: any; taskPoint: number; userId:string }) => {
       if(element.completed){
-        totalPoint = totalPoint + element.taskPoint;
+        totalPoint = totalPoint + Number(element.taskPoint);
       }
     });
     setScore(totalPoint);
@@ -61,7 +61,7 @@ const Checklist = (props : ChecklistProp) => {
   };
   const pointHandler = (task:any, point:number) =>{
     const updatedChecklist:{[k:string]:any}[] = checklists.map((item) =>
-      item.taskId === task.taskId? { ...item, taskPoint: item.taskPoint+point } : item
+      item.taskId === task.taskId? { ...item, taskPoint: Number(item.taskPoint)+point } : item
     );
     updateChecklist(updatedChecklist);
   }
@@ -76,6 +76,7 @@ const Checklist = (props : ChecklistProp) => {
     const collectionName = 'tasks';
     const documentId = `${userId}-${selectedDate}`;
     const root = 'tasks';
+    
     saveTasks(collectionName, documentId, root, checklists, selectedDate, target).then((res)=>{
       let temp_tasks:any;
       const date = Timestamp.fromDate(new Date(selectedDate))

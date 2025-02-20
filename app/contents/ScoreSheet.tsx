@@ -31,6 +31,9 @@ const ScoreSheet = (props : ScoreSheetProp) => {
     // const checklist = {'date': date, "formattedDate" : selectedDate, targetId: target.userId, targetName : target.userName , tasks : target.tasks }
     const idx:number = checklist.targets.findIndex((t:any)=> t.userId === target.userId);
     const targets:any = _.cloneDeep(checklist).targets;
+    const _tempTasks:any = _.cloneDeep(tempTasks);
+    _tempTasks.map((t:any)=> t.taskPoint = Number(t.taskPoint));
+    console.log({_tempTasks});
     targets[idx].tasks = tempTasks;
     saveChecklist(collectionName,documentId,root,targets).then((res:any)=>{
         if(res){

@@ -122,7 +122,7 @@ export async function fetchData(selectedDate:string) {
       taskD.tasks.forEach((task:any)=>{
         if(task.completed){
           if(taskD.targetId === userId){
-            users[userId] += task.taskPoint;
+            users[userId] += Number(task.taskPoint);
           }
         }
       })

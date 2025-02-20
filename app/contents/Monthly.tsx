@@ -149,7 +149,7 @@ useEffect(()=>{
         taskD.tasks.forEach((task:any)=>{
           if(task.completed){
             if(taskD.targetId === userId){
-              users[userId] += task.taskPoint;
+              users[userId] += Number(task.taskPoint);
             }
           }
         })
@@ -250,7 +250,7 @@ useEffect(()=>{
                   const tasks:[{[k:string]:any}] = tasksByUserId[userId].tasks;
                   tasks.forEach((task)=>{
                     if(task.completed){
-                      totalPoint += task.taskPoint;
+                      totalPoint += Number(task.taskPoint);
                     }
                   });
                 const tag_name_point = totalPoint!==0?<div className={`float-left text-sm text-stone-500`} key={`${day}-${user_id}-${index}`}>{user_name} <b className='text-blue-400'>{totalPoint}</b></div>:<div key={index}></div>; 
