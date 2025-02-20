@@ -42,7 +42,7 @@ const ScoreSheet = (props : ScoreSheetProp) => {
     setIsEdit(false);
   }
   const onExit = ()=>{
-    // setTempTasks(checklists.tasks);
+    setTempTasks(target.tasks);
     setIsEdit(false);
   }
 
@@ -51,7 +51,35 @@ const ScoreSheet = (props : ScoreSheetProp) => {
 //         setTempTasks(target.tasks);
 //     }
 //   },[target])
-  
+  const removeRow = (index:number)=>{
+    const _tempTasks:any = _.cloneDeep(tempTasks);
+    _tempTasks.splice(index,1);
+    setTempTasks(_tempTasks);
+  }
+  const addRow =()=>{
+    function findMaxId(arr:any) {
+        let maxId:any = null;
+        let maxValue = -1; // 숫자는 0 또는 양수일 가능성이 높으므로, 초기값을 -1로 설정
+      
+        for (const item of arr) {
+          const id = item.taskId;
+          const num = parseInt(id.slice(1)); // 'T'를 제외한 나머지 부분을 숫자로 변환
+      
+          if (!isNaN(num)) { // 숫자로 제대로 변환되었는지 확인
+            if (num > maxValue) {
+              maxValue = num;
+            }
+          }
+        }
+        maxValue++;
+        maxId = "T"+ String(maxValue).padStart(6,'0');
+        return maxId;
+      }
+
+    const taskId = findMaxId(tempTasks);
+    console.log({taskId});
+    setTempTasks([...tempTasks,{taskName:'', taskId:taskId, taskPoint:0}])
+  }
   return (
             <div key={`score_sheet-${target.user_id}`}>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-4">
@@ -115,9 +143,20 @@ const ScoreSheet = (props : ScoreSheetProp) => {
                                             className='placeholder:text-gray-500 placeholder:italic border border-gray-300 w-10 text-right' type='number' placeholder={task.taskPoint} onChange={(e)=>onChangeTask(k,e)} value={task.taskPoint}/>
                                     </td>
                                     <td className="px-4 py-2" >
+                                    <button className='border rounded-md px-3 py-1'
+                                        onClick={()=>removeRow(k)}
+                                    >-</button>
                                     </td>
                                 </tr>)
+                                
                 })}
+                <tr className="bg-white dark:bg-gray-800 dark:border-gray-700">
+                    <td colSpan={3} className="px-4 py-2 text-center">
+                        <button className='border rounded-md px-3 py-1'
+                            onClick={addRow}
+                        >+</button>
+                    </td>
+                </tr>
                 </tbody>
                 </table>}
                 </div>
