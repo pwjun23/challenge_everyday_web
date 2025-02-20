@@ -117,6 +117,13 @@ const MonthlyView = (props : MonthlyViewProp) => {
     _tempReward.list.push({awardDetail:'', pointReward:0, pointRewardDetail:"", ranking:_tempReward.list.length+1,rankingName:"" });
     setTempReward(_tempReward);
   }
+
+  const removeRow = (index:number)=>{
+    const _tempReward:any = _.cloneDeep(tempReward);
+    _tempReward.list.splice(index,1);
+    setTempReward(_tempReward);
+  }
+
 useEffect(()=>{
   if(reward && reward.list){
     setTempReward(reward);
@@ -325,7 +332,10 @@ useEffect(()=>{
                   <input
                     name={'pointReward'}
                     className='placeholder:text-gray-500 placeholder:italic border border-gray-300 w-[60px]' type='number' 
-                    placeholder={reward.pointReward} onChange={(e)=>onChangeTask(reward.ranking-1,e)} value={reward.pointReward}/>  
+                    placeholder={reward.pointReward} onChange={(e)=>onChangeTask(reward.ranking-1,e)} value={reward.pointReward}/> 
+                    <button className='border rounded-md px-3 py-1'
+                      onClick={()=>removeRow(reward.ranking-1)}
+                  >-</button>
                 </td>
                 <td></td>
               </tr></tbody>)
