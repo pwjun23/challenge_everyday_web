@@ -1,5 +1,5 @@
 // pages/login.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import useAuthStore from '../store/authStore';
 import { app } from '../commonService';
@@ -11,6 +11,15 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { setLoading, setError, setUser, user } = useAuthStore();
+  const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() =>{
+    const storedUser:string = localStorage.getItem('user') || "";
+    // const auth = getAuth(app);
+    if(storedUser){
+      setUser(JSON.parse(storedUser));
+    }
+  },[]);
 
   const handleLogin = async () => {
     setLoading(true);
@@ -19,7 +28,12 @@ const LoginPage = () => {
       const auth = getAuth(app);
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
-      
+       // ...
+      if (rememberMe) {
+        localStorage.setItem('user', JSON.stringify(userCredential.user));
+      } else {
+        localStorage.removeItem('user');
+      }
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -47,6 +61,17 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full p-2 border rounded-md"
           />
+          {/* ... 로그인 입력 필드 ... */}
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="mr-2"
+            />
+            <label htmlFor="rememberMe">로그인 상태 유지</label>
+          </div>
           <button
             onClick={handleLogin}
             className="w-full p-2 text-white bg-blue-500 rounded-md"
