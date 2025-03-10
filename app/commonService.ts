@@ -5,6 +5,7 @@ import { checklist_doc, checklists_collection, data_250201, rewards_doc, user_wo
 import { HolidayItem } from "./common_type";
 import { format } from 'date-fns';
 import FileSaver from 'file-saver';
+import { getAuth } from 'firebase/auth';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -20,6 +21,7 @@ const firebaseConfig = {
   appId: "1:601631315534:web:9b8853fdefab730388551f",
   measurementId: "G-ZH69TWC3DJ"
 };
+export const app = initializeApp(firebaseConfig);
 
 const backupJson = (json:any)=>{
 // 파일 저장
