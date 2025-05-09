@@ -7,11 +7,15 @@ import { useEffect, useState } from 'react';
 import { format, startOfMonth, endOfMonth, addDays } from 'date-fns';
 import { fetchHolidays, saveChecklist } from '../commonService';
 import _ from 'lodash';
+import { Timestamp } from 'firebase/firestore';
+import useAuthStore from '../store/authStore';
 
 
 const MonthlyView = (props : MonthlyViewProp) => {
   const {swiperRef, totalMonthCount} = props;
   const { selectedDate, currentSlideIndex, setSlideIndex, setSelectedDate, tasks, checklist, reward, setReward, isEditReward, setIsEditReward} = useCheckListsStore();
+  const { setLoading, setError, setUser, user } = useAuthStore();
+
   const [ tempReward, setTempReward ] = useState(reward);
   const today = new Date(selectedDate);
   // const today = new Date('2025-01-01');
@@ -65,14 +69,25 @@ const MonthlyView = (props : MonthlyViewProp) => {
      * 여기다가 저장 로직을 넣는다.... 
      */
     const collectionName = "rewards";
+    // const documentId = selectedDate.slice(0,7);
     const documentId = "R00000001";
     const root = "list";
     // const date = Timestamp.fromDate(new Date(selectedDate))
+
+    // const root = "";
+    const date = Timestamp.fromDate(new Date(selectedDate))
+    
+      
+    // const saveData = { 
+    //    createUser : user.email
+    //   ,date : date 
+    //   ,list : tempReward.list
+    // }
     // const checklist = {'date': date, "formattedDate" : selectedDate, targetId: target.userId, targetName : target.userName , tasks : target.tasks }
     // const idx:number = checklist.targets.findIndex((t:any)=> t.userId === target.userId);
     // const targets:any = _.cloneDeep(checklist).targets;
     // targets[idx].tasks = tempTasks;/
-    saveChecklist(collectionName,documentId,root,tempReward.list).then((res:any)=>{
+    saveChecklist(collectionName,documentId,root, tempReward.list).then((res:any)=>{
         if(res){
             setReward(tempReward);
         }
