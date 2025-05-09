@@ -94,7 +94,8 @@ export async function fetchData(selectedDate:string) {
   const q_reward = query(
     collection(db,"rewards"),
     where("createUser","==",'admin'),
-    where("id","==",'R00000001')
+    where("date", ">=", startTimestamp),
+    where("date", "<", endTimestamp)
   );
   
   
