@@ -86,10 +86,8 @@ export async function fetchData(selectedDate:string, user:any) {
 
   const q_checklist = query(
     collection(db,"checklists"),
-    where("createUser","==",'admin'),
-    where("id","==",'C00000001')
+    where("createUser","==", user.email),
   );
-  // const checklistsQ = await getDocs(collection(db,"tasks"));
   
   const q_reward = query(
     collection(db,"rewards"),
