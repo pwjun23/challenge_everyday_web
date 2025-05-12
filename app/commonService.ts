@@ -62,7 +62,7 @@ async function getTasksByUsed(db:any, checklistId:string) {
   }
 }
 
-export async function fetchData(selectedDate:string) {
+export async function fetchData(selectedDate:string, user:any) {
   const year = parseInt(selectedDate.split("-")[0]);
   const month = parseInt(selectedDate.split("-")[1]);
   // const year = parseInt(_year);
@@ -93,7 +93,7 @@ export async function fetchData(selectedDate:string) {
   
   const q_reward = query(
     collection(db,"rewards"),
-    where("createUser","==",'admin'),
+    where("createUser","==", user.email),
     where("date", ">=", startTimestamp),
     where("date", "<", endTimestamp)
   );
@@ -155,7 +155,6 @@ export async function saveTasks(collectionName:string, documentId:string, root:s
         const date = Timestamp.fromDate(new Date(selectedDate))
         const checklist = {'date': date, "formattedDate" : selectedDate, targetId: target.userId, targetName : target.userName , tasks : updatedData }
         await setDoc(doc(db, collectionName, documentId), checklist);
-        console.log("해당 문서는 존재하지 않습니다.");
       }
     
       
@@ -174,11 +173,15 @@ export async function saveTasks(collectionName:string, documentId:string, root:s
         if (docSnap.exists()) {
           console.log("문서 데이터:", docSnap.data());
           // Firestore에서 해당 아이템 업데이트
-          await updateDoc(docRef, { [root]: updatedData});
+          if(root === ""){
+            await updateDoc(docRef, updatedData);
+          }else{
+            await updateDoc(docRef, { [root]: updatedData});
+          }
           console.log("특정 객체가 성공적으로 업데이트되었습니다.");
           return true
         }else{
-          console.log("해당 문서는 존재하지 않습니다.");
+          await setDoc(doc(db, collectionName, documentId), updatedData);
         }
       
         

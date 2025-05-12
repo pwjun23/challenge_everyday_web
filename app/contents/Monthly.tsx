@@ -69,25 +69,22 @@ const MonthlyView = (props : MonthlyViewProp) => {
      * 여기다가 저장 로직을 넣는다.... 
      */
     const collectionName = "rewards";
-    // const documentId = selectedDate.slice(0,7);
-    const documentId = "R00000001";
-    const root = "list";
+    const documentId = selectedDate.slice(0,7);
+    // const documentId = "R00000001";
+    // const root = "list";
     // const date = Timestamp.fromDate(new Date(selectedDate))
 
-    // const root = "";
+    const root = "";
     const date = Timestamp.fromDate(new Date(selectedDate))
     
       
-    // const saveData = { 
-    //    createUser : user.email
-    //   ,date : date 
-    //   ,list : tempReward.list
-    // }
-    // const checklist = {'date': date, "formattedDate" : selectedDate, targetId: target.userId, targetName : target.userName , tasks : target.tasks }
-    // const idx:number = checklist.targets.findIndex((t:any)=> t.userId === target.userId);
-    // const targets:any = _.cloneDeep(checklist).targets;
-    // targets[idx].tasks = tempTasks;/
-    saveChecklist(collectionName,documentId,root, tempReward.list).then((res:any)=>{
+    const saveData = { 
+       createUser : user.email
+      ,date : date 
+      ,list : tempReward.list
+    }
+    // saveChecklist(collectionName,documentId,root, tempReward.list).then((res:any)=>{
+    saveChecklist(collectionName,documentId,root, saveData).then((res:any)=>{
         if(res){
             setReward(tempReward);
         }
@@ -143,6 +140,7 @@ useEffect(()=>{
   if(reward && reward.list){
     setTempReward(reward);
   }
+  
 },[reward])
   useEffect(() => {
     // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동

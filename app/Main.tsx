@@ -13,6 +13,8 @@ import 'swiper/css/pagination';
 import ScoreSheets from './contents/ScoreSheets';
 import { addDocumentWithId, fetchData, fetchHolidays, updateTasksToTimestamp } from './commonService';
 import { useCheckListsStore } from './store/checklistStore';
+import useAuthStore from './store/authStore';
+import { AnyAaaaRecord } from 'dns';
 
 
 const Main: React.FC= () => {
@@ -25,9 +27,11 @@ const Main: React.FC= () => {
   const totalMonthCount = today.getMonth();// 1월 : 0, 2월 : 1
 
   const {checklists, currentSlideIndex, editing, setReward, setChecklists, setIsEdit, setSlideIndex, selectedDate, tasks, setTasks, setChecklist} = useCheckListsStore();
+  const { user } = useAuthStore();
+
   
-const searchMonth = (selectedDate:string)=>{
-  fetchData(selectedDate)
+const searchMonth = (selectedDate:string, user:AnyAaaaRecord)=>{
+  fetchData(selectedDate, user)
     .then((res)=>{
       setTasks(res.tasks);
       setChecklist(res.checklist)
@@ -46,7 +50,7 @@ const searchMonth = (selectedDate:string)=>{
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     // addDocumentWithId();//데이터 밀어넣기 or 배치
-    searchMonth(selectedDate);
+    searchMonth(selectedDate, user);
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
@@ -60,7 +64,7 @@ const searchMonth = (selectedDate:string)=>{
   useEffect(() => {
     const selectedMonth:string = selectedDate.split('-')[1];
     if(currentMonth.current != selectedMonth){
-      searchMonth(selectedDate);
+      searchMonth(selectedDate, user);
       currentMonth.current = selectedMonth;
     }
   }, [selectedDate]);
