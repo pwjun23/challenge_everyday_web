@@ -64,26 +64,19 @@ const MonthlyView = (props : MonthlyViewProp) => {
     const setMonth = `${selectedDates[0]}-${String(month).padStart(2, '0')}-01`;
     setSelectedDate(setMonth);
   }
- const onSave = ()=>{
-    /**
-     * 여기다가 저장 로직을 넣는다.... 
-     */
+  const onSave = ()=>{
     const collectionName = "rewards";
     const documentId = selectedDate.slice(0,7);
-    // const documentId = "R00000001";
-    // const root = "list";
-    // const date = Timestamp.fromDate(new Date(selectedDate))
 
     const root = "";
     const date = Timestamp.fromDate(new Date(selectedDate))
     
       
     const saveData = { 
-       createUser : user.email
+        createUser : user.email
       ,date : date 
       ,list : tempReward.list
     }
-    // saveChecklist(collectionName,documentId,root, tempReward.list).then((res:any)=>{
     saveChecklist(collectionName,documentId,root, saveData).then((res:any)=>{
         if(res){
             setReward(tempReward);
