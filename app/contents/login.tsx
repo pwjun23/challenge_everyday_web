@@ -52,14 +52,14 @@ const LoginPage = () => {
             placeholder="이메일"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded-md"
+            className="w-full p-2 border rounded-md text-black"
           />
           <input
             type="password"
             placeholder="비밀번호"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded-md"
+            className="w-full p-2 border rounded-md text-black"
           />
           {/* ... 로그인 입력 필드 ... */}
           <div className="flex items-center">
