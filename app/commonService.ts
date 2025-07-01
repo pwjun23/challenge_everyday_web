@@ -248,13 +248,23 @@ export const fetchHolidays = async (today:Date) => {
         const data = await response.json();
   
         if (data.response && data.response.body && data.response.body.items) {
-          const holidayDates = data.response.body.items.item.map((item: HolidayItem) => {
-            const dateString = String(item.locdate);
-            const formattedDateString = `${dateString.slice(0, 4)}-${dateString.slice(4, 6)}-${dateString.slice(6)}`;
-            return new Date(formattedDateString);
-          });
+          const holidayItems = data.response.body.items.item;
+          let holidayDates
+          if(Array.isArray(holidayItems) === true){
+            holidayDates = holidayItems.map((item: HolidayItem) => {
+              const dateString = String(item.locdate);
+              const formattedDateString = `${dateString.slice(0, 4)}-${dateString.slice(4, 6)}-${dateString.slice(6)}`;
+              return new Date(formattedDateString);
+            });
+          }else{
+            holidayDates = [holidayItems].map((item: HolidayItem) => {
+              const dateString = String(item.locdate);
+              const formattedDateString = `${dateString.slice(0, 4)}-${dateString.slice(4, 6)}-${dateString.slice(6)}`;
+              return new Date(formattedDateString);
+            });
+          }
+          
           return holidayDates;
-          // setHolidays(holidayDates); // 공휴일 배열 저장
         }else{
           return [];
         }
@@ -291,7 +301,8 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
 
     /* tasks collection 마이그레이션
     */
-    // const ch = data_250201;
+    // const ch = data_
+    // 0©01;
   // const documentId = "C00000000";
   const documentId = "R00000001";
   const reward = rewards_doc
