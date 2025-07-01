@@ -140,7 +140,7 @@ useEffect(()=>{
     if (currentSlideIndex && swiperRef && swiperRef && swiperRef.current) {
       swiperRef.current.slideTo(currentSlideIndex);
     }
-    fetchHolidays(new Date(selectedDate)).then((res)=> setHolidays(res));
+    fetchHolidays(new Date(selectedDate)).then((res:any)=> setHolidays(res));
   }, [selectedDate]);
 
   useEffect(() =>{
