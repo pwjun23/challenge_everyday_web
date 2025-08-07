@@ -22,6 +22,7 @@ const firebaseConfig = {
   measurementId: "G-ZH69TWC3DJ"
 };
 export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 
 const backupJson = (json:any)=>{
 // 파일 저장

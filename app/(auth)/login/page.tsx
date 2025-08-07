@@ -1,10 +1,11 @@
-// pages/login.tsx
 import { useEffect, useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import useAuthStore from '../store/authStore';
-import { app } from '../commonService';
-import MonthlyView from './Monthly';
-import Main from '../Main';
+import useAuthStore from '../../store/authStore';
+import { app } from '../../commonService';
+import Main from '../../Main';
+import ModalPrivacy from './modal/ModalPrivacy';
+import { useRouter } from 'next/navigation';
+
 
 const LoginPage = () => {
     
@@ -41,10 +42,24 @@ const LoginPage = () => {
     }
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false); // 페이지 로드 시 모달 바로 열기
+  const router = useRouter();
+
+  const handleAgreeAndProceed = () => {
+    setIsModalOpen(false);
+    router.push('/signup');
+    console.log("개인정보 동의 완료. 다음 단계로 진행합니다.");
+  };
+
   return (
     <>
     {!user && 
     <div className="flex items-center justify-center h-screen">
+      <ModalPrivacy
+        showModal={isModalOpen}
+        onAgree={handleAgreeAndProceed}
+        onCancel={() => setIsModalOpen(false)}
+      />
       <div className="w-full max-w-md p-8 space-y-4 border rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-center">로그인</h2>
           <input
@@ -77,6 +92,13 @@ const LoginPage = () => {
             className="w-full p-2 text-white bg-blue-500 rounded-md"
           >
             로그인
+          </button>          
+          <hr></hr>
+          <button
+            onClick={()=>setIsModalOpen(true)}
+            className="w-full p-2 text-white rounded-md"
+          >
+            회원가입
           </button>
       </div>
     </div>
