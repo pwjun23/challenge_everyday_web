@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // useEffect 추가
 import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,21 +10,29 @@ import {
   fetchSignInMethodsForEmail,
   isSignInWithEmailLink,
   sendSignInLinkToEmail,
-} from "firebase/auth";
+} from 'firebase/auth';
 
 import FloatingInput from '@/app/components/FloatingInput';
 import { auth } from '@/app/lib/firebase/firebase';
 
 const actionCodeSettings = {
-  url: 'http://localhost:3000/signup/password', // 이메일 인증 후 이동할 URL (비밀번호 설정 페이지)
+  url: 'http://localhost:3000/signup/password',
   handleCodeInApp: true,
 };
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [step, setStep] = useState(1); // 1: 이메일 입력, 2: 비밀번호 설정
+  const [step, setStep] = useState(1);
   const router = useRouter();
+
+  // ✅ 해결책: useEffect 훅을 사용해 클라이언트 측에서만 실행되도록 수정
+  useEffect(() => {
+    // window 객체가 존재하고, 이메일 인증 링크로 접속했을 경우
+    if (typeof window !== 'undefined' && isSignInWithEmailLink(auth, window.location.href)) {
+      setStep(2); // 비밀번호 설정 단계로 변경
+    }
+  }, []); // 의존성 배열을 비워 컴포넌트가 마운트될 때 한 번만 실행되도록 함
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,19 +41,13 @@ export default function SignupPage() {
       const signInMethods = await fetchSignInMethodsForEmail(auth, email);
 
       if (signInMethods && signInMethods.length > 0) {
-        // 3. 중복된 이메일이 있는 경우
         toast.error('이미 존재하는 이메일입니다.');
         return;
       }
 
-      // 4. 중복이 없는 경우, 인증 메일 발송
       await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-
       window.localStorage.setItem('emailForSignIn', email);
       toast.success('인증 메일이 발송되었습니다. 메일을 확인해 주세요.');
-
-      // 메일 인증 확인 메시지 출력
-      // (실제 비밀번호 설정 단계로 이동은 메일 클릭 후 자동으로 이루어짐)
     } catch (error) {
       console.error('이메일 인증 과정에서 오류 발생:', error);
       toast.error('오류가 발생했습니다. 다시 시도해 주세요.');
@@ -63,27 +65,16 @@ export default function SignupPage() {
         return;
       }
       
-      // 5. 이메일 인증이 완료되었으므로 비밀번호로 계정 생성
       await createUserWithEmailAndPassword(auth, emailForSignIn, password);
-      
-      // 로컬 스토리지 데이터 정리
       window.localStorage.removeItem('emailForSignIn');
 
       toast.success('회원가입이 완료되었습니다.');
-      router.push('/'); // 회원가입 완료 후 메인 페이지로 이동
+      router.push('/');
     } catch (error) {
       console.error('비밀번호 설정 중 오류 발생:', error);
       toast.error('오류가 발생했습니다. 다시 시도해 주세요.');
     }
   };
-
-  // 이메일 인증 후 비밀번호 설정 페이지로 이동하는 로직
-  // 메일 링크를 통해 접속했을 때 실행되는 코드
-  useState(() => {
-    if (isSignInWithEmailLink(auth, window.location.href)) {
-      setStep(2);
-    }
-  });
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
