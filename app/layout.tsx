@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthProvider } from "./lib/firebase/AuthContext";
 
 export const metadata: Metadata = {
   title: "두더지가족 매일매일 챌린지♡",//"localhost:8080"
@@ -17,7 +18,9 @@ export default function RootLayout({
       <body
         className={`antialiased`}
       >
+         <AuthProvider>
         {children}
+        </AuthProvider>
       </body>
     </html>
   );

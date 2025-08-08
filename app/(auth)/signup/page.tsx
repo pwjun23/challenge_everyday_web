@@ -11,7 +11,7 @@ import {
 } from "firebase/auth";
 
 import FloatingInput from '@/app/components/FloatingInput';
-import { auth } from '@/app/commonService';
+import { auth } from '@/app/lib/firebase/firebase';
 
 const actionCodeSettings = {
   url: 'http://localhost:3000/signup/password', // 이메일 인증 후 이동할 URL (비밀번호 설정 페이지)

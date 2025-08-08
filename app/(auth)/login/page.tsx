@@ -1,11 +1,13 @@
+"use client";
+
 import { useEffect, useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import useAuthStore from '../../store/authStore';
-import { app } from '../../commonService';
-import Main from '../../Main';
 import ModalPrivacy from './modal/ModalPrivacy';
 import { useRouter } from 'next/navigation';
-
+import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from 'react-toastify';
+import { auth } from '@/app/lib/firebase/firebase';
 
 const LoginPage = () => {
     
@@ -16,7 +18,7 @@ const LoginPage = () => {
 
   useEffect(() =>{
     const storedUser:string = localStorage.getItem('user') || "";
-    // const auth = getAuth(app);
+
     if(storedUser){
       setUser(JSON.parse(storedUser));
     }
@@ -26,17 +28,37 @@ const LoginPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const auth = getAuth(app);
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
-       // ...
+       
       if (rememberMe) {
         localStorage.setItem('user', JSON.stringify(userCredential.user));
       } else {
         localStorage.removeItem('user');
       }
+      toast.success('로그인에 성공했습니다.');
+      router.push('/dashboard'); // 로그인 성공 시 대시보드로 이동
     } catch (error: any) {
       setError(error.message);
+
+      console.error('로그인 중 오류 발생:', error);
+      
+      let errorMessage = '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.';
+      // Firebase 에러 코드에 따라 더 상세한 메시지를 보여줄 수 있습니다.
+      switch (error.code) {
+        case 'auth/invalid-email':
+          errorMessage = '유효하지 않은 이메일 주소입니다.';
+          break;
+        case 'auth/user-disabled':
+          errorMessage = '비활성화된 계정입니다.';
+          break;
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+          errorMessage = '이메일 또는 비밀번호가 일치하지 않습니다.';
+          break;
+      }
+      toast.error(errorMessage);
+
     } finally {
       setLoading(false);
     }
@@ -101,9 +123,10 @@ const LoginPage = () => {
             회원가입
           </button>
       </div>
+      <ToastContainer position="top-center" />
     </div>
     }
-    {user && <Main/>}
+    {/* {user && <Main/>} */}
     </>
   );
 };

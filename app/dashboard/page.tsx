@@ -3,18 +3,20 @@
 import React, {useEffect, useRef, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import _ from 'lodash';
-import MonthlyView from './contents/Monthly';
-import DailyChecklist from './contents/DailyCheck';
+import MonthlyView from '../contents/Monthly';
+import DailyChecklist from '../contents/DailyCheck';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import ScoreSheets from './contents/ScoreSheets';
-import { addDocumentWithId, fetchData, fetchHolidays, updateTasksToTimestamp } from './commonService';
-import { useCheckListsStore } from './store/checklistStore';
-import useAuthStore from './store/authStore';
+import ScoreSheets from '../contents/ScoreSheets';
+import { addDocumentWithId, fetchData, fetchHolidays, updateTasksToTimestamp } from '../commonService';
+import { useCheckListsStore } from '../store/checklistStore';
+import useAuthStore from '../store/authStore';
 import { AnyAaaaRecord } from 'dns';
+import { useAuth } from '../lib/firebase/AuthContext';
+import { useRouter } from 'next/navigation';
 
 
 const Main: React.FC= () => {
@@ -28,16 +30,19 @@ const Main: React.FC= () => {
 
   const {checklists, currentSlideIndex, editing, setReward, setChecklists, setIsEdit, setSlideIndex, selectedDate, tasks, setTasks, setChecklist} = useCheckListsStore();
   const { user } = useAuthStore();
+  const { currentUser } = useAuth();
+  const router = useRouter();
 
-  
-const searchMonth = (selectedDate:string, user:AnyAaaaRecord)=>{
-  fetchData(selectedDate, user)
-    .then((res)=>{
-      setTasks(res.tasks);
-      setChecklist(res.checklist)
-      setReward(res.reward)
-    });
-}
+
+  const searchMonth = (selectedDate:string, user:AnyAaaaRecord)=>{
+    fetchData(selectedDate, user)
+      .then((res)=>{
+        if(!res) return;
+        setTasks(res.tasks);
+        setChecklist(res.checklist)
+        setReward(res.reward)
+      });
+  }
   const currentMonth = useRef<string>(String(new Date().getMonth()+1).padStart(2,'0'));
 
   useEffect(() => {
@@ -48,6 +53,17 @@ const searchMonth = (selectedDate:string, user:AnyAaaaRecord)=>{
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // currentUser가 null이거나 undefined면 로그인 페이지로 리다이렉트
+    if (currentUser === undefined) {
+      router.push('/login'); // 미들웨어로 처리할 예정이므로 여기서는 제외
+      // return <div>로딩 중...</div>;
+    }
+
+    if (currentUser === null) {
+      router.push('/login'); // 미들웨어로 처리할 예정이므로 여기서는 제외
+      // return <div>로그인이 필요합니다.</div>;
+    }
 
     // addDocumentWithId();//데이터 밀어넣기 or 배치
     searchMonth(selectedDate, user);
@@ -194,15 +210,6 @@ const searchMonth = (selectedDate:string, user:AnyAaaaRecord)=>{
           </Tab.List> 
         </Tab.Group>
       </div>
-      {/* 모달 */}
-      {/* {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <p className='text-stone-900'>특정 조건을 충족해야 합니다.</p>
-            <button className='text-stone-900' onClick={closeModal}>닫기</button>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };

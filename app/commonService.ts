@@ -5,24 +5,14 @@ import { checklist_doc, checklists_collection, data_250201, rewards_doc, user_wo
 import { HolidayItem } from "./common_type";
 import { format } from 'date-fns';
 import FileSaver from 'file-saver';
-import { getAuth } from 'firebase/auth';
+import { app } from './lib/firebase/firebase';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBOioNA2npe8VpMtFlOLXJjIYzTbiu3hWY",
-  authDomain: "molespapa2025.firebaseapp.com",
-  projectId: "molespapa2025",
-  storageBucket: "molespapa2025.firebasestorage.app",
-  messagingSenderId: "601631315534",
-  appId: "1:601631315534:web:9b8853fdefab730388551f",
-  measurementId: "G-ZH69TWC3DJ"
-};
-export const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+
 
 const backupJson = (json:any)=>{
 // 파일 저장
@@ -64,12 +54,12 @@ async function getTasksByUsed(db:any, checklistId:string) {
 }
 
 export async function fetchData(selectedDate:string, user:any) {
+  if(!user)return;
   const year = parseInt(selectedDate.split("-")[0]);
   const month = parseInt(selectedDate.split("-")[1]);
   // const year = parseInt(_year);
   // 날짜 범위 계산
   // 쿼리 시작 및 종료 날짜 설정 (해당 달의 1일 00:00:00 ~ 말일 23:59:59)
-  const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const startDate = new Date(year, month - 1, 1);
   // const startDate = new Date(year, month - 2, 1);//1월달 부터 나오게 하기 위해
@@ -139,7 +129,6 @@ export async function fetchData(selectedDate:string, user:any) {
 }
 
 export async function saveTasks(collectionName:string, documentId:string, root:string, updatedData:any, selectedDate:string, target:any) {
-  const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
     try {
       const docRef = doc(db, collectionName, documentId);
@@ -163,7 +152,6 @@ export async function saveTasks(collectionName:string, documentId:string, root:s
   }
 
   export async function saveChecklist(collectionName:string, documentId:string, root:string, updatedData:any) {
-    const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
       try {
         const docRef = doc(db, collectionName, documentId);
@@ -190,7 +178,6 @@ export async function saveTasks(collectionName:string, documentId:string, root:s
       }
     }
   export async function removeChecklist(collectionName:string, documentId:string) {
-      const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
         try {
           const docRef = doc(db, collectionName, documentId);
@@ -214,7 +201,6 @@ export async function saveTasks(collectionName:string, documentId:string, root:s
     }
 
   async function fetchDocumentById(collectionName:string, documentId:string) {
-    const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     try {
       // 특정 컬렉션과 문서 ID를 참조
@@ -293,7 +279,6 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
 }
   
   export async function addDocumentWithId() {
-    const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     // const documentId = getFormattedDate(); // 문서 ID를 날짜로 설정
 
@@ -390,7 +375,6 @@ function convertYYYYMMToTimestamp(yyyymm:string) {
   }
 
   export const updateTasksToTimestamp = async ()=>{
-    const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const checklistsRef = collection(db, "Checklists", "C00000000", "Tasks");
     const querySnapshot = await getDocs(checklistsRef);
