@@ -9,6 +9,7 @@ import { fetchHolidays, saveChecklist } from '../commonService';
 import _ from 'lodash';
 import { Timestamp } from 'firebase/firestore';
 import useAuthStore from '../store/authStore';
+import LogoutButton from '../components/auth/LogoutButton';
 
 
 const MonthlyView = (props : MonthlyViewProp) => {
@@ -355,9 +356,10 @@ useEffect(()=>{
                 </td>
             </tr>
             </tbody>
-        </table>
+        </table>          
         }
       </div>
+      <LogoutButton />
     </div>
   );
 };

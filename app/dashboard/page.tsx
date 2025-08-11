@@ -16,7 +16,6 @@ import { useCheckListsStore } from '../store/checklistStore';
 import useAuthStore from '../store/authStore';
 import { AnyAaaaRecord } from 'dns';
 import { useAuth } from '../lib/firebase/AuthContext';
-import { useRouter } from 'next/navigation';
 
 
 const Main: React.FC= () => {
