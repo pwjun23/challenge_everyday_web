@@ -31,10 +31,10 @@ const Main: React.FC= () => {
   const {checklists, currentSlideIndex, editing, setReward, setChecklists, setIsEdit, setSlideIndex, selectedDate, tasks, setTasks, setChecklist} = useCheckListsStore();
   const { user } = useAuthStore();
   const { currentUser } = useAuth();
-  const router = useRouter();
 
 
   const searchMonth = (selectedDate:string, user:AnyAaaaRecord)=>{
+    console.log({currentUser})
     fetchData(selectedDate, user)
       .then((res)=>{
         if(!res) return;
@@ -56,12 +56,12 @@ const Main: React.FC= () => {
 
     // currentUser가 null이거나 undefined면 로그인 페이지로 리다이렉트
     if (currentUser === undefined) {
-      router.push('/login'); // 미들웨어로 처리할 예정이므로 여기서는 제외
+      // router.push('/login'); // 미들웨어로 처리할 예정이므로 여기서는 제외
       // return <div>로딩 중...</div>;
     }
 
     if (currentUser === null) {
-      router.push('/login'); // 미들웨어로 처리할 예정이므로 여기서는 제외
+      // router.push('/login'); // 미들웨어로 처리할 예정이므로 여기서는 제외
       // return <div>로그인이 필요합니다.</div>;
     }
 

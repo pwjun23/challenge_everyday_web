@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# .gitignore
+app/lib/firebase/molespapa2025-firebase-adminsdk-9ac7s-1e6fe9da17.json
