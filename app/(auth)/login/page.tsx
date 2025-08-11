@@ -28,6 +28,7 @@ const LoginPage = () => {
   },[]);
 
   useEffect(() =>{
+    console.log({currentUser});
     if (currentUser !== undefined) {
         router.push('/dashboard'); // 이미 로그인된 상태라면 대시보드로 리다이렉트
       }

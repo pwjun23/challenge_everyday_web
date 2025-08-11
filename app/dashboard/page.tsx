@@ -32,9 +32,10 @@ const Main: React.FC= () => {
   const { user } = useAuthStore();
   const { currentUser } = useAuth();
 
+  
 
-  const searchMonth = (selectedDate:string, user:AnyAaaaRecord)=>{
-    console.log({currentUser})
+  const searchMonth = (selectedDate:string, user:any)=>{
+    console.log({user});
     fetchData(selectedDate, user)
       .then((res)=>{
         if(!res) return;
@@ -54,23 +55,15 @@ const Main: React.FC= () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // currentUser가 null이거나 undefined면 로그인 페이지로 리다이렉트
-    if (currentUser === undefined) {
-      // router.push('/login'); // 미들웨어로 처리할 예정이므로 여기서는 제외
-      // return <div>로딩 중...</div>;
-    }
-
-    if (currentUser === null) {
-      // router.push('/login'); // 미들웨어로 처리할 예정이므로 여기서는 제외
-      // return <div>로그인이 필요합니다.</div>;
-    }
 
     // addDocumentWithId();//데이터 밀어넣기 or 배치
-    searchMonth(selectedDate, user);
+    if(currentUser){
+      searchMonth(selectedDate, currentUser);
+    }
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     // 스토어의 index가 변경될 때마다 Swiper 슬라이드 이동
@@ -79,11 +72,11 @@ const Main: React.FC= () => {
 
   useEffect(() => {
     const selectedMonth:string = selectedDate.split('-')[1];
-    if(currentMonth.current != selectedMonth){
-      searchMonth(selectedDate, user);
+    if(currentMonth.current != selectedMonth && currentUser){
+      searchMonth(selectedDate, currentUser);
       currentMonth.current = selectedMonth;
     }
-  }, [selectedDate]);
+  }, [selectedDate, currentUser]);
 
   useEffect(() => {
     if (swiperRef.current) {

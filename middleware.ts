@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const session = request.cookies.get('session_token'); // 세션 토큰을 쿠키에서 가져옴
-
   
   console.log('Session Token:', session);
   // 로그인 상태를 체크하는 로직
