@@ -2,6 +2,7 @@
 import * as admin from 'firebase-admin';
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string);
+console.log('Service Account:', serviceAccount);
 
 if (!serviceAccount) {
   throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY is not defined in environment variables.');

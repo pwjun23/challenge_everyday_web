@@ -29,7 +29,7 @@ const LoginPage = () => {
 
   useEffect(() =>{
     console.log({currentUser});
-    if (currentUser !== undefined) {
+    if (currentUser !== undefined && currentUser !== null) {
         router.push('/dashboard'); // 이미 로그인된 상태라면 대시보드로 리다이렉트
       }
   },[currentUser]);
@@ -49,6 +49,8 @@ const LoginPage = () => {
       }
 
       const idToken = await userCredential.user.getIdToken();
+      console.log('로그인 성공, idToken:', idToken);
+      
       // ✅ 로그인 성공 후 API 라우트 호출
       await fetch('/api/login', {
         method: 'POST',
@@ -95,6 +97,12 @@ const LoginPage = () => {
     console.log("개인정보 동의 완료. 다음 단계로 진행합니다.");
   };
 
+  const handleKeyDown = (event:any) => {
+    if (event.key === 'Enter') {
+      handleLogin();
+    }
+  };
+
   return (
     <>
       <div className="flex items-center justify-center h-screen">
@@ -117,6 +125,7 @@ const LoginPage = () => {
               placeholder="비밀번호"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="w-full p-2 border rounded-md text-black"
             />
             {/* ... 로그인 입력 필드 ... */}

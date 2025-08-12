@@ -1,27 +1,31 @@
 // app/api/login/route.ts
-import { adminAuth } from '@/app/lib/firebase/firebaseAdmin';
 import { NextResponse } from 'next/server';
+import { adminAuth } from '@/app/lib/firebase/firebaseAdmin';
 
 export async function POST(request: Request) {
-  const { idToken } = await request.json();
-
-  // 토큰 유효성 검사 및 세션 쿠키 생성
   try {
+    const { idToken } = await request.json();
+
+    if (!idToken) {
+      return NextResponse.json({ message: 'No ID token provided' }, { status: 401 });
+    }
+
     const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5일
     const sessionCookie = await adminAuth.createSessionCookie(idToken, { expiresIn });
-    
-    // 응답 객체에 쿠키 설정
+
     const response = NextResponse.json({ status: 'success' });
     response.cookies.set({
       name: 'session_token',
       value: sessionCookie,
-      httpOnly: true, // JavaScript 접근 방지
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: expiresIn / 1000,
       path: '/',
     });
+    
     return response;
   } catch (error) {
-    return NextResponse.json({ status: 'error', message: 'Failed to create session cookie' }, { status: 401 });
+    console.error('Failed to create session cookie:', error);
+    return NextResponse.json({ message: 'Invalid ID token' }, { status: 401 });
   }
 }
